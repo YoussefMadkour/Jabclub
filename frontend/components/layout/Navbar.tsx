@@ -180,16 +180,22 @@ const Navbar = () => {
                 </Link>
               </>
             ) : (
-              navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="block px-3 py-2 rounded-md text-base font-medium hover:bg-input transition-colors"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  {item.label}
-                </Link>
-              ))
+              navItems.map((item) => {
+                // Skip items without href
+                if (!item.href) {
+                  return null;
+                }
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="block px-3 py-2 rounded-md text-base font-medium hover:bg-input transition-colors"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })
             )}
 
             {isAuthenticated && user && (
