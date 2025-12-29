@@ -282,6 +282,11 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 );
               }
               
+              // Skip items without href
+              if (!item.href) {
+                return null;
+              }
+
               return (
                 <Link
                   key={item.href}
