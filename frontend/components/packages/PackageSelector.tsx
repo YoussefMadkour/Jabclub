@@ -89,12 +89,14 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
         <p className="text-red-600">{error}</p>
-        <button
-          onClick={fetchPackages}
-          className="mt-2 text-sm text-red-700 underline hover:text-red-800"
-        >
-          Try again
-        </button>
+        {selectedLocationId && (
+          <button
+            onClick={() => fetchPackages(selectedLocationId)}
+            className="mt-2 text-sm text-red-700 underline hover:text-red-800"
+          >
+            Try again
+          </button>
+        )}
       </div>
     );
   }
