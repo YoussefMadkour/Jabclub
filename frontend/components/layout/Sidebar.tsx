@@ -248,6 +248,11 @@ const Sidebar = () => {
               );
             }
             
+            // Skip items without href
+            if (!item.href) {
+              return null;
+            }
+
             return (
               <Link
                 key={item.href}
