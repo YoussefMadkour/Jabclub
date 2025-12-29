@@ -20,10 +20,12 @@ interface SessionPackage {
   isRenewal?: boolean;
   hasSpecialRenewalPrices?: boolean;
   expiryDays: number;
+  includeVat?: boolean;
   locationPrices?: Array<{
     locationId: number;
     locationName: string;
     price: number;
+    includeVat?: boolean;
   }>;
   memberPrice?: number | null;
 }

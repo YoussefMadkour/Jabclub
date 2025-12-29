@@ -34,6 +34,9 @@ interface MemberDetailsData {
   role: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string | null;
+  isPaused?: boolean;
+  isFrozen?: boolean;
   statistics: {
     totalCredits?: number;
     activePackagesCount?: number;
