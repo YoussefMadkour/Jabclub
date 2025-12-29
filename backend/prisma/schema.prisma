@@ -1,0 +1,316 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  member
+  coach
+  admin
+}
+
+enum PaymentStatus {
+  pending
+  approved
+  rejected
+}
+
+enum BookingStatus {
+  confirmed
+  cancelled
+  attended
+  no_show
+}
+
+enum TransactionType {
+  purchase
+  booking
+  refund
+  expiry
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  firstName     String    @map("first_name")
+  lastName      String    @map("last_name")
+  phone         String?
+  role          UserRole  @default(member)
+  isPaused      Boolean   @default(false) @map("is_paused")
+  isFrozen      Boolean   @default(false) @map("is_frozen")
+  deletedAt     DateTime? @map("deleted_at")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  children            Child[]
+  memberPackages      MemberPackage[]
+  payments            Payment[]
+  bookings            Booking[]
+  creditTransactions  CreditTransaction[]
+  classesAsCoach      ClassInstance[]
+  classSchedules      ClassSchedule[]
+  paymentsReviewed    Payment[] @relation("PaymentReviewer")
+  memberPackagePrices MemberPackagePrice[]
+
+  @@map("users")
+}
+
+model Child {
+  id        Int      @id @default(autoincrement())
+  parentId  Int      @map("parent_id")
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  age       Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  parent   User      @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@map("children")
+}
+
+model SessionPackage {
+  id           Int      @id @default(autoincrement())
+  name         String
+  sessionCount Int      @map("session_count")
+  price        Decimal  @db.Decimal(10, 2) // Default/base price
+  expiryDays   Int      @map("expiry_days")
+  includeVat   Boolean  @default(false) @map("include_vat")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  memberPackages      MemberPackage[]
+  payments            Payment[]
+  locationPackagePrices LocationPackagePrice[]
+  memberPackagePrices MemberPackagePrice[]
+
+  @@map("session_packages")
+}
+
+model MemberPackage {
+  id                Int      @id @default(autoincrement())
+  userId            Int      @map("user_id")
+  packageId         Int      @map("package_id")
+  sessionsRemaining Int      @map("sessions_remaining")
+  sessionsTotal     Int      @map("sessions_total")
+  purchaseDate      DateTime @map("purchase_date")
+  expiryDate        DateTime @map("expiry_date")
+  isExpired         Boolean  @default(false) @map("is_expired")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package            SessionPackage      @relation(fields: [packageId], references: [id])
+  bookings           Booking[]
+  creditTransactions CreditTransaction[]
+
+  @@index([userId])
+  @@index([expiryDate, isExpired])
+  @@map("member_packages")
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  userId          Int           @map("user_id")
+  packageId       Int           @map("package_id")
+  locationId      Int?          @map("location_id")
+  amount          Decimal       @db.Decimal(10, 2)
+  vatAmount       Decimal?      @default(0) @map("vat_amount") @db.Decimal(10, 2)
+  vatIncluded     Boolean       @default(false) @map("vat_included")
+  totalAmount     Decimal?      @map("total_amount") @db.Decimal(10, 2)
+  screenshotPath  String        @map("screenshot_path")
+  status          PaymentStatus @default(pending)
+  rejectionReason String?       @map("rejection_reason") @db.Text
+  reviewedBy      Int?          @map("reviewed_by")
+  reviewedAt      DateTime?     @map("reviewed_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package  SessionPackage @relation(fields: [packageId], references: [id])
+  location Location?      @relation(fields: [locationId], references: [id])
+  reviewer User?          @relation("PaymentReviewer", fields: [reviewedBy], references: [id])
+
+  @@index([status])
+  @@map("payments")
+}
+
+model Location {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String   @db.Text
+  capacity  Int
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  classInstances      ClassInstance[]
+  classSchedules      ClassSchedule[]
+  locationPackagePrices LocationPackagePrice[]
+  payments            Payment[]
+
+  @@map("locations")
+}
+
+model ClassType {
+  id              Int      @id @default(autoincrement())
+  name            String
+  description     String?  @db.Text
+  durationMinutes Int      @map("duration_minutes")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  classInstances ClassInstance[]
+  classSchedules ClassSchedule[]
+
+  @@map("class_types")
+}
+
+model ClassInstance {
+  id          Int      @id @default(autoincrement())
+  classTypeId Int      @map("class_type_id")
+  coachId     Int      @map("coach_id")
+  locationId  Int      @map("location_id")
+  scheduleId  Int?     @map("schedule_id")
+  startTime   DateTime @map("start_time")
+  endTime     DateTime @map("end_time")
+  capacity    Int
+  isCancelled Boolean  @default(false) @map("is_cancelled")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  classType ClassType     @relation(fields: [classTypeId], references: [id])
+  coach     User          @relation(fields: [coachId], references: [id])
+  location  Location      @relation(fields: [locationId], references: [id])
+  schedule  ClassSchedule? @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  bookings  Booking[]
+
+  @@index([startTime])
+  @@index([scheduleId])
+  @@map("class_instances")
+}
+
+model ClassSchedule {
+  id          Int      @id @default(autoincrement())
+  classTypeId Int      @map("class_type_id")
+  coachId     Int      @map("coach_id")
+  locationId  Int      @map("location_id")
+  dayOfWeek   Int      @map("day_of_week") // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime   String   @map("start_time") // HH:MM format
+  capacity    Int
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  classType ClassType     @relation(fields: [classTypeId], references: [id])
+  coach     User          @relation(fields: [coachId], references: [id])
+  location  Location      @relation(fields: [locationId], references: [id])
+  instances ClassInstance[]
+
+  @@unique([classTypeId, coachId, locationId, dayOfWeek, startTime])
+  @@index([isActive])
+  @@map("class_schedules")
+}
+
+model Booking {
+  id                  Int           @id @default(autoincrement())
+  classInstanceId     Int           @map("class_instance_id")
+  userId              Int           @map("user_id")
+  childId             Int?          @map("child_id")
+  memberPackageId     Int           @map("member_package_id")
+  status              BookingStatus @default(confirmed)
+  bookedAt            DateTime      @default(now()) @map("booked_at")
+  cancelledAt         DateTime?     @map("cancelled_at")
+  attendanceMarkedAt  DateTime?     @map("attendance_marked_at")
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  classInstance     ClassInstance     @relation(fields: [classInstanceId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  child             Child?            @relation(fields: [childId], references: [id], onDelete: Cascade)
+  memberPackage     MemberPackage     @relation(fields: [memberPackageId], references: [id])
+  creditTransactions CreditTransaction[]
+
+  @@unique([classInstanceId, userId, childId])
+  @@index([userId])
+  @@index([classInstanceId])
+  @@map("bookings")
+}
+
+model CreditTransaction {
+  id              Int             @id @default(autoincrement())
+  userId          Int             @map("user_id")
+  memberPackageId Int             @map("member_package_id")
+  bookingId       Int?            @map("booking_id")
+  transactionType TransactionType @map("transaction_type")
+  creditsChange   Int             @map("credits_change")
+  balanceAfter    Int             @map("balance_after")
+  notes           String?         @db.Text
+  createdAt       DateTime        @default(now()) @map("created_at")
+
+  // Relations
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberPackage MemberPackage @relation(fields: [memberPackageId], references: [id])
+  booking       Booking?      @relation(fields: [bookingId], references: [id])
+
+  @@map("credit_transactions")
+}
+
+model LocationPackagePrice {
+  id          Int      @id @default(autoincrement())
+  locationId  Int      @map("location_id")
+  packageId   Int      @map("package_id")
+  price       Decimal  @db.Decimal(10, 2)
+  includeVat  Boolean  @default(false) @map("include_vat")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  location Location      @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  package  SessionPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@unique([locationId, packageId])
+  @@index([locationId])
+  @@index([packageId])
+  @@map("location_package_prices")
+}
+
+model MemberPackagePrice {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  packageId   Int      @map("package_id")
+  price       Decimal  @db.Decimal(10, 2)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package SessionPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, packageId])
+  @@index([userId])
+  @@index([packageId])
+  @@map("member_package_prices")
+}

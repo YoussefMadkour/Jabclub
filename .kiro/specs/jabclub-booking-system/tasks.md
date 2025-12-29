@@ -1,0 +1,403 @@
+# Implementation Plan
+
+- [x] 1. Initialize project structure and dependencies
+  - Create Next.js project with TypeScript and TailwindCSS
+  - Set up Express backend with TypeScript
+  - Configure Prisma ORM with PostgreSQL
+  - Set up project folder structure (frontend: components, pages, hooks, utils; backend: routes, controllers, services, middleware)
+  - Install core dependencies (bcrypt, jsonwebtoken, multer, express-validator, react-query, axios, date-fns)
+  - Configure environment variables for both frontend and backend
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
+
+- [x] 2. Set up database schema and migrations
+  - Define Prisma schema for all tables (users, children, session_packages, member_packages, payments, locations, class_types, class_instances, bookings, credit_transactions)
+  - Create database indexes for performance optimization
+  - Run initial migration to create database structure
+  - Seed database with initial data (admin user, sample locations, class types, session packages)
+  - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 8.1, 10.1, 13.1, 14.1, 15.1_
+
+- [x] 3. Implement authentication system
+  - [x] 3.1 Create user registration endpoint with password hashing
+    - Implement POST /api/auth/signup with email validation and password strength check
+    - Hash passwords using bcrypt before storing
+    - Return JWT token on successful registration
+    - _Requirements: 1.1, 1.3_
+  - [x] 3.2 Create login endpoint with JWT generation
+    - Implement POST /api/auth/login with credential validation
+    - Generate JWT token with user ID and role
+    - Return user profile data with token
+    - _Requirements: 1.2, 1.4_
+  - [x] 3.3 Create authentication middleware
+    - Implement JWT verification middleware
+    - Extract user from token and attach to request
+    - Handle token expiration and invalid tokens
+    - _Requirements: 1.2, 1.5_
+  - [x] 3.4 Create role-based authorization middleware
+    - Implement middleware to check user roles (member, coach, admin)
+    - Protect routes based on required roles
+    - Return 403 for unauthorized access
+    - _Requirements: 1.2_
+  - [x] 3.5 Create frontend authentication context
+    - Implement React context for auth state management
+    - Store JWT token in localStorage
+    - Provide login, logout, and user state to components
+    - _Requirements: 1.2, 1.5_
+  - [x] 3.6 Build login and signup forms
+    - Create LoginForm component with email/password inputs
+    - Create SignupForm component with validation
+    - Implement form submission with error handling
+    - Add loading states and error messages
+    - _Requirements: 1.1, 1.2, 1.4_
+
+- [x] 4. Build member dashboard and credit display
+  - [x] 4.1 Create dashboard data endpoint
+    - Implement GET /api/members/dashboard to fetch member's active packages, remaining credits, expiry dates, and upcoming bookings
+    - Calculate total available credits across all active packages
+    - Return next expiring package information
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+  - [x] 4.2 Build MemberDashboard component
+    - Display session credits with visual indicator
+    - Show upcoming bookings in chronological order
+    - Display package expiry countdown
+    - Show past bookings section
+    - Add responsive layout for mobile and desktop
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+
+- [x] 5. Implement session package purchase flow
+  - [x] 5.1 Create package listing endpoint
+    - Implement GET /api/members/packages to return all active session packages
+    - Include package details (name, session count, price, expiry days)
+    - _Requirements: 3.1, 15.4_
+  - [x] 5.2 Create payment upload endpoint
+    - Implement POST /api/members/purchase with file upload using multer
+    - Validate image file type (JPEG, PNG, HEIC) and size
+    - Store payment screenshot in organized directory structure
+    - Create payment record with "pending" status
+    - Return payment confirmation
+    - _Requirements: 3.2, 3.3, 3.4, 3.5_
+  - [x] 5.3 Build PackageSelector component
+    - Display packages in grid layout with pricing
+    - Show session count and expiry information
+    - Add "Select" button for each package
+    - Implement responsive design
+    - _Requirements: 3.1_
+  - [x] 5.4 Build PaymentUpload component
+    - Create file input with drag-and-drop support
+    - Show image preview before upload
+    - Display upload progress
+    - Handle upload errors with retry option
+    - Show success confirmation
+    - _Requirements: 3.2, 3.4, 3.5_
+
+- [x] 6. Implement admin payment approval system
+  - [x] 6.1 Create pending payments endpoint
+    - Implement GET /api/admin/payments/pending to list all pending payments
+    - Include member details, package info, and screenshot URL
+    - Sort by submission date
+    - _Requirements: 4.1_
+  - [x] 6.2 Create payment approval endpoint
+    - Implement PUT /api/admin/payments/:id/approve
+    - Create member_package record with credits and expiry date
+    - Update payment status to "approved"
+    - Create credit transaction log entry
+    - Prevent duplicate approvals
+    - _Requirements: 4.2, 4.4, 4.5_
+  - [x] 6.3 Create payment rejection endpoint
+    - Implement PUT /api/admin/payments/:id/reject
+    - Update payment status to "rejected"
+    - Store rejection reason
+    - _Requirements: 4.3_
+  - [x] 6.4 Build PaymentReview component
+    - Display pending payments in list/grid view
+    - Show payment screenshot in modal or preview
+    - Add approve/reject buttons with confirmation
+    - Include rejection reason input
+    - Update list in real-time after action
+    - _Requirements: 4.1, 4.2, 4.3_
+
+- [x] 7. Build class schedule and browsing
+  - [x] 7.1 Create class schedule endpoint with filters
+    - Implement GET /api/classes/schedule with query parameters (location, date, coach)
+    - Return class instances with coach name, location, time, and available spots
+    - Calculate available capacity (total - booked)
+    - Filter out past classes
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
+  - [x] 7.2 Create class availability endpoint
+    - Implement GET /api/classes/:id/availability
+    - Return current booking count and available spots
+    - Check if class is full
+    - _Requirements: 5.5_
+  - [x] 7.3 Build ClassSchedule component
+    - Display classes in calendar or list view
+    - Implement filter controls (location, date, coach)
+    - Show class details (time, coach, location, capacity)
+    - Add visual indicator for full classes
+    - Implement responsive layout
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
+  - [x] 7.4 Build ClassCard component
+    - Display individual class information
+    - Show available spots with visual indicator
+    - Add "Book" button (disabled if full)
+    - Show class type and duration
+    - _Requirements: 5.5_
+
+- [x] 8. Implement class booking system
+  - [x] 8.1 Create booking endpoint with credit validation
+    - Implement POST /api/members/bookings
+    - Validate member has sufficient non-expired credits
+    - Check class capacity and prevent overbooking
+    - Use database transaction to deduct credit and create booking atomically
+    - Create credit transaction log entry
+    - Return booking confirmation
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+  - [x] 8.2 Build BookingModal component
+    - Show class details and confirmation prompt
+    - Display current credit balance
+    - Add booking confirmation button
+    - Show success/error messages
+    - Handle loading states
+    - _Requirements: 6.1, 6.5_
+
+- [x] 9. Implement booking cancellation with refund
+  - [x] 9.1 Create cancellation endpoint with time validation
+    - Implement DELETE /api/members/bookings/:id
+    - Calculate time until class start
+    - Prevent cancellation within 1-hour window
+    - Use database transaction to refund credit and update booking status
+    - Create credit transaction log entry
+    - Update class capacity
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+  - [x] 9.2 Build CancellationModal component
+    - Show cancellation confirmation with refund info
+    - Display time remaining until cancellation deadline
+    - Disable cancellation if within 1-hour window
+    - Show clear error message for late cancellations
+    - _Requirements: 7.1, 7.2_
+  - [x] 9.3 Add cancellation UI to BookingList
+    - Add "Cancel" button for each upcoming booking
+    - Show cancellation deadline for each booking
+    - Update list after successful cancellation
+    - _Requirements: 7.1, 7.3_
+
+- [x] 10. Implement children profile management
+  - [x] 10.1 Create children CRUD endpoints
+    - Implement GET /api/members/children to list member's children
+    - Implement POST /api/members/children to create child profile
+    - Implement PUT /api/members/children/:id to update child
+    - Implement DELETE /api/members/children/:id to delete child and cancel future bookings
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+  - [x] 10.2 Build ChildrenManager component
+    - Display list of child profiles
+    - Add "Add Child" button and form
+    - Implement edit functionality for each child
+    - Add delete confirmation dialog
+    - Show child's upcoming bookings
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+
+- [x] 11. Implement family booking functionality
+  - [x] 11.1 Update booking endpoint to support child bookings
+    - Modify POST /api/members/bookings to accept optional child_id
+    - Validate child belongs to the member
+    - Deduct credits from parent's account
+    - Associate booking with child profile
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
+  - [x] 11.2 Update BookingModal for family selection
+    - Add dropdown to select booking for self or child
+    - Show child names in selection
+    - Display who the booking is for in confirmation
+    - _Requirements: 9.1, 9.5_
+  - [x] 11.3 Update BookingList to show family bookings
+    - Display member name or child name for each booking
+    - Add visual indicator for child bookings
+    - Group bookings by family member
+    - _Requirements: 9.3_
+
+- [x] 12. Implement credit expiry system
+  - [x] 12.1 Create expiry check service
+    - Implement scheduled job (node-cron) to check for expired packages daily
+    - Mark packages as expired when expiry_date passes
+    - Create credit transaction log entries for expired credits
+    - _Requirements: 10.2, 10.5_
+  - [x] 12.2 Add expiry validation to booking
+    - Check package expiry before allowing booking
+    - Return clear error message for expired credits
+    - _Requirements: 10.5_
+  - [x] 12.3 Add expiry countdown to dashboard
+    - Calculate days remaining until expiry
+    - Show warning when expiry is near (< 7 days)
+    - Display expired status for past packages
+    - _Requirements: 10.3, 10.4_
+
+- [x] 13. Build coach portal
+  - [x] 13.1 Create coach class listing endpoint
+    - Implement GET /api/coach/classes to return coach's assigned classes
+    - Filter by date range (today, this week)
+    - Include class details and booking count
+    - _Requirements: 11.1, 11.3_
+  - [x] 13.2 Create class roster endpoint
+    - Implement GET /api/coach/classes/:id/roster
+    - Return all confirmed bookings with member/child names
+    - Include attendance status
+    - _Requirements: 11.2, 11.4, 11.5_
+  - [x] 13.3 Create attendance marking endpoint
+    - Implement PUT /api/coach/attendance/:bookingId
+    - Accept status (attended, no_show)
+    - Validate coach is assigned to the class
+    - Only allow marking on class day
+    - Record attendance timestamp
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
+  - [x] 13.4 Build CoachDashboard component
+    - Display today's classes prominently
+    - Show this week's schedule
+    - Add quick access to class rosters
+    - Display attendance statistics
+    - _Requirements: 11.1, 11.3_
+  - [x] 13.5 Build ClassRoster component
+    - List all attendees for selected class
+    - Show member vs child indicator
+    - Add attendance marking buttons (Present/No-Show)
+    - Update roster in real-time after marking
+    - Show attendance summary (total, present, no-show)
+    - _Requirements: 11.2, 11.4, 11.5, 12.1, 12.2_
+
+- [x] 14. Implement admin booking management
+  - [x] 14.1 Create admin booking endpoints
+    - Implement GET /api/admin/bookings with filters (class, member, date)
+    - Implement POST /api/admin/bookings to manually create booking
+    - Implement DELETE /api/admin/bookings/:id to cancel with refund (bypass time restriction)
+    - Implement POST /api/admin/refund to issue manual credit refund
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
+  - [x] 14.2 Build BookingManager component
+    - Display all bookings with search and filters
+    - Show booking details (member, class, status)
+    - Add manual booking creation form
+    - Implement cancel booking with confirmation
+    - Add manual refund interface
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
+
+- [ ] 15. Implement admin schedule and location management
+  - [x] 15.1 Create location CRUD endpoints
+    - Implement GET /api/admin/locations
+    - Implement POST /api/admin/locations
+    - Implement PUT /api/admin/locations/:id
+    - Implement DELETE /api/admin/locations/:id (soft delete)
+    - _Requirements: 14.5_
+  - [x] 15.2 Create class instance CRUD endpoints
+    - Implement GET /api/admin/classes
+    - Implement POST /api/admin/classes with validation
+    - Implement PUT /api/admin/classes/:id with booking notification
+    - Implement DELETE /api/admin/classes/:id with automatic refunds
+    - Support recurring class creation
+    - _Requirements: 14.1, 14.2, 14.3, 14.4_
+  - [x] 15.3 Build LocationManager component
+    - Display list of locations
+    - Add create/edit location form
+    - Implement delete with confirmation
+    - Show active/inactive status
+    - _Requirements: 14.5_
+  - [x] 15.4 Build ClassScheduleManager component
+    - Display all class instances in calendar view
+    - Add create class form with date/time picker
+    - Implement edit functionality
+    - Add delete with refund confirmation
+    - Support recurring class creation
+    - Show booking count for each class
+    - _Requirements: 14.1, 14.2, 14.3, 14.4_
+
+- [x] 16. Implement admin package management
+  - [x] 16.1 Create package CRUD endpoints
+    - Implement GET /api/admin/packages (all packages)
+    - Implement POST /api/admin/packages
+    - Implement PUT /api/admin/packages/:id (only affects new purchases)
+    - Implement DELETE /api/admin/packages/:id (soft delete/deactivate)
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
+  - [x] 16.2 Build PackageManager component
+    - Display all packages with active/inactive status
+    - Add create/edit package form
+    - Implement deactivate with confirmation
+    - Show purchase statistics for each package
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
+
+- [ ] 17. Implement reporting system
+  - [x] 17.1 Create attendance report endpoint
+    - Implement GET /api/admin/reports/attendance with date range filter
+    - Calculate total attendees per class
+    - Calculate no-show rates
+    - Identify most attended classes
+    - Support data export (CSV/JSON)
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
+  - [x] 17.2 Create revenue report endpoint
+    - Implement GET /api/admin/reports/revenue with date range filter
+    - Calculate total revenue from approved payments
+    - Break down by package type
+    - Show pending payment value separately
+    - Support data export (CSV/JSON)
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
+  - [x] 17.3 Build AttendanceReport component
+    - Display attendance metrics with charts
+    - Add date range filter
+    - Show class-by-class breakdown
+    - Display no-show statistics
+    - Add export button
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
+  - [x] 17.4 Build RevenueReport component
+    - Display revenue metrics with charts
+    - Add date range filter
+    - Show package breakdown
+    - Display pending vs confirmed revenue
+    - Add export button
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
+
+- [x] 18. Implement responsive UI and navigation
+  - [x] 18.1 Build navigation components
+    - Create Navbar with role-based menu items
+    - Create Sidebar for desktop navigation
+    - Create MobileMenu drawer
+    - Implement responsive breakpoints
+    - Add user profile dropdown
+    - _Requirements: 18.1, 18.2, 18.3, 18.4_
+  - [x] 18.2 Implement responsive layouts
+    - Create responsive grid layouts for all list views
+    - Optimize forms for mobile input
+    - Ensure touch targets meet 44x44px minimum
+    - Test on various screen sizes (320px to 2560px)
+    - Handle device rotation
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5_
+  - [x] 18.3 Build shared UI components
+    - Create LoadingSpinner component
+    - Create Toast notification system
+    - Create ConfirmDialog component
+    - Create ErrorBoundary component
+    - Implement consistent styling with TailwindCSS
+    - _Requirements: 18.1, 18.2_
+
+- [x] 19. Implement error handling and validation
+  - [x] 19.1 Set up backend error handling
+    - Create custom error classes (ValidationError, AuthenticationError, etc.)
+    - Implement global error middleware
+    - Add request validation using express-validator
+    - Handle Prisma errors gracefully
+    - Implement file upload error handling
+    - _Requirements: All requirements (error handling is cross-cutting)_
+  - [x] 19.2 Set up frontend error handling
+    - Create Axios interceptor for API errors
+    - Implement form validation with React Hook Form
+    - Add error boundaries for component errors
+    - Create user-friendly error messages
+    - Implement retry logic for failed requests
+    - _Requirements: All requirements (error handling is cross-cutting)_
+
+- [x] 20. Set up deployment configuration
+  - [x] 20.1 Configure production build
+    - Set up Next.js production build configuration
+    - Configure environment variables for production
+    - Set up PM2 ecosystem file
+    - Create database migration scripts
+    - _Requirements: All requirements (deployment enables all features)_
+  - [x] 20.2 Create deployment documentation
+    - Document Hostinger setup steps
+    - Document database setup and migration process
+    - Document environment variable configuration
+    - Document PM2 process management
+    - Document subdomain and SSL setup
+    - _Requirements: All requirements (deployment documentation)_
