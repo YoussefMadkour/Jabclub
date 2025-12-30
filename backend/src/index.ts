@@ -17,11 +17,26 @@ const PORT = process.env.PORT || 5000;
 const PgSession = connectPgSimple(session);
 const isVercelServerless = !!process.env.VERCEL || !!process.env.VERCEL_ENV;
 
+// Determine cookie domain for cross-subdomain support
+// For production: use .jabclubegy.com to allow cookies across app.jabclubegy.com and api.jabclubegy.com
+// For local dev: undefined (browser will set it automatically)
+const getCookieDomain = (): string | undefined => {
+  if (isVercelServerless) {
+    // Extract domain from FRONTEND_URL or use default
+    const frontendUrl = process.env.FRONTEND_URL || '';
+    if (frontendUrl.includes('jabclubegy.com')) {
+      return '.jabclubegy.com'; // Leading dot allows subdomain sharing
+    }
+  }
+  return undefined; // Local development - let browser handle it
+};
+
 // Session configuration
 const sessionConfig: session.SessionOptions = {
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-this-in-production',
   resave: false,
   saveUninitialized: false,
+  name: 'jabclub.sid', // Custom session cookie name (default is 'connect.sid')
   store: isVercelServerless ? new PgSession({
     conString: process.env.DATABASE_URL,
     tableName: 'user_sessions', // Custom table name
@@ -32,7 +47,8 @@ const sessionConfig: session.SessionOptions = {
     httpOnly: true, // Prevent XSS attacks
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     sameSite: isVercelServerless ? 'none' : 'lax', // 'none' required for cross-domain cookies with secure=true
-    domain: undefined, // Let browser set domain automatically
+    domain: getCookieDomain(), // Set domain for cross-subdomain cookies
+    path: '/', // Cookie available for all paths
   }
 };
 

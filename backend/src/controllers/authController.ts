@@ -228,7 +228,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
         return;
       }
       
-      res.clearCookie('connect.sid');
+      res.clearCookie('jabclub.sid'); // Match the custom session cookie name
       res.status(200).json({
         success: true,
         data: {
