@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import prisma from './config/database';
 import { initializeExpiryScheduler } from './services/expiryService';
 
@@ -12,18 +13,30 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
+// Session store configuration - use PostgreSQL for serverless compatibility
+const PgSession = connectPgSimple(session);
+const isVercelServerless = !!process.env.VERCEL || !!process.env.VERCEL_ENV;
+
 // Session configuration
-app.use(session({
+const sessionConfig: session.SessionOptions = {
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-this-in-production',
   resave: false,
   saveUninitialized: false,
+  store: isVercelServerless ? new PgSession({
+    conString: process.env.DATABASE_URL,
+    tableName: 'user_sessions', // Custom table name
+    createTableIfMissing: true, // Auto-create session table
+  }) : undefined, // Use MemoryStore in local dev
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    secure: process.env.NODE_ENV === 'production' || !!process.env.VERCEL, // Use secure cookies in production/Vercel
     httpOnly: true, // Prevent XSS attacks
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'lax'
+    sameSite: isVercelServerless ? 'none' : 'lax', // 'none' required for cross-domain cookies with secure=true
+    domain: undefined, // Let browser set domain automatically
   }
-}));
+};
+
+app.use(session(sessionConfig));
 
 // Middleware - CORS configuration
 const allowedOrigins = [
