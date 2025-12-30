@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { AppError } from '../utils/errors';
 import multer from 'multer';
 
@@ -36,7 +36,7 @@ export const errorHandler = (
   }
 
   // Handle Prisma errors
-  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+  if (err instanceof PrismaClientKnownRequestError) {
     const prismaError = handlePrismaError(err);
     res.status(prismaError.statusCode).json({
       success: false,
@@ -46,7 +46,7 @@ export const errorHandler = (
   }
 
   // Handle Prisma validation errors
-  if (err instanceof Prisma.PrismaClientValidationError) {
+  if (err instanceof PrismaClientValidationError) {
     res.status(400).json({
       success: false,
       error: {
@@ -125,7 +125,7 @@ export const errorHandler = (
 /**
  * Handle Prisma-specific errors and convert them to user-friendly messages
  */
-function handlePrismaError(err: Prisma.PrismaClientKnownRequestError): {
+function handlePrismaError(err: PrismaClientKnownRequestError): {
   statusCode: number;
   error: {
     code: string;

@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import prisma from '../config/database';
 import { Prisma } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 import { getRelativeUploadPath } from '../utils/filePath';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
 
@@ -410,11 +411,11 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
     // Calculate VAT (14%) and total amount based on admin-configured setting
     const VAT_RATE = 0.14;
     const vatAmountDecimal = vatIncluded 
-      ? new Prisma.Decimal(Number(packagePrice)).mul(new Prisma.Decimal(VAT_RATE))
-      : new Prisma.Decimal(0);
+      ? new Decimal(Number(packagePrice)).mul(new Decimal(VAT_RATE))
+      : new Decimal(0);
     const totalAmountDecimal = vatIncluded 
-      ? new Prisma.Decimal(Number(packagePrice)).add(vatAmountDecimal)
-      : new Prisma.Decimal(Number(packagePrice));
+      ? new Decimal(Number(packagePrice)).add(vatAmountDecimal)
+      : new Decimal(Number(packagePrice));
 
     // Create payment record with pending status
     const payment = await prisma.payment.create({
