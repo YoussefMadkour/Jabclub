@@ -421,8 +421,8 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
 
     // Handle file upload - upload to blob storage if in serverless, otherwise use local path
     let screenshotPath: string;
-    const isServerless = process.env.VERCEL_ENV === 'production' || 
-                         process.env.VERCEL === '1' || 
+    const isServerless = !!process.env.VERCEL || 
+                         !!process.env.VERCEL_ENV || 
                          process.env.USE_BLOB_STORAGE === 'true';
 
     if (isServerless && file.buffer) {

@@ -38,8 +38,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static file serving for uploads (only in non-serverless environments)
-const isServerless = process.env.VERCEL_ENV === 'production' || 
-                     process.env.VERCEL === '1' || 
+// Vercel sets VERCEL=1 in all environments
+const isServerless = !!process.env.VERCEL || 
+                     !!process.env.VERCEL_ENV || 
                      process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
 
 if (!isServerless) {
@@ -79,6 +80,20 @@ if (!isServerless) {
     });
   });
 }
+
+// Root endpoint - API info
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'JabClub API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+      docs: 'See API documentation for available endpoints'
+    }
+  });
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {

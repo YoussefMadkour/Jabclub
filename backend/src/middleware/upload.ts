@@ -5,11 +5,15 @@ import { Request } from 'express';
 import { FileUploadError } from '../utils/errors';
 
 // Check if we're in a serverless environment (Vercel)
-const isServerless = process.env.VERCEL_ENV === 'production' || 
-                     process.env.VERCEL === '1' || 
-                     process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+// Vercel sets VERCEL=1 in all environments, and VERCEL_ENV can be 'production', 'preview', or 'development'
+const isServerless = !!process.env.VERCEL || 
+                     !!process.env.VERCEL_ENV || 
+                     process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined ||
+                     process.env.VERCEL_ENV === 'production' ||
+                     process.env.VERCEL_ENV === 'preview';
 
 // Use memory storage for serverless (Vercel Blob), disk storage for local dev
+// Default to blob storage if VERCEL is set (which it always is in Vercel)
 const useBlobStorage = isServerless || process.env.USE_BLOB_STORAGE === 'true';
 
 // For local development, use disk storage
