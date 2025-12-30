@@ -5,6 +5,8 @@ import { Prisma } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import { getRelativeUploadPath } from '../utils/filePath';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
+import { uploadToBlob } from '../services/blobService';
+import { generateFileName } from '../middleware/upload';
 
 /**
  * GET /api/members/locations
@@ -417,6 +419,21 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
       ? new Decimal(Number(packagePrice)).add(vatAmountDecimal)
       : new Decimal(Number(packagePrice));
 
+    // Handle file upload - upload to blob storage if in serverless, otherwise use local path
+    let screenshotPath: string;
+    const isServerless = process.env.VERCEL_ENV === 'production' || 
+                         process.env.VERCEL === '1' || 
+                         process.env.USE_BLOB_STORAGE === 'true';
+
+    if (isServerless && file.buffer) {
+      // Upload to Vercel Blob Storage
+      const fileName = generateFileName(req, file.originalname);
+      screenshotPath = await uploadToBlob(file.buffer, fileName, file.mimetype);
+    } else {
+      // Use local file path
+      screenshotPath = file.path;
+    }
+
     // Create payment record with pending status
     const payment = await prisma.payment.create({
       data: {
@@ -427,7 +444,7 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
         vatAmount: vatAmountDecimal,
         vatIncluded: vatIncluded,
         totalAmount: totalAmountDecimal,
-        screenshotPath: file.path,
+        screenshotPath,
         status: 'pending'
       },
       include: {

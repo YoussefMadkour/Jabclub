@@ -9,14 +9,15 @@ const isServerless = process.env.VERCEL_ENV === 'production' ||
                      process.env.VERCEL === '1' || 
                      process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
 
-// Use /tmp for serverless environments, otherwise use ./uploads
-const uploadDir = isServerless 
-  ? '/tmp/uploads' 
-  : (process.env.UPLOAD_DIR || './uploads');
+// Use memory storage for serverless (Vercel Blob), disk storage for local dev
+const useBlobStorage = isServerless || process.env.USE_BLOB_STORAGE === 'true';
+
+// For local development, use disk storage
+const uploadDir = process.env.UPLOAD_DIR || './uploads';
 const paymentsDir = path.join(uploadDir, 'payments');
 
-// Create directories if they don't exist (only in non-serverless or /tmp)
-if (!isServerless || uploadDir.startsWith('/tmp')) {
+// Create directories if they don't exist (only for local development)
+if (!useBlobStorage) {
   try {
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
@@ -25,66 +26,49 @@ if (!isServerless || uploadDir.startsWith('/tmp')) {
       fs.mkdirSync(paymentsDir, { recursive: true });
     }
   } catch (error) {
-    // In serverless, log but don't throw - directories will be created on-demand
-    console.warn('Failed to create upload directories at startup:', error);
-    if (!isServerless) {
-      throw new Error('Upload directory initialization failed');
-    }
+    console.error('Failed to create upload directories:', error);
+    throw new Error('Upload directory initialization failed');
   }
 }
 
-// Configure storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    try {
-      // Organize by year/month
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const monthDir = path.join(paymentsDir, String(year), month);
-
-      // Create month directory if it doesn't exist (with error handling)
-      try {
-        if (!fs.existsSync(monthDir)) {
-          fs.mkdirSync(monthDir, { recursive: true });
-        }
-        cb(null, monthDir);
-      } catch (mkdirError) {
-        // If directory creation fails, try to use parent directory
-        console.warn(`Failed to create ${monthDir}, using parent directory:`, mkdirError);
+// Configure storage based on environment
+const storage = useBlobStorage
+  ? multer.memoryStorage() // Use memory storage for blob uploads
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
         try {
-          if (!fs.existsSync(paymentsDir)) {
-            fs.mkdirSync(paymentsDir, { recursive: true });
+          // Organize by year/month
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const monthDir = path.join(paymentsDir, String(year), month);
+
+          // Create month directory if it doesn't exist
+          if (!fs.existsSync(monthDir)) {
+            fs.mkdirSync(monthDir, { recursive: true });
           }
-          cb(null, paymentsDir);
-        } catch (fallbackError) {
-          // Last resort: use /tmp directly
-          const tmpDir = '/tmp';
-          cb(null, tmpDir);
+
+          cb(null, monthDir);
+        } catch (error) {
+          cb(error as Error, '');
+        }
+      },
+      filename: (req, file, cb) => {
+        try {
+          // Generate unique filename: timestamp-userId-originalname
+          const userId = (req as any).user?.id || 'unknown';
+          const timestamp = Date.now();
+          const ext = path.extname(file.originalname);
+          const basename = path.basename(file.originalname, ext)
+            .replace(/[^a-zA-Z0-9]/g, '_')
+            .substring(0, 50); // Limit basename length
+          const filename = `${timestamp}-${userId}-${basename}${ext}`;
+          cb(null, filename);
+        } catch (error) {
+          cb(error as Error, '');
         }
       }
-    } catch (error) {
-      // Fallback to /tmp if all else fails
-      console.error('Storage destination error, using /tmp:', error);
-      cb(null, '/tmp');
-    }
-  },
-  filename: (req, file, cb) => {
-    try {
-      // Generate unique filename: timestamp-userId-originalname
-      const userId = (req as any).user?.id || 'unknown';
-      const timestamp = Date.now();
-      const ext = path.extname(file.originalname);
-      const basename = path.basename(file.originalname, ext)
-        .replace(/[^a-zA-Z0-9]/g, '_')
-        .substring(0, 50); // Limit basename length
-      const filename = `${timestamp}-${userId}-${basename}${ext}`;
-      cb(null, filename);
-    } catch (error) {
-      cb(error as Error, '');
-    }
-  }
-});
+    });
 
 // File filter to validate image types
 const fileFilter = (
@@ -132,12 +116,32 @@ export const uploadPaymentScreenshot = multer({
 });
 
 /**
+ * Generate a unique filename for uploads
+ */
+export const generateFileName = (req: Request, originalName: string): string => {
+  const userId = (req as any).user?.id || 'unknown';
+  const timestamp = Date.now();
+  const ext = path.extname(originalName);
+  const basename = path.basename(originalName, ext)
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .substring(0, 50); // Limit basename length
+  return `${timestamp}-${userId}-${basename}${ext}`;
+};
+
+/**
  * Cleanup uploaded file in case of error
  * Call this in error handlers to remove orphaned files
+ * Works for both local files and blob URLs
  */
-export const cleanupUploadedFile = (filePath: string): void => {
+export const cleanupUploadedFile = async (filePath: string): Promise<void> => {
   try {
-    if (filePath && fs.existsSync(filePath)) {
+    // If it's a blob URL, delete from blob storage
+    if (filePath.includes('blob.vercel-storage.com') || filePath.startsWith('https://')) {
+      const { deleteFromBlob } = await import('../services/blobService');
+      await deleteFromBlob(filePath);
+      console.log(`Cleaned up blob file: ${filePath}`);
+    } else if (filePath && fs.existsSync(filePath)) {
+      // Local file cleanup
       fs.unlinkSync(filePath);
       console.log(`Cleaned up uploaded file: ${filePath}`);
     }
@@ -148,9 +152,14 @@ export const cleanupUploadedFile = (filePath: string): void => {
 
 /**
  * Validate file exists and is readable
+ * For blob URLs, always returns true (blob URLs are always accessible)
  */
 export const validateFileExists = (filePath: string): boolean => {
   try {
+    // Blob URLs are always considered valid
+    if (filePath.includes('blob.vercel-storage.com') || filePath.startsWith('https://')) {
+      return true;
+    }
     return fs.existsSync(filePath) && fs.statSync(filePath).isFile();
   } catch (error) {
     return false;
