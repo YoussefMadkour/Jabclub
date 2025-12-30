@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/database';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
-
-const prisma = new PrismaClient();
 
 // Extend session type
 declare module 'express-session' {

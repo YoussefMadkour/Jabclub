@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import session from 'express-session';
-import { PrismaClient } from '@prisma/client';
+import prisma from './config/database';
 import { initializeExpiryScheduler } from './services/expiryService';
 
 // Load environment variables
@@ -11,7 +11,6 @@ dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
-const prisma = new PrismaClient();
 
 // Session configuration
 app.use(session({
@@ -140,25 +139,31 @@ app.use(errorHandler);
 initializeExpiryScheduler();
 
 // Initialize schedule generation - runs daily to ensure classes are always 2 months ahead
-import { generateClassesFromSchedules } from './services/scheduleService';
-import cron from 'node-cron';
+// Only run in non-serverless environments (Vercel serverless functions have limited time)
+// In serverless, this would cause timeouts - use Vercel Cron Jobs instead
+if (process.env.VERCEL !== '1' && process.env.VERCEL_ENV !== 'production') {
+  // Only run in local development
+  const { generateClassesFromSchedules } = require('./services/scheduleService');
+  const cron = require('node-cron');
+  
+  // Generate classes on server startup (non-blocking, fire and forget)
+  setImmediate(() => {
+    generateClassesFromSchedules(2).catch(err => {
+      console.error('Error generating initial classes:', err);
+    });
+  });
 
-// Generate classes on server startup
-generateClassesFromSchedules(2).catch(err => {
-  console.error('Error generating initial classes:', err);
-});
-
-// Run daily at 2 AM to generate classes for the next 2 months
-// This ensures classes are always available and automatically generated each month
-cron.schedule('0 2 * * *', async () => {
-  console.log('Running daily schedule generation...');
-  try {
-    await generateClassesFromSchedules(2);
-    console.log('✅ Daily schedule generation completed');
-  } catch (error) {
-    console.error('❌ Error in daily schedule generation:', error);
-  }
-});
+  // Run daily at 2 AM to generate classes for the next 2 months
+  cron.schedule('0 2 * * *', async () => {
+    console.log('Running daily schedule generation...');
+    try {
+      await generateClassesFromSchedules(2);
+      console.log('✅ Daily schedule generation completed');
+    } catch (error) {
+      console.error('❌ Error in daily schedule generation:', error);
+    }
+  });
+}
 
 // Start server only if not running on Vercel (Vercel handles serverless functions)
 if (process.env.VERCEL !== '1') {
