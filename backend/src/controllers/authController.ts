@@ -79,6 +79,25 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
+      // Log session info for debugging
+      console.log('Session saved:', {
+        sessionId: req.sessionID,
+        userId: req.session.userId,
+        cookieName: req.session.cookie.name || 'jabclub.sid',
+      });
+
+      // Ensure cookie is set by manually calling res.cookie if needed
+      if (req.session.cookie) {
+        res.cookie(req.session.cookie.name || 'jabclub.sid', req.sessionID, {
+          maxAge: req.session.cookie.maxAge,
+          httpOnly: req.session.cookie.httpOnly,
+          secure: req.session.cookie.secure,
+          sameSite: req.session.cookie.sameSite as 'none' | 'lax' | 'strict' | undefined,
+          domain: req.session.cookie.domain,
+          path: req.session.cookie.path || '/',
+        });
+      }
+
       // Send signup success notification (non-blocking)
       const template = NotificationTemplates.signupSuccess(user.firstName);
       sendNotification(
@@ -184,6 +203,26 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           }
         });
         return;
+      }
+
+      // Log session info for debugging
+      console.log('Session saved:', {
+        sessionId: req.sessionID,
+        userId: req.session.userId,
+        cookieName: req.session.cookie.name || 'jabclub.sid',
+      });
+
+      // Ensure cookie is set by manually calling res.cookie if needed
+      // express-session should handle this, but we'll ensure it's set
+      if (req.session.cookie) {
+        res.cookie(req.session.cookie.name || 'jabclub.sid', req.sessionID, {
+          maxAge: req.session.cookie.maxAge,
+          httpOnly: req.session.cookie.httpOnly,
+          secure: req.session.cookie.secure,
+          sameSite: req.session.cookie.sameSite as 'none' | 'lax' | 'strict' | undefined,
+          domain: req.session.cookie.domain,
+          path: req.session.cookie.path || '/',
+        });
       }
 
       // Return user data without password
