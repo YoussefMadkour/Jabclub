@@ -37,29 +37,48 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static file serving for uploads
-const uploadDir = process.env.UPLOAD_DIR || './uploads';
-console.log('Serving uploads from:', path.resolve(uploadDir));
+// Static file serving for uploads (only in non-serverless environments)
+const isServerless = process.env.VERCEL_ENV === 'production' || 
+                     process.env.VERCEL === '1' || 
+                     process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
 
-// Create a custom middleware to handle uploads with proper headers
-app.use('/uploads', (req, res, next) => {
-  // Set CORS headers for both possible frontend ports
-  const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://localhost:3001'
-  ];
-  const origin = req.headers.origin;
-  
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  
-  // Continue to static middleware
-  express.static(path.resolve(uploadDir))(req, res, next);
-});
+if (!isServerless) {
+  const uploadDir = process.env.UPLOAD_DIR || './uploads';
+  console.log('Serving uploads from:', path.resolve(uploadDir));
+
+  // Create a custom middleware to handle uploads with proper headers
+  app.use('/uploads', (req, res, next) => {
+    // Set CORS headers for both possible frontend ports
+    const allowedOrigins = [
+      process.env.FRONTEND_URL || 'http://localhost:3000',
+      'http://localhost:3001'
+    ];
+    const origin = req.headers.origin;
+    
+    if (origin && allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+    }
+    
+    res.header('Access-Control-Allow-Methods', 'GET');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    
+    // Continue to static middleware
+    express.static(path.resolve(uploadDir))(req, res, next);
+  });
+} else {
+  // In serverless, files are stored in /tmp and are ephemeral
+  // For production, consider using cloud storage (S3, Vercel Blob, etc.)
+  console.log('Serverless environment detected - static file serving disabled');
+  app.use('/uploads', (req, res) => {
+    res.status(404).json({
+      success: false,
+      error: {
+        code: 'NOT_FOUND',
+        message: 'File serving not available in serverless environment. Files are stored temporarily in /tmp.'
+      }
+    });
+  });
+}
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -128,11 +147,11 @@ cron.schedule('0 2 * * *', async () => {
 
 // Start server only if not running on Vercel (Vercel handles serverless functions)
 if (process.env.VERCEL !== '1') {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📝 Environment: ${process.env.NODE_ENV}`);
-    console.log(`📅 Schedule generation: Automatic (daily at 2 AM)`);
-  });
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📝 Environment: ${process.env.NODE_ENV}`);
+  console.log(`📅 Schedule generation: Automatic (daily at 2 AM)`);
+});
 }
 
 export default app;

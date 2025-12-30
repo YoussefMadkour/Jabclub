@@ -4,21 +4,33 @@ import fs from 'fs';
 import { Request } from 'express';
 import { FileUploadError } from '../utils/errors';
 
-// Ensure upload directory exists
-const uploadDir = process.env.UPLOAD_DIR || './uploads';
+// Check if we're in a serverless environment (Vercel)
+const isServerless = process.env.VERCEL_ENV === 'production' || 
+                     process.env.VERCEL === '1' || 
+                     process.env.AWS_LAMBDA_FUNCTION_NAME !== undefined;
+
+// Use /tmp for serverless environments, otherwise use ./uploads
+const uploadDir = isServerless 
+  ? '/tmp/uploads' 
+  : (process.env.UPLOAD_DIR || './uploads');
 const paymentsDir = path.join(uploadDir, 'payments');
 
-// Create directories if they don't exist
-try {
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+// Create directories if they don't exist (only in non-serverless or /tmp)
+if (!isServerless || uploadDir.startsWith('/tmp')) {
+  try {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    if (!fs.existsSync(paymentsDir)) {
+      fs.mkdirSync(paymentsDir, { recursive: true });
+    }
+  } catch (error) {
+    // In serverless, log but don't throw - directories will be created on-demand
+    console.warn('Failed to create upload directories at startup:', error);
+    if (!isServerless) {
+      throw new Error('Upload directory initialization failed');
+    }
   }
-  if (!fs.existsSync(paymentsDir)) {
-    fs.mkdirSync(paymentsDir, { recursive: true });
-  }
-} catch (error) {
-  console.error('Failed to create upload directories:', error);
-  throw new Error('Upload directory initialization failed');
 }
 
 // Configure storage
@@ -31,14 +43,30 @@ const storage = multer.diskStorage({
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const monthDir = path.join(paymentsDir, String(year), month);
 
-      // Create month directory if it doesn't exist
-      if (!fs.existsSync(monthDir)) {
-        fs.mkdirSync(monthDir, { recursive: true });
+      // Create month directory if it doesn't exist (with error handling)
+      try {
+        if (!fs.existsSync(monthDir)) {
+          fs.mkdirSync(monthDir, { recursive: true });
+        }
+        cb(null, monthDir);
+      } catch (mkdirError) {
+        // If directory creation fails, try to use parent directory
+        console.warn(`Failed to create ${monthDir}, using parent directory:`, mkdirError);
+        try {
+          if (!fs.existsSync(paymentsDir)) {
+            fs.mkdirSync(paymentsDir, { recursive: true });
+          }
+          cb(null, paymentsDir);
+        } catch (fallbackError) {
+          // Last resort: use /tmp directly
+          const tmpDir = '/tmp';
+          cb(null, tmpDir);
+        }
       }
-
-      cb(null, monthDir);
     } catch (error) {
-      cb(error as Error, '');
+      // Fallback to /tmp if all else fails
+      console.error('Storage destination error, using /tmp:', error);
+      cb(null, '/tmp');
     }
   },
   filename: (req, file, cb) => {
