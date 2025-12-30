@@ -12,6 +12,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "update-passwords": "ts-node scripts/update-admin-passwords.ts",
     "setup": "ts-node scripts/initial-setup.ts",
     "schedule:generate": "ts-node scripts/generate-default-schedule.ts",
     "schedule:next-month": "ts-node scripts/auto-generate-next-month.ts",
