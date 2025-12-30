@@ -65,33 +65,48 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     req.session.userId = user.id;
     req.session.role = user.role;
 
-    // Send signup success notification (non-blocking)
-    const template = NotificationTemplates.signupSuccess(user.firstName);
-    sendNotification(
-      {
-        email: user.email,
-        name: `${user.firstName} ${user.lastName}`,
-      },
-      template.emailSubject,
-      template.emailHtml
-    ).catch((err) => {
-      console.error('Failed to send signup notification:', err);
-      // Don't fail the signup if notification fails
-    });
-
-    // Return user data without password
-    res.status(201).json({
-      success: true,
-      data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          phone: user.phone,
-          role: user.role
-        }
+    // Save session explicitly (required for serverless/PostgreSQL store)
+    req.session.save((err) => {
+      if (err) {
+        console.error('Failed to save session during signup:', err);
+        res.status(500).json({
+          success: false,
+          error: {
+            code: 'SESSION_ERROR',
+            message: 'Failed to create session'
+          }
+        });
+        return;
       }
+
+      // Send signup success notification (non-blocking)
+      const template = NotificationTemplates.signupSuccess(user.firstName);
+      sendNotification(
+        {
+          email: user.email,
+          name: `${user.firstName} ${user.lastName}`,
+        },
+        template.emailSubject,
+        template.emailHtml
+      ).catch((err) => {
+        console.error('Failed to send signup notification:', err);
+        // Don't fail the signup if notification fails
+      });
+
+      // Return user data without password
+      res.status(201).json({
+        success: true,
+        data: {
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            role: user.role
+          }
+        }
+      });
     });
   } catch (error) {
     console.error('Signup error:', error);
@@ -157,19 +172,34 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     req.session.userId = user.id;
     req.session.role = user.role;
 
-    // Return user data without password
-    res.status(200).json({
-      success: true,
-      data: {
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          phone: user.phone,
-          role: user.role
-        }
+    // Save session explicitly (required for serverless/PostgreSQL store)
+    req.session.save((err) => {
+      if (err) {
+        console.error('Failed to save session during login:', err);
+        res.status(500).json({
+          success: false,
+          error: {
+            code: 'SESSION_ERROR',
+            message: 'Failed to create session'
+          }
+        });
+        return;
       }
+
+      // Return user data without password
+      res.status(200).json({
+        success: true,
+        data: {
+          user: {
+            id: user.id,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phone: user.phone,
+            role: user.role
+          }
+        }
+      });
     });
   } catch (error) {
     console.error('Login error:', error);
