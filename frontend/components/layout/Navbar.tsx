@@ -186,14 +186,14 @@ const Navbar = () => {
                   return null;
                 }
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="block px-3 py-2 rounded-md text-base font-medium hover:bg-input transition-colors"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    {item.label}
-                  </Link>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block px-3 py-2 rounded-md text-base font-medium hover:bg-input transition-colors"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  {item.label}
+                </Link>
                 );
               })
             )}
