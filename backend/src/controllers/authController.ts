@@ -83,20 +83,38 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
       console.log('Session saved:', {
         sessionId: req.sessionID,
         userId: req.session.userId,
-        cookieName: req.session.cookie.name || 'jabclub.sid',
+        cookieName: 'jabclub.sid',
       });
 
       // Ensure cookie is set by manually calling res.cookie if needed
-      if (req.session.cookie) {
-        res.cookie(req.session.cookie.name || 'jabclub.sid', req.sessionID, {
-          maxAge: req.session.cookie.maxAge,
-          httpOnly: req.session.cookie.httpOnly,
-          secure: req.session.cookie.secure,
-          sameSite: req.session.cookie.sameSite as 'none' | 'lax' | 'strict' | undefined,
-          domain: req.session.cookie.domain,
-          path: req.session.cookie.path || '/',
-        });
+      // express-session should handle this automatically, but we'll ensure it's set
+      const cookieOptions: {
+        maxAge?: number;
+        httpOnly: boolean;
+        secure: boolean;
+        sameSite?: 'none' | 'lax' | 'strict';
+        domain?: string;
+        path: string;
+      } = {
+        maxAge: req.session.cookie.maxAge || 24 * 60 * 60 * 1000,
+        httpOnly: req.session.cookie.httpOnly !== false,
+        secure: req.session.cookie.secure === true,
+        path: req.session.cookie.path || '/',
+      };
+
+      // Handle sameSite - it can be string or boolean
+      if (typeof req.session.cookie.sameSite === 'string') {
+        cookieOptions.sameSite = req.session.cookie.sameSite as 'none' | 'lax' | 'strict';
+      } else if (req.session.cookie.sameSite === false) {
+        cookieOptions.sameSite = 'none';
       }
+
+      // Set domain if configured
+      if (req.session.cookie.domain) {
+        cookieOptions.domain = req.session.cookie.domain;
+      }
+
+      res.cookie('jabclub.sid', req.sessionID, cookieOptions);
 
       // Send signup success notification (non-blocking)
       const template = NotificationTemplates.signupSuccess(user.firstName);
@@ -209,20 +227,40 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       console.log('Session saved:', {
         sessionId: req.sessionID,
         userId: req.session.userId,
-        cookieName: req.session.cookie.name || 'jabclub.sid',
+        cookieName: 'jabclub.sid',
       });
 
       // Ensure cookie is set by manually calling res.cookie if needed
       // express-session should handle this, but we'll ensure it's set
       if (req.session.cookie) {
-        res.cookie(req.session.cookie.name || 'jabclub.sid', req.sessionID, {
-          maxAge: req.session.cookie.maxAge,
-          httpOnly: req.session.cookie.httpOnly,
-          secure: req.session.cookie.secure,
-          sameSite: req.session.cookie.sameSite as 'none' | 'lax' | 'strict' | undefined,
-          domain: req.session.cookie.domain,
+        // Build cookie options with proper types
+        const cookieOptions: {
+          maxAge?: number;
+          httpOnly: boolean;
+          secure: boolean;
+          sameSite?: 'none' | 'lax' | 'strict';
+          domain?: string;
+          path: string;
+        } = {
+          maxAge: req.session.cookie.maxAge || 24 * 60 * 60 * 1000,
+          httpOnly: req.session.cookie.httpOnly !== false,
+          secure: req.session.cookie.secure === true,
           path: req.session.cookie.path || '/',
-        });
+        };
+
+        // Handle sameSite - it can be string or boolean
+        if (typeof req.session.cookie.sameSite === 'string') {
+          cookieOptions.sameSite = req.session.cookie.sameSite as 'none' | 'lax' | 'strict';
+        } else if (req.session.cookie.sameSite === false) {
+          cookieOptions.sameSite = 'none';
+        }
+
+        // Set domain if configured
+        if (req.session.cookie.domain) {
+          cookieOptions.domain = req.session.cookie.domain;
+        }
+
+        res.cookie('jabclub.sid', req.sessionID, cookieOptions);
       }
 
       // Return user data without password
