@@ -27,8 +27,22 @@ export const authenticate = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    // Debug logging for session
+    console.log('🔐 Auth middleware - Session check:', {
+      sessionID: req.sessionID,
+      hasSession: !!req.session,
+      userId: req.session?.userId,
+      role: req.session?.role,
+      cookie: req.headers.cookie,
+      sessionCookie: req.cookies?.['jabclub.sid'],
+    });
+
     // Check if user is logged in via session
     if (!req.session.userId) {
+      console.warn('⚠️ No userId in session:', {
+        sessionID: req.sessionID,
+        sessionKeys: Object.keys(req.session || {}),
+      });
       res.status(401).json({
         success: false,
         error: {

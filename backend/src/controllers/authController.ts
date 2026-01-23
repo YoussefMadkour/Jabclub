@@ -342,7 +342,21 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
   try {
+    // Debug logging
+    console.log('👤 getCurrentUser - Session check:', {
+      sessionID: req.sessionID,
+      hasSession: !!req.session,
+      userId: req.session?.userId,
+      role: req.session?.role,
+      cookie: req.headers.cookie,
+      sessionCookie: req.cookies?.['jabclub.sid'],
+    });
+
     if (!req.session.userId) {
+      console.warn('⚠️ getCurrentUser - No userId in session:', {
+        sessionID: req.sessionID,
+        sessionKeys: Object.keys(req.session || {}),
+      });
       res.status(401).json({
         success: false,
         error: {

@@ -54,6 +54,22 @@ const sessionConfig: session.SessionOptions = {
 
 app.use(session(sessionConfig));
 
+// Add middleware to log session info for debugging
+app.use((req, res, next) => {
+  // Log session info on every request (only in development or for debugging)
+  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_SESSIONS === 'true') {
+    console.log('📋 Request session info:', {
+      sessionID: req.sessionID,
+      hasSession: !!req.session,
+      userId: req.session?.userId,
+      cookie: req.headers.cookie,
+      url: req.url,
+      method: req.method,
+    });
+  }
+  next();
+});
+
 // Middleware - CORS configuration
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:3000',
