@@ -84,37 +84,52 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         sessionId: req.sessionID,
         userId: req.session.userId,
         cookieName: 'jabclub.sid',
+        cookieConfig: {
+          domain: req.session.cookie.domain,
+          secure: req.session.cookie.secure,
+          sameSite: req.session.cookie.sameSite,
+          httpOnly: req.session.cookie.httpOnly,
+          path: req.session.cookie.path,
+          maxAge: req.session.cookie.maxAge,
+        },
       });
 
-      // Ensure cookie is set by manually calling res.cookie if needed
-      // express-session should handle this automatically, but we'll ensure it's set
-      const cookieOptions: {
-        maxAge?: number;
-        httpOnly: boolean;
-        secure: boolean;
-        sameSite?: 'none' | 'lax' | 'strict';
-        domain?: string;
-        path: string;
-      } = {
-        maxAge: req.session.cookie.maxAge || 24 * 60 * 60 * 1000,
-        httpOnly: req.session.cookie.httpOnly !== false,
-        secure: req.session.cookie.secure === true,
-        path: req.session.cookie.path || '/',
-      };
+      // Check if express-session set the cookie automatically
+      const setCookieHeader = res.getHeader('Set-Cookie');
+      console.log('Set-Cookie header after session.save():', setCookieHeader);
+      
+      // express-session should automatically set the cookie, but if it didn't, we'll set it manually
+      if (!setCookieHeader) {
+        console.warn('⚠️ express-session did not set cookie automatically, setting manually');
+        const cookieOptions: {
+          maxAge?: number;
+          httpOnly: boolean;
+          secure: boolean;
+          sameSite?: 'none' | 'lax' | 'strict';
+          domain?: string;
+          path: string;
+        } = {
+          maxAge: req.session.cookie.maxAge || 24 * 60 * 60 * 1000,
+          httpOnly: req.session.cookie.httpOnly !== false,
+          secure: req.session.cookie.secure === true,
+          path: req.session.cookie.path || '/',
+        };
 
-      // Handle sameSite - it can be string or boolean
-      if (typeof req.session.cookie.sameSite === 'string') {
-        cookieOptions.sameSite = req.session.cookie.sameSite as 'none' | 'lax' | 'strict';
-      } else if (req.session.cookie.sameSite === false) {
-        cookieOptions.sameSite = 'none';
+        // Handle sameSite - it can be string or boolean
+        if (typeof req.session.cookie.sameSite === 'string') {
+          cookieOptions.sameSite = req.session.cookie.sameSite as 'none' | 'lax' | 'strict';
+        } else if (req.session.cookie.sameSite === false) {
+          cookieOptions.sameSite = 'none';
+        }
+
+        // Set domain if configured
+        if (req.session.cookie.domain) {
+          cookieOptions.domain = req.session.cookie.domain;
+        }
+
+        res.cookie('jabclub.sid', req.sessionID, cookieOptions);
+        console.log('✅ Manually set cookie:', res.getHeader('Set-Cookie'));
       }
-
-      // Set domain if configured
-      if (req.session.cookie.domain) {
-        cookieOptions.domain = req.session.cookie.domain;
-      }
-
-      res.cookie('jabclub.sid', req.sessionID, cookieOptions);
 
       // Send signup success notification (non-blocking)
       const template = NotificationTemplates.signupSuccess(user.firstName);
