@@ -113,12 +113,15 @@ const sessionConfig: session.SessionOptions = {
 
 app.use(session(sessionConfig));
 
-// Add middleware to log session info for debugging
+// Add middleware to log session info for debugging - MUST be after session middleware
 app.use((req, res, next) => {
   // Log session info on every request (always log in production for debugging)
   const cookieHeader = req.headers.cookie;
   const sessionCookie = cookieHeader?.split(';').find(c => c.trim().startsWith('jabclub.sid='));
   const sessionCookieValue = sessionCookie?.split('=')[1]?.trim();
+  
+  // Check if session store is actually being used
+  const storeType = req.sessionStore?.constructor?.name || 'unknown';
   
   console.log('📋 Request session info:', {
     sessionID: req.sessionID,
@@ -132,6 +135,8 @@ app.use((req, res, next) => {
     url: req.url,
     method: req.method,
     sessionKeys: req.session ? Object.keys(req.session) : [],
+    storeType: storeType,
+    hasStore: !!req.sessionStore,
   });
   
   next();
