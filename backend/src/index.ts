@@ -31,17 +31,39 @@ const getCookieDomain = (): string | undefined => {
   return undefined; // Local development - let browser handle it
 };
 
+// Create session store with error handling
+let sessionStore: connectPgSimple.PGStore | undefined;
+if (isVercelServerless) {
+  try {
+    sessionStore = new PgSession({
+      conString: process.env.DATABASE_URL,
+      tableName: 'user_sessions', // Custom table name
+      createTableIfMissing: true, // Auto-create session table
+      pruneSessionInterval: false, // Disable automatic pruning in serverless
+    });
+    
+    // Add error handlers for the session store
+    sessionStore.on('connect', () => {
+      console.log('✅ PostgreSQL session store connected');
+    });
+    
+    sessionStore.on('error', (error: Error) => {
+      console.error('❌ PostgreSQL session store error:', error);
+    });
+  } catch (error) {
+    console.error('❌ Failed to create PostgreSQL session store:', error);
+    // Fallback to MemoryStore if PostgreSQL store fails
+    sessionStore = undefined;
+  }
+}
+
 // Session configuration
 const sessionConfig: session.SessionOptions = {
   secret: process.env.SESSION_SECRET || 'your-secret-key-change-this-in-production',
   resave: false,
   saveUninitialized: false,
   name: 'jabclub.sid', // Custom session cookie name (default is 'connect.sid')
-  store: isVercelServerless ? new PgSession({
-    conString: process.env.DATABASE_URL,
-    tableName: 'user_sessions', // Custom table name
-    createTableIfMissing: true, // Auto-create session table
-  }) : undefined, // Use MemoryStore in local dev
+  store: sessionStore, // Use PostgreSQL store in serverless, MemoryStore in local dev
   cookie: {
     secure: process.env.NODE_ENV === 'production' || !!process.env.VERCEL, // Use secure cookies in production/Vercel
     httpOnly: true, // Prevent XSS attacks
@@ -56,17 +78,21 @@ app.use(session(sessionConfig));
 
 // Add middleware to log session info for debugging
 app.use((req, res, next) => {
-  // Log session info on every request (only in development or for debugging)
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_SESSIONS === 'true') {
-    console.log('📋 Request session info:', {
-      sessionID: req.sessionID,
-      hasSession: !!req.session,
-      userId: req.session?.userId,
-      cookie: req.headers.cookie,
-      url: req.url,
-      method: req.method,
-    });
-  }
+  // Log session info on every request (always log in production for debugging)
+  const cookieHeader = req.headers.cookie;
+  const sessionCookie = cookieHeader?.split(';').find(c => c.trim().startsWith('jabclub.sid='));
+  
+  console.log('📋 Request session info:', {
+    sessionID: req.sessionID,
+    hasSession: !!req.session,
+    userId: req.session?.userId,
+    role: req.session?.role,
+    cookieHeader: cookieHeader ? 'present' : 'missing',
+    sessionCookie: sessionCookie ? sessionCookie.substring(0, 50) + '...' : 'not found',
+    url: req.url,
+    method: req.method,
+  });
+  
   next();
 });
 
