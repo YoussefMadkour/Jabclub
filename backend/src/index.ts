@@ -35,11 +35,15 @@ const getCookieDomain = (): string | undefined => {
 let sessionStore: connectPgSimple.PGStore | undefined;
 if (isVercelServerless) {
   try {
+    console.log('🔧 Creating PostgreSQL session store...');
+    console.log('🔧 DATABASE_URL:', process.env.DATABASE_URL ? 'present' : 'missing');
+    
     sessionStore = new PgSession({
       conString: process.env.DATABASE_URL,
       tableName: 'user_sessions', // Custom table name
       createTableIfMissing: true, // Auto-create session table
       pruneSessionInterval: false, // Disable automatic pruning in serverless
+      schemaName: 'public', // Explicitly set schema
     });
     
     // Add error handlers for the session store
@@ -50,6 +54,39 @@ if (isVercelServerless) {
     sessionStore.on('error', (error: Error) => {
       console.error('❌ PostgreSQL session store error:', error);
     });
+    
+    // Log when sessions are loaded
+    const originalGet = sessionStore.get.bind(sessionStore);
+    sessionStore.get = function(sessionId: string, callback: (err: any, session?: any) => void) {
+      console.log('🔍 Loading session from PostgreSQL:', sessionId);
+      originalGet(sessionId, (err, session) => {
+        if (err) {
+          console.error('❌ Error loading session:', err);
+        } else if (session) {
+          console.log('✅ Session loaded from PostgreSQL:', {
+            sessionId,
+            userId: session.userId,
+            role: session.role,
+          });
+        } else {
+          console.warn('⚠️ Session not found in PostgreSQL:', sessionId);
+        }
+        callback(err, session);
+      });
+    };
+    
+    // Log when sessions are saved
+    const originalSet = sessionStore.set.bind(sessionStore);
+    sessionStore.set = function(sessionId: string, session: any, callback?: (err?: any) => void) {
+      console.log('💾 Saving session to PostgreSQL:', {
+        sessionId,
+        userId: session.userId,
+        role: session.role,
+      });
+      originalSet(sessionId, session, callback);
+    };
+    
+    console.log('✅ PostgreSQL session store created successfully');
   } catch (error) {
     console.error('❌ Failed to create PostgreSQL session store:', error);
     // Fallback to MemoryStore if PostgreSQL store fails
@@ -81,9 +118,12 @@ app.use((req, res, next) => {
   // Log session info on every request (always log in production for debugging)
   const cookieHeader = req.headers.cookie;
   const sessionCookie = cookieHeader?.split(';').find(c => c.trim().startsWith('jabclub.sid='));
+  const sessionCookieValue = sessionCookie?.split('=')[1]?.trim();
   
   console.log('📋 Request session info:', {
     sessionID: req.sessionID,
+    cookieSessionID: sessionCookieValue,
+    sessionIDsMatch: req.sessionID === sessionCookieValue,
     hasSession: !!req.session,
     userId: req.session?.userId,
     role: req.session?.role,
@@ -91,6 +131,7 @@ app.use((req, res, next) => {
     sessionCookie: sessionCookie ? sessionCookie.substring(0, 50) + '...' : 'not found',
     url: req.url,
     method: req.method,
+    sessionKeys: req.session ? Object.keys(req.session) : [],
   });
   
   next();
