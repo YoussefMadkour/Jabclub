@@ -1,31 +1,32 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import apiClient from '@/lib/axios';
 import { format, startOfWeek, addDays, addWeeks, subWeeks } from 'date-fns';
-import BookingModal from './BookingModal';
+import Link from 'next/link';
 
 interface ClassInstance {
   id: number;
-  classType: string;
-  description?: string | null;
-  duration: number;
+  classType: {
+    id: number;
+    name: string;
+  };
   location: {
     id: number;
     name: string;
-    address?: string;
   };
   coach: {
     id: number;
-    name: string;
+    firstName: string;
+    lastName: string;
   };
   startTime: string;
   endTime: string;
   capacity: number;
-  bookedCount: number;
+  bookingCount: number;
   availableSpots: number;
-  isFull?: boolean;
+  isCancelled: boolean;
 }
 
 interface Location {
@@ -33,28 +34,20 @@ interface Location {
   name: string;
 }
 
-export default function ScheduleGridView() {
+export default function AdminScheduleGridView() {
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [locations, setLocations] = useState<Location[]>([]);
-  const [selectedClass, setSelectedClass] = useState<ClassInstance | null>(null);
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const queryClient = useQueryClient();
 
   // Fetch locations
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await apiClient.get('/classes/schedule');
-        const allClasses = response.data.data.classes;
-        const uniqueLocations = Array.from(
-          new Map(
-            allClasses.map((c: ClassInstance) => [c.location.id, c.location])
-          ).values()
-        ) as Location[];
-        setLocations(uniqueLocations);
-        if (uniqueLocations.length > 0 && !selectedLocationId) {
-          setSelectedLocationId(uniqueLocations[0].id);
+        const response = await apiClient.get('/admin/locations');
+        const locationsData = response.data.data.locations || [];
+        setLocations(locationsData);
+        if (locationsData.length > 0 && !selectedLocationId) {
+          setSelectedLocationId(locationsData[0].id);
         }
       } catch (err) {
         console.error('Error fetching locations:', err);
@@ -65,27 +58,23 @@ export default function ScheduleGridView() {
 
   // Fetch classes for the selected week and location
   const { data: classesData, isLoading } = useQuery({
-    queryKey: ['schedule-grid', selectedLocationId, currentWeek],
+    queryKey: ['admin-schedule-grid', selectedLocationId, currentWeek],
     queryFn: async () => {
       if (!selectedLocationId) return { classes: [] };
       
       const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 }); // Start on Saturday
       const weekEnd = addDays(weekStart, 6);
       
-      const response = await apiClient.get('/classes/schedule', {
+      const response = await apiClient.get('/admin/classes', {
         params: {
-          location: selectedLocationId.toString()
+          location: selectedLocationId.toString(),
+          startDate: format(weekStart, 'yyyy-MM-dd'),
+          endDate: format(weekEnd, 'yyyy-MM-dd')
         }
       });
       
-      // Filter classes for the selected week
       const allClasses = response.data.data.classes || [];
-      const filteredClasses = allClasses.filter((c: ClassInstance) => {
-        const classDate = new Date(c.startTime);
-        return classDate >= weekStart && classDate <= weekEnd;
-      });
-      
-      return { classes: filteredClasses };
+      return { classes: allClasses };
     },
     enabled: !!selectedLocationId
   });
@@ -96,7 +85,7 @@ export default function ScheduleGridView() {
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-  // Define time slots (9:30 AM and 6 PM to 10 PM)
+  // Define time slots
   const timeSlots = [
     { start: '09:30', end: '10:30', label: '9:30 AM - 10:30 AM' },
     { start: '18:00', end: '19:00', label: '6:00 PM - 7:00 PM' },
@@ -135,19 +124,6 @@ export default function ScheduleGridView() {
     setCurrentWeek(new Date());
   };
 
-  const handleClassClick = (classInstance: ClassInstance) => {
-    if (classInstance.isFull || !classInstance.availableSpots) return;
-    setSelectedClass(classInstance);
-    setIsBookingModalOpen(true);
-  };
-
-  const handleBookingSuccess = () => {
-    // Refetch classes to update availability
-    queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
-    setIsBookingModalOpen(false);
-    setSelectedClass(null);
-  };
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -160,8 +136,8 @@ export default function ScheduleGridView() {
     <div className="bg-gray-900 min-h-screen p-3 sm:p-6">
       {/* Header */}
       <div className="mb-4 sm:mb-6">
-        <div className="text-orange-500 text-xs sm:text-sm font-medium mb-1 sm:mb-2">CLASS SCHEDULE</div>
-        <div className="text-white text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">WORKING SCHEDULE</div>
+        <div className="text-orange-500 text-xs sm:text-sm font-medium mb-1 sm:mb-2">ADMIN CLASS SCHEDULE</div>
+        <div className="text-white text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">CLASS MANAGEMENT</div>
         
         {/* Location Selector */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
@@ -270,52 +246,39 @@ export default function ScheduleGridView() {
                   {daysOfWeek.map((day) => {
                     const classInstance = getClassForSlot(day, timeSlot);
                     const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
-                    // Check if class is in the past (compare full datetime, not just date)
-                    const classDateTime = classInstance ? new Date(classInstance.startTime) : null;
-                    const now = new Date();
-                    const isPast = classDateTime ? classDateTime < now : false;
-                    const isClickable = classInstance && 
-                                      !classInstance.isFull && 
-                                      classInstance.availableSpots > 0 && 
-                                      !isPast;
+                    const isPast = new Date(day) < new Date() && !isToday;
                     
                     return (
                       <td
                         key={`${day.toISOString()}-${timeSlot.start}`}
                         className={`py-2 px-1 sm:py-4 sm:px-4 border-r border-gray-700 last:border-r-0 text-center transition-all ${
                           classInstance
-                            ? classInstance.isFull || isPast
-                              ? 'bg-gray-600 text-gray-400'
-                              : 'bg-orange-500 text-white hover:bg-orange-600 cursor-pointer active:scale-95'
+                            ? classInstance.isCancelled
+                              ? 'bg-red-600 text-white'
+                              : 'bg-orange-500 text-white'
                             : isToday
                             ? 'bg-gray-700 text-gray-500'
                             : 'bg-gray-800 text-gray-500'
                         }`}
-                        onClick={() => isClickable && handleClassClick(classInstance)}
                       >
                         {classInstance ? (
-                          <div className="flex flex-col items-center justify-center gap-1 min-h-[60px] sm:min-h-[80px]">
+                          <Link
+                            href={`/admin/classes/${classInstance.id}/roster`}
+                            className="flex flex-col items-center justify-center gap-1 min-h-[60px] sm:min-h-[80px] hover:opacity-90 transition-opacity"
+                          >
                             <div className="text-[10px] sm:text-xs font-medium leading-tight px-1">
-                              {classInstance.classType}
+                              {classInstance.classType.name}
                             </div>
-                            {isClickable && (
-                              <button
-                                className="text-[9px] sm:text-xs font-semibold bg-white text-orange-500 px-2 py-0.5 sm:px-3 sm:py-1 rounded mt-1 hover:bg-orange-50 transition-colors touch-target"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleClassClick(classInstance);
-                                }}
-                              >
-                                BOOK
-                              </button>
+                            <div className="text-[9px] sm:text-xs text-white/80">
+                              {classInstance.bookingCount}/{classInstance.capacity}
+                            </div>
+                            {classInstance.isCancelled && (
+                              <span className="text-[9px] sm:text-xs text-white font-semibold">CANCELLED</span>
                             )}
-                            {classInstance.isFull && (
-                              <span className="text-[9px] sm:text-xs text-gray-300">FULL</span>
-                            )}
-                            {isPast && (
-                              <span className="text-[9px] sm:text-xs text-gray-400">PAST</span>
-                            )}
-                          </div>
+                            <div className="text-[9px] sm:text-xs text-white/70 mt-1">
+                              {classInstance.coach.firstName} {classInstance.coach.lastName}
+                            </div>
+                          </Link>
                         ) : format(day, 'EEEE') === 'Friday' ? (
                           <span className="text-xs text-gray-500">OFF</span>
                         ) : (
@@ -336,19 +299,21 @@ export default function ScheduleGridView() {
         {format(weekStart, 'MMM dd')} - {format(addDays(weekStart, 6), 'MMM dd, yyyy')}
       </div>
 
-      {/* Booking Modal */}
-      {selectedClass && (
-        <BookingModal
-          isOpen={isBookingModalOpen}
-          onClose={() => {
-            setIsBookingModalOpen(false);
-            setSelectedClass(null);
-          }}
-          classInstance={selectedClass}
-          onBookingSuccess={handleBookingSuccess}
-        />
-      )}
+      {/* Legend */}
+      <div className="mt-4 flex flex-wrap justify-center gap-4 text-xs sm:text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-orange-500 rounded"></div>
+          <span className="text-gray-400">Scheduled Class</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-red-600 rounded"></div>
+          <span className="text-gray-400">Cancelled</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-gray-700 rounded"></div>
+          <span className="text-gray-400">Today</span>
+        </div>
+      </div>
     </div>
   );
 }
-
