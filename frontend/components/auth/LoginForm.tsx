@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import GoogleAuthButton from './GoogleAuthButton';
 
 export default function LoginForm() {
@@ -13,17 +13,17 @@ export default function LoginForm() {
   
   const { login } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  // Check for OAuth errors in URL
+  // Check for OAuth errors in URL on component mount
   useEffect(() => {
-    const oauthError = searchParams?.get('error');
+    const urlParams = new URLSearchParams(window.location.search);
+    const oauthError = urlParams.get('error');
     if (oauthError === 'google_auth_failed') {
       setError('Google authentication failed. Please try again.');
     } else if (oauthError === 'session_error') {
       setError('Session error. Please try logging in again.');
     }
-  }, [searchParams]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
