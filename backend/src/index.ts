@@ -119,10 +119,16 @@ app.use((req, res, next) => {
   if (cookieHeader) {
     const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('jabclub.sid='));
     if (sessionCookie) {
-      const sessionId = sessionCookie.split('=')[1]?.trim();
+      const rawCookieValue = sessionCookie.split('=')[1]?.trim();
+      // express-session signs cookies as s:<sessionId>.<signature>
+      // If cookie starts with 's:', it's signed
+      const isSigned = rawCookieValue?.startsWith('s:');
+      const sessionId = isSigned ? rawCookieValue.split('.')[0]?.substring(2) : rawCookieValue;
       console.log('🍪 Cookie found in request:', {
         cookieHeader: cookieHeader.substring(0, 100) + '...',
         sessionCookie: sessionCookie,
+        rawValue: rawCookieValue,
+        isSigned: isSigned,
         sessionId: sessionId,
         url: req.url,
         method: req.method,
@@ -156,45 +162,14 @@ app.use((req, res, next) => {
   // Log session info on every request (always log in production for debugging)
   const cookieHeader = req.headers.cookie;
   const sessionCookie = cookieHeader?.split(';').find(c => c.trim().startsWith('jabclub.sid='));
-  const sessionCookieValue = sessionCookie?.split('=')[1]?.trim();
+  const rawCookieValue = sessionCookie?.split('=')[1]?.trim();
+  
+  // Parse signed cookie: express-session uses format s:<sessionId>.<signature>
+  const isSigned = rawCookieValue?.startsWith('s:');
+  const sessionCookieValue = isSigned ? rawCookieValue?.split('.')[0]?.substring(2) : rawCookieValue;
   
   // Check if session store is actually being used
   const storeType = req.sessionStore?.constructor?.name || 'unknown';
-  
-  // CRITICAL FIX: If cookie has a session ID but req.sessionID is different,
-  // manually load the session from the store
-  if (sessionCookieValue && req.sessionID !== sessionCookieValue && req.sessionStore && !req.session.userId) {
-    console.log('🔧 Session ID mismatch detected, attempting to load correct session:', {
-      cookieSessionID: sessionCookieValue,
-      reqSessionID: req.sessionID,
-    });
-    
-    // Manually call store.get() to load the session
-    req.sessionStore.get(sessionCookieValue, (err, session) => {
-      if (err) {
-        console.error('❌ Error loading session from store:', err);
-        return next();
-      }
-      if (session) {
-        console.log('✅ Successfully loaded session from store:', {
-          sessionId: sessionCookieValue,
-          userId: session.userId,
-          role: session.role,
-        });
-        // Replace the session data
-        Object.assign(req.session, session);
-        // Update session ID to match cookie
-        (req as any).sessionID = sessionCookieValue;
-        // Mark session as loaded
-        (req.session as any).cookie = session.cookie;
-        return next();
-      } else {
-        console.warn('⚠️ Session not found in store:', sessionCookieValue);
-        return next();
-      }
-    });
-    return; // Don't continue until session is loaded
-  }
   
   console.log('📋 Request session info:', {
     sessionID: req.sessionID,
@@ -205,6 +180,7 @@ app.use((req, res, next) => {
     role: req.session?.role,
     cookieHeader: cookieHeader ? 'present' : 'missing',
     sessionCookie: sessionCookie ? sessionCookie.substring(0, 50) + '...' : 'not found',
+    isSigned: isSigned,
     url: req.url,
     method: req.method,
     sessionKeys: req.session ? Object.keys(req.session) : [],
@@ -228,12 +204,19 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    // Allow exact matches
     if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked origin: ${origin}`);
-      callback(null, true); // Allow all origins in production for now (can be restricted later)
+      return callback(null, true);
     }
+    
+    // Allow Vercel preview URLs (e.g., https://jabclub-xxx.vercel.app)
+    if (origin.includes('.vercel.app')) {
+      console.log('✅ Allowing Vercel preview URL:', origin);
+      return callback(null, true);
+    }
+    
+    console.warn(`CORS blocked origin: ${origin}`);
+    callback(null, true); // Allow all origins in production for now (can be restricted later)
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
