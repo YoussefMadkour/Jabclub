@@ -18,6 +18,7 @@
     "schedule:next-month": "ts-node scripts/auto-generate-next-month.ts",
     "schedule:cron": "ts-node scripts/monthly-schedule-cron.ts",
     "schedule:add-manual": "ts-node scripts/add-manual-schedules.ts",
+    "schedule:generate-classes": "ts-node scripts/generate-classes-from-schedules.ts",
     "prod:migrate": "bash scripts/migrate-production.sh",
     "prod:seed": "bash scripts/seed-production.sh",
     "test": "echo \"Error: no test specified\" && exit 1"

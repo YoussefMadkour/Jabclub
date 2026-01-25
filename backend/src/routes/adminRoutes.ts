@@ -52,7 +52,8 @@ import {
   getAllSchedules,
   getDefaultSchedules,
   updateSchedule,
-  deleteSchedule
+  deleteSchedule,
+  generateClassesFromSchedules
 } from '../controllers/adminController';
 import { authenticate, authorize } from '../middleware/auth';
 
@@ -196,6 +197,8 @@ router.post('/schedules', createSchedule);
 router.put('/schedules/:id', updateSchedule);
 // DELETE /api/admin/schedules/:id - Deactivate a recurring schedule
 router.delete('/schedules/:id', deleteSchedule);
+// POST /api/admin/schedules/generate - Manually generate classes from schedules
+router.post('/schedules/generate', generateClassesFromSchedules);
 
 // PUT /api/admin/members/:memberId/package-prices/:packageId - Set/update member-specific price
 router.put('/members/:memberId/package-prices/:packageId', setMemberPackagePrice);

@@ -6464,3 +6464,44 @@ export const deleteSchedule = async (req: AuthRequest, res: Response): Promise<v
     });
   }
 };
+
+/**
+ * POST /api/admin/schedules/generate
+ * Manually trigger class generation from active schedules
+ */
+export const generateClassesFromSchedules = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const monthsAhead = req.body.monthsAhead ? parseInt(req.body.monthsAhead, 10) : 2;
+    
+    if (isNaN(monthsAhead) || monthsAhead < 1 || monthsAhead > 12) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'INVALID_MONTHS_AHEAD',
+          message: 'monthsAhead must be between 1 and 12'
+        }
+      });
+      return;
+    }
+
+    const { generateClassesFromSchedules: generateFunction } = require('../services/scheduleService');
+    await generateFunction(monthsAhead);
+
+    res.json({
+      success: true,
+      message: `Successfully generated classes from schedules for the next ${monthsAhead} month(s)`,
+      data: {
+        monthsAhead
+      }
+    });
+  } catch (error) {
+    console.error('Generate classes from schedules error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while generating classes from schedules'
+      }
+    });
+  }
+};

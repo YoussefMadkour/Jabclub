@@ -27,6 +27,12 @@
       "src": "/(.*)",
       "dest": "/api/index.ts"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/generate-classes",
+      "schedule": "0 2 * * *"
+    }
   ]
 }
 
