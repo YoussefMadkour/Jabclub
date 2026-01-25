@@ -64,6 +64,10 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     // Store user in session
     req.session.userId = user.id;
     req.session.role = user.role;
+    
+    // Force session to be sent by resetting the cookie maxAge
+    // This ensures express-session ALWAYS sends the Set-Cookie header
+    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 24 hours
 
     // Save session explicitly (required for serverless/PostgreSQL store)
     req.session.save((err) => {
@@ -93,10 +97,6 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
           maxAge: req.session.cookie.maxAge,
         },
       });
-
-      // Check if express-session set the cookie automatically
-      const setCookieHeader = res.getHeader('Set-Cookie');
-      console.log('Set-Cookie header after session.save():', setCookieHeader);
 
       // Send signup success notification (non-blocking)
       const template = NotificationTemplates.signupSuccess(user.firstName);
@@ -190,6 +190,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Store user in session
     req.session.userId = user.id;
     req.session.role = user.role;
+    
+    // Force session to be sent by resetting the cookie maxAge
+    // This ensures express-session ALWAYS sends the Set-Cookie header
+    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 24 hours
 
     // Save session explicitly (required for serverless/PostgreSQL store)
     req.session.save((err) => {
@@ -219,10 +223,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           maxAge: req.session.cookie.maxAge,
         },
       });
-
-      // Check if express-session set the cookie automatically
-      const setCookieHeader = res.getHeader('Set-Cookie');
-      console.log('Set-Cookie header after session.save():', setCookieHeader);
 
       // Return user data without password
       res.status(200).json({

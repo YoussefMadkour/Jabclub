@@ -145,6 +145,7 @@ const sessionConfig: session.SessionOptions = {
   saveUninitialized: false,
   name: 'jabclub.sid', // Custom session cookie name (default is 'connect.sid')
   store: sessionStore, // Use PostgreSQL store in serverless, MemoryStore in local dev
+  proxy: true, // Trust Vercel's proxy for secure cookies
   cookie: {
     secure: process.env.NODE_ENV === 'production' || !!process.env.VERCEL, // Use secure cookies in production/Vercel
     httpOnly: true, // Prevent XSS attacks
@@ -187,6 +188,40 @@ app.use((req, res, next) => {
     storeType: storeType,
     hasStore: !!req.sessionStore,
   });
+  
+  next();
+});
+
+// Trust Vercel's proxy for secure cookies and correct req.protocol
+// This is CRITICAL for cookies to work properly in Vercel
+app.set('trust proxy', 1);
+
+// Add middleware to log response headers (for debugging cookie issues)
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  const originalJson = res.json;
+  
+  const logHeaders = () => {
+    const setCookie = res.getHeader('Set-Cookie');
+    if (setCookie && req.url.includes('/auth/')) {
+      console.log('🍪 Response Set-Cookie header:', {
+        url: req.url,
+        method: req.method,
+        statusCode: res.statusCode,
+        setCookie: Array.isArray(setCookie) ? setCookie : [setCookie]
+      });
+    }
+  };
+  
+  res.send = function(body) {
+    logHeaders();
+    return originalSend.call(this, body);
+  };
+  
+  res.json = function(body) {
+    logHeaders();
+    return originalJson.call(this, body);
+  };
   
   next();
 });
