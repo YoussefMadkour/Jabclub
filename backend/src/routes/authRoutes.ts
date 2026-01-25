@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { signup, login, logout, getCurrentUser } from '../controllers/authController';
+import passport from 'passport';
+import { signup, login, logout, getCurrentUser, googleAuthCallback } from '../controllers/authController';
 import { signupValidation, loginValidation } from '../middleware/validators';
 import { authRateLimiter, currentUserRateLimiter } from '../middleware/rateLimiter';
 
@@ -19,5 +20,15 @@ router.post('/logout', logout);
 // GET /api/auth/me - Get current user
 // Rate limited but more lenient as it's called frequently
 router.get('/me', currentUserRateLimiter, getCurrentUser);
+
+// Google OAuth routes
+// GET /api/auth/google - Initiate Google OAuth
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// GET /api/auth/google/callback - Google OAuth callback
+router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login?error=google_auth_failed' }),
+  googleAuthCallback
+);
 
 export default router;

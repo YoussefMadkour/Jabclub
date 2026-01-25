@@ -39,7 +39,8 @@ enum TransactionType {
 model User {
   id            Int       @id @default(autoincrement())
   email         String    @unique
-  passwordHash  String    @map("password_hash")
+  passwordHash  String?   @map("password_hash") // Optional for OAuth users
+  googleId      String?   @unique @map("google_id") // Google OAuth ID
   firstName     String    @map("first_name")
   lastName      String    @map("last_name")
   phone         String?

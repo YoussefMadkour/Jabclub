@@ -173,6 +173,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Check if user is OAuth-only (no password)
+    if (!user.passwordHash) {
+      res.status(401).json({
+        success: false,
+        error: {
+          code: 'OAUTH_ONLY',
+          message: 'This account was created with Google. Please sign in with Google.'
+        }
+      });
+      return;
+    }
+
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
@@ -351,5 +363,46 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
         message: 'An error occurred while fetching user data'
       }
     });
+  }
+};
+
+/**
+ * Google OAuth callback handler
+ * Called after successful Google authentication
+ * Redirects to frontend with session established
+ */
+export const googleAuthCallback = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // User is already authenticated by passport middleware
+    // Session is already set up by passport
+    if (!req.user) {
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=google_auth_failed`);
+      return;
+    }
+
+    const user = req.user as any;
+    
+    // Store user in session (passport already did this, but ensure it's set)
+    req.session.userId = user.id;
+    req.session.role = user.role;
+
+    // Force session to be sent
+    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+    // Save session explicitly
+    req.session.save((err) => {
+      if (err) {
+        console.error('Failed to save session during Google OAuth:', err);
+        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=session_error`);
+        return;
+      }
+
+      // Redirect to frontend dashboard
+      const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard`;
+      res.redirect(redirectUrl);
+    });
+  } catch (error) {
+    console.error('Google OAuth callback error:', error);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=google_auth_failed`);
   }
 };

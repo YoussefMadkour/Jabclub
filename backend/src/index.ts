@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
+import passport from './config/passport';
 import prisma from './config/database';
 import { initializeExpiryScheduler } from './services/expiryService';
 
@@ -157,6 +158,10 @@ const sessionConfig: session.SessionOptions = {
 };
 
 app.use(session(sessionConfig));
+
+// Initialize Passport.js for OAuth authentication
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Add middleware to log session info and fix session loading - MUST be after session middleware
 app.use((req, res, next) => {

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import GoogleAuthButton from './GoogleAuthButton';
 
 export default function SignupForm() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,17 @@ export default function SignupForm() {
   
   const { signup } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Check for OAuth errors in URL
+  useEffect(() => {
+    const oauthError = searchParams?.get('error');
+    if (oauthError === 'google_auth_failed') {
+      setError('Google authentication failed. Please try again.');
+    } else if (oauthError === 'session_error') {
+      setError('Session error. Please try signing up again.');
+    }
+  }, [searchParams]);
 
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
@@ -107,6 +119,19 @@ export default function SignupForm() {
           </ul>
         </div>
       )}
+
+      {/* Google OAuth Button */}
+      <div className="mb-6">
+        <GoogleAuthButton type="signup" disabled={isLoading} />
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-card text-body">Or sign up with email</span>
+          </div>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
