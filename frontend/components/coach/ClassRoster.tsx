@@ -5,6 +5,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import apiClient from '@/lib/axios';
 import Link from 'next/link';
+import QRScannerWithFallback from './QRScannerWithFallback';
+import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 interface Booking {
   bookingId: number;
@@ -50,6 +52,9 @@ interface ClassRosterProps {
 export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
   const queryClient = useQueryClient();
   const [markingAttendance, setMarkingAttendance] = useState<number | null>(null);
+  const [showQRScanner, setShowQRScanner] = useState(false);
+  const [scanResult, setScanResult] = useState<any | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
 
   // Fetch class roster
   const { data, isLoading, error } = useQuery<ClassRosterResponse>({
@@ -81,6 +86,24 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
   const handleMarkAttendance = async (bookingId: number, status: 'attended' | 'no_show') => {
     setMarkingAttendance(bookingId);
     await markAttendanceMutation.mutateAsync({ bookingId, status });
+  };
+
+  const handleQRScanSuccess = (bookingData: any) => {
+    setScanResult(bookingData);
+    setScanError(null);
+    // Show success message and auto-refresh after 3 seconds
+    setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['class-roster', classInstanceId] });
+      setScanResult(null);
+      setShowQRScanner(false);
+    }, 3000);
+  };
+
+  const handleQRScanError = (error: string) => {
+    setScanError(error);
+    setTimeout(() => {
+      setScanError(null);
+    }, 5000);
   };
 
   if (isLoading) {
@@ -143,14 +166,80 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
           </div>
           
           <div className="text-center lg:text-right">
-            <p className="text-4xl font-bold text-gray-900">{summary.total}</p>
-            <p className="text-sm text-gray-600">Total Attendees</p>
-            <p className="text-xs text-gray-500 mt-1">
-              Capacity: {classInfo.capacity}
-            </p>
+            <div className="flex flex-col gap-3 items-center lg:items-end">
+              {isToday && (
+                <button
+                  onClick={() => setShowQRScanner(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2m4 0h4m-4 0h-4m-9-7V9a2 2 0 012-2h10a2 2 0 012 2v9m-6 0h6" />
+                  </svg>
+                  Scan QR Code
+                </button>
+              )}
+              <p className="text-4xl font-bold text-gray-900">{summary.total}</p>
+              <p className="text-sm text-gray-600">Total Attendees</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Capacity: {classInfo.capacity}
+              </p>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* QR Scan Result */}
+      {scanResult && (
+        <div className="bg-green-50 border-2 border-green-200 rounded-lg p-6 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-4">
+            <CheckCircleIcon className="h-12 w-12 text-green-600 flex-shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-green-900">Check-in Successful!</h3>
+              <p className="text-green-800 mt-1">
+                {scanResult.member} ({scanResult.isChild ? 'Child' : 'Member'})
+              </p>
+              <p className="text-sm text-green-700 mt-1">
+                {scanResult.class} • {new Date(scanResult.checkedInAt).toLocaleTimeString()}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scan Error */}
+      {scanError && (
+        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-3">
+            <XMarkIcon className="h-8 w-8 text-red-600 flex-shrink-0" />
+            <p className="flex-1 text-red-800">{scanError}</p>
+          </div>
+        </div>
+      )}
+
+      {/* QR Scanner Modal */}
+      {showQRScanner && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-xl font-semibold text-gray-900">QR Code Check-In Scanner</h2>
+              <button
+                onClick={() => setShowQRScanner(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Close"
+              >
+                <XMarkIcon className="h-6 w-6 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-6">
+              <QRScannerWithFallback
+                onScanSuccess={handleQRScanSuccess}
+                onError={handleQRScanError}
+                disabled={!!scanResult}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Attendance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

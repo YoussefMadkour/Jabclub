@@ -1,0 +1,1071 @@
+TimeUTC,timestampInMs,requestPath,requestMethod,requestQueryString,responseStatusCode,requestId,requestUserAgent,level,environment,branch,vercelCache,type,function,host,deploymentDomain,deploymentId,durationMs,region,maxMemoryUsed,memorySize,message,projectId,traceId,sessionId,invocationId,instanceId,concurrency
+2026-01-25 08:15:04,1769328904366,api.jabclubegy.com/favicon.ico,GET,,404,wckq9-1769328904021-f7dc2eecb6c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🍪 Cookie found in request: {
+  cookieHeader: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q...',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  rawValue: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  isSigned: false,
+  sessionId: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  url: '/favicon.ico',
+  method: 'GET'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:04,1769328904366,api.jabclubegy.com/favicon.ico,GET,,404,wckq9-1769328904021-f7dc2eecb6c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🔍 Loading session from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  timestamp: '2026-01-25T08:15:04.366Z'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:04,1769328904457,api.jabclubegy.com/favicon.ico,GET,,404,wckq9-1769328904021-f7dc2eecb6c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"✅ Session loaded from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  userId: 1,
+  role: 'admin',
+  cookie: {
+    originalMaxAge: 86400000,
+    expires: '2026-01-26T07:20:18.116Z',
+    secure: true,
+    httpOnly: true,
+    domain: '.jabclubegy.com',
+    path: '/',
+    sameSite: 'none'
+  }
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:04,1769328904457,api.jabclubegy.com/favicon.ico,GET,,404,wckq9-1769328904021-f7dc2eecb6c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  cookieSessionID: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: 1,
+  role: 'admin',
+  cookieHeader: 'present',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.4...',
+  isSigned: false,
+  url: '/favicon.ico',
+  method: 'GET',
+  sessionKeys: [ 'cookie', 'userId', 'role' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:04,1769328904021,api.jabclubegy.com/favicon.ico,GET,,404,wckq9-1769328904021-f7dc2eecb6c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,188,iad1,285,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3H24ZEP0F6S3JHQTERXNS,6evZR2QurlZG,1
+2026-01-25 08:15:02,1769328902582,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🍪 Cookie found in request: {
+  cookieHeader: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q...',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  rawValue: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  isSigned: false,
+  sessionId: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  url: '/api/auth/google/callback?code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email%20profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20openid&authuser=0&prompt=consent',
+  method: 'GET'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:02,1769328902583,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🔍 Loading session from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  timestamp: '2026-01-25T08:15:02.582Z'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:03,1769328903251,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"✅ Session loaded from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  userId: 1,
+  role: 'admin',
+  cookie: {
+    originalMaxAge: 86400000,
+    expires: '2026-01-26T07:20:18.116Z',
+    secure: true,
+    httpOnly: true,
+    domain: '.jabclubegy.com',
+    path: '/',
+    sameSite: 'none'
+  }
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:03,1769328903251,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  cookieSessionID: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: 1,
+  role: 'admin',
+  cookieHeader: 'present',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.4...',
+  isSigned: false,
+  url: '/api/auth/google/callback?code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email%20profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email%20openid&authuser=0&prompt=consent',
+  method: 'GET',
+  sessionKeys: [ 'cookie', 'userId', 'role' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:03,1769328903603,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"prisma:error 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+The column `users.google_id` does not exist in the current database.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:03,1769328903603,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"Google OAuth error: PrismaClientKnownRequestError: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+The column `users.google_id` does not exist in the current database.
+    at ei.handleRequestError (/var/task/backend/node_modules/@prisma/client/runtime/library.js:121:7268)
+    at ei.handleAndLogRequestError (/var/task/backend/node_modules/@prisma/client/runtime/library.js:121:6593)
+    at ei.request (/var/task/backend/node_modules/@prisma/client/runtime/library.js:121:6300)
+    at async a (/var/task/backend/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async Strategy._verify (/var/task/backend/src/config/passport.js:25:20) {
+  code: 'P2022',
+  meta: { modelName: 'User', column: 'users.google_id' },
+  clientVersion: '6.19.0'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:03,1769328903604,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"Error occurred: {
+  name: 'PrismaClientKnownRequestError',
+  message: '\n' +
+    'Invalid `prisma.user.findUnique()` invocation:\n' +
+    '\n' +
+    '\n' +
+    'The column `users.google_id` does not exist in the current database.',
+  stack: undefined,
+  path: '/api/auth/google/callback',
+  method: 'GET'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:15:02,1769328902431,api.jabclubegy.com/api/auth/google/callback,GET,code=4%2F0ASc3gC28nn4BDz-8TFSdIxNBs8TczjvKv5OOlBTGEaaSZZl8lCWx-xg2VHf3p4U8AwSTYQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent,500,vvswz-1769328902431-ecc028062123,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,1129,iad1,285,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3H0CRBB3F3H6J2BMREJTQ,6evZR2QurlZG,1
+2026-01-25 08:14:46,1769328886338,api.jabclubegy.com/api/auth/google,GET,,302,vvswz-1769328885965-712b4f41fdbe,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🍪 Cookie found in request: {
+  cookieHeader: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q...',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  rawValue: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  isSigned: false,
+  sessionId: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  url: '/api/auth/google',
+  method: 'GET'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:46,1769328886338,api.jabclubegy.com/api/auth/google,GET,,302,vvswz-1769328885965-712b4f41fdbe,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🔍 Loading session from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  timestamp: '2026-01-25T08:14:46.338Z'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:46,1769328886967,api.jabclubegy.com/api/auth/google,GET,,302,vvswz-1769328885965-712b4f41fdbe,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"✅ Session loaded from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  userId: 1,
+  role: 'admin',
+  cookie: {
+    originalMaxAge: 86400000,
+    expires: '2026-01-26T07:20:18.116Z',
+    secure: true,
+    httpOnly: true,
+    domain: '.jabclubegy.com',
+    path: '/',
+    sameSite: 'none'
+  }
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:46,1769328886967,api.jabclubegy.com/api/auth/google,GET,,302,vvswz-1769328885965-712b4f41fdbe,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  cookieSessionID: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: 1,
+  role: 'admin',
+  cookieHeader: 'present',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.4...',
+  isSigned: false,
+  url: '/api/auth/google',
+  method: 'GET',
+  sessionKeys: [ 'cookie', 'userId', 'role' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885965,api.jabclubegy.com/api/auth/google,GET,,302,vvswz-1769328885965-712b4f41fdbe,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,637,iad1,283,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3GFNF9ZRK54P3Q40ZVRG5,6evZR2QurlZG,2
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true },prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,🔧 Creating PostgreSQL session store...,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,🔧 DATABASE_URL: present,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,✅ PostgreSQL session store created successfully,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,Serverless environment detected - static file serving disabled,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,📅 Expiry scheduler initialized:,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Expiry check: daily at midnight (00:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Expiry warning: daily at 9 AM (09:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885441,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Renewal reminder: daily at 10 AM (10:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885531,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🍪 Cookie found in request: {
+  cookieHeader: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q...',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  rawValue: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  isSigned: false,
+  sessionId: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  url: '/api/auth/me',
+  method: 'GET'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:45,1769328885534,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"🔍 Loading session from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  timestamp: '2026-01-25T08:14:45.532Z'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:46,1769328886411,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"✅ Session loaded from PostgreSQL: {
+  sessionId: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  userId: 1,
+  role: 'admin',
+  cookie: {
+    originalMaxAge: 86400000,
+    expires: '2026-01-26T07:20:18.116Z',
+    secure: true,
+    httpOnly: true,
+    domain: '.jabclubegy.com',
+    path: '/',
+    sameSite: 'none'
+  }
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:46,1769328886412,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  cookieSessionID: 's%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: 1,
+  role: 'admin',
+  cookieHeader: 'present',
+  sessionCookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.4...',
+  isSigned: false,
+  url: '/api/auth/me',
+  method: 'GET',
+  sessionKeys: [ 'cookie', 'userId', 'role' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:46,1769328886415,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"👤 getCurrentUser - Session check: {
+  sessionID: '7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC',
+  hasSession: true,
+  userId: 1,
+  role: 'admin',
+  cookie: 'jabclub.sid=s%3A7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF%2FDxXj7qx7u8Q',
+  sessionCookie: 's:7Iy4PnkzLpYtC3ujGJZws8pYuAWq-WMC.45U5fvH5FvHMTnWqZRIbSXyzsjJMkGF/DxXj7qx7u8Q'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:47,1769328887098,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",info,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"prisma:error 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+The column `users.google_id` does not exist in the current database.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:47,1769328887099,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"Get current user error: PrismaClientKnownRequestError: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+The column `users.google_id` does not exist in the current database.
+    at ei.handleRequestError (/var/task/backend/node_modules/@prisma/client/runtime/library.js:121:7268)
+    at ei.handleAndLogRequestError (/var/task/backend/node_modules/@prisma/client/runtime/library.js:121:6593)
+    at ei.request (/var/task/backend/node_modules/@prisma/client/runtime/library.js:121:6300)
+    at async a (/var/task/backend/node_modules/@prisma/client/runtime/library.js:130:9551)
+    at async getCurrentUser (/var/task/backend/src/controllers/authController.js:298:22) {
+  code: 'P2022',
+  meta: { modelName: 'User', column: 'users.google_id' },
+  clientVersion: '6.19.0'
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:14:44,1769328884834,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328884834-ee756f9903f0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,1752,iad1,290,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3GFNF9ZRK54P3Q40ZVRG5,6evZR2QurlZG,2
+2026-01-25 08:13:42,1769328822774,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.png,GET,,404,5bfjz-1769328822721-c29be40152e6,vercel-favicon/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'k1CFk4CAoBPXJo7s6w4nQ6gfG4NlYSlJ',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/favicon.png',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:42,1769328822721,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.png,GET,,404,5bfjz-1769328822721-c29be40152e6,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,9,iad1,288,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EJF3VZ4CW5N5Q314H6XA,kbxXT0lXiib8,1
+2026-01-25 08:13:42,1769328822685,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.ico,GET,,404,5bfjz-1769328822544-d5a7bf14f019,vercel-favicon/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'A4HYMfick2uqPRkIaCNMuWB7dcTmC-3f',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/favicon.ico',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:42,1769328822544,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.ico,GET,,404,5bfjz-1769328822544-d5a7bf14f019,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,8,iad1,288,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EJCEZDKCMCP4GXMCX413,kbxXT0lXiib8,1
+2026-01-25 08:13:42,1769328822425,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,wg547-1769328822366-db7e31e446b9,vercel-favicon/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'VBPlWai-jbX4MxIezLLs6URE2kOsnAID',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:42,1769328822366,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,wg547-1769328822366-db7e31e446b9,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,10,iad1,287,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EJ42K0VVP4G86RPZWBCR,kbxXT0lXiib8,1
+2026-01-25 08:13:40,1769328820588,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.ico,GET,,404,ldkht-1769328820537-3c00170423c6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: '1lSmAH_VquSmL2JRAtG9nqRj75ExDy5b',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/favicon.ico',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820537,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.ico,GET,,404,ldkht-1769328820537-3c00170423c6,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,7,iad1,307,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EGAWTHQ0Q2ZWANP947HA,sxLhZVitWBMQ,1
+2026-01-25 08:13:40,1769328820588,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.ico,GET,,404,t48wx-1769328820534-c7d3f47b9643,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'Iq8V82biRm03q9EYVsKcHQoV8RzikgK-',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/favicon.ico',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820534,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/favicon.ico,GET,,404,t48wx-1769328820534-c7d3f47b9643,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,7,iad1,286,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EGAQZC5T3JHBYAF8XV5P,kbxXT0lXiib8,1
+2026-01-25 08:13:40,1769328820474,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,ldkht-1769328820327-2ce7a6786fde,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'u4IWGKDyxmg1BHBa2SL9aUKYOlU3C7zs',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820327,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,ldkht-1769328820327-2ce7a6786fde,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,7,iad1,285,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EG7A5HDF2ZATMCZ989KS,kbxXT0lXiib8,1
+2026-01-25 08:13:40,1769328820466,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,t48wx-1769328820305-4a2d4c670a2f,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: '-bJ4QkInGUXWwUzyPEFM_QSb52mwUSbt',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820305,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,t48wx-1769328820305-4a2d4c670a2f,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,7,iad1,306,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EG6XW27X44CZP2C11W9K,sxLhZVitWBMQ,1
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,🔧 Creating PostgreSQL session store...,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,🔧 DATABASE_URL: present,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,✅ PostgreSQL session store created successfully,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,Serverless environment detected - static file serving disabled,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,📅 Expiry scheduler initialized:,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Expiry check: daily at midnight (00:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820108,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Expiry warning: daily at 9 AM (09:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820109,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Renewal reminder: daily at 10 AM (10:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820205,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'kQ6HKIhmHNOXmFdGLAiDH1THrgrwyjbP',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:38,1769328818872,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,dmxfh-1769328818872-e389f3131da6,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,1195,iad1,306,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EETRK9GCKYRHYB2V6N1F,sxLhZVitWBMQ,1
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,🔧 Creating PostgreSQL session store...,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,🔧 DATABASE_URL: present,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,✅ PostgreSQL session store created successfully,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,Serverless environment detected - static file serving disabled,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,📅 Expiry scheduler initialized:,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Expiry check: daily at midnight (00:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Expiry warning: daily at 9 AM (09:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820098,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,- Renewal reminder: daily at 10 AM (10:00),prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:40,1769328820194,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,info,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,,,,,"📋 Request session info: {
+  sessionID: 'ft7RfYvUn03_gab-bE37C5_ouDWqmQGM',
+  cookieSessionID: undefined,
+  sessionIDsMatch: false,
+  hasSession: true,
+  userId: undefined,
+  role: undefined,
+  cookieHeader: 'present',
+  sessionCookie: 'not found',
+  isSigned: undefined,
+  url: '/',
+  method: 'GET',
+  sessionKeys: [ 'cookie' ],
+  storeType: 'PGStore',
+  hasStore: true
+}",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:13:38,1769328818788,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app/,GET,,200,hlzgt-1769328818788-391447fe728c,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,jabclub-api-backend-pgecs4jne-youssef-madkours-projects.vercel.app,dpl_Jvtt4cR8XQfjZeau2UsSa2W43JBd,1012,iad1,285,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3EETZXPV31AXZR179Y2Q3,kbxXT0lXiib8,1
+2026-01-25 08:11:57,1769328717370,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.png,GET,,500,hhg2z-1769328716931-dca5a8ce7562,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:56,1769328716931,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.png,GET,,500,hhg2z-1769328716931-dca5a8ce7562,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,382,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3BB58FJPS3NGGY6T0T4CW,,-1
+2026-01-25 08:11:54,1769328714848,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.png,GET,,500,t4wgb-1769328714408-bc9205c7b0ba,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:54,1769328714408,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.png,GET,,500,t4wgb-1769328714408-bc9205c7b0ba,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,362,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B8Q54YESV2ACG8Y1YFMY,,-1
+2026-01-25 08:11:53,1769328713325,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.png,GET,,500,sxdcz-1769328712917-baede20d687e,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.png,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:52,1769328712917,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.png,GET,,500,sxdcz-1769328712917-baede20d687e,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,359,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B77S8VZJZRV9N5T3NJZF,,-1
+2026-01-25 08:11:52,1769328712882,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,jwx7s-1769328712476-4b52ecb8dc4c,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:52,1769328712476,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,jwx7s-1769328712476-4b52ecb8dc4c,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,356,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B6T1GYZRSHT8SHHEH2BK,,-1
+2026-01-25 08:11:50,1769328710358,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,lc4rh-1769328709946-a6fabefe8043,vercel-favicon/1.0,error,production,main,MISS,serverless,/favicon.ico,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:49,1769328709946,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,lc4rh-1769328709946-a6fabefe8043,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,361,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B4B0MZYH43YE32XE0NWY,,-1
+2026-01-25 08:11:48,1769328708877,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,,kpbn8-1769328708467-cc10b799e585,vercel-favicon/1.0,error,production,main,,serverless,,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:48,1769328708467,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,,kpbn8-1769328708467-cc10b799e585,vercel-favicon/1.0,,production,main,,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,355,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B2WSH34043219YAE8EM0,,-1
+2026-01-25 08:11:48,1769328708341,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,,k2dhs-1769328707820-0b89814a38e1,vercel-favicon/1.0,error,production,main,,serverless,,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:47,1769328707820,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,,k2dhs-1769328707820-0b89814a38e1,vercel-favicon/1.0,,production,main,,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,375,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B2BE610W1DJ5PQ3H0SY9,,-1
+2026-01-25 08:11:46,1769328706766,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,bkslp-1769328706331-e7c9fecca2a7,vercel-favicon/1.0,error,production,main,MISS,serverless,/,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:11:46,1769328706331,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,bkslp-1769328706331-e7c9fecca2a7,vercel-favicon/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,373,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT3B0T9P3JKD1KM5GF80RX5,,-1
+2026-01-25 08:09:30,1769328570781,api.jabclubegy.com/api/auth/me,GET,,500,4hckb-1769328570388-5ed0184cf992,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/me,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:09:30,1769328570388,api.jabclubegy.com/api/auth/me,GET,,500,4hckb-1769328570388-5ed0184cf992,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,365,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT36W0Z9Q5143NCWX4VKM5F,,-1
+2026-01-25 08:09:30,1769328570185,api.jabclubegy.com/favicon.ico,GET,,500,vpj87-1769328569760-e87965f945b3,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/favicon.ico,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:09:29,1769328569760,api.jabclubegy.com/favicon.ico,GET,,500,vpj87-1769328569760-e87965f945b3,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,369,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT36VE3GBFG3VFTRDH5BXCB,,-1
+2026-01-25 08:09:29,1769328569669,api.jabclubegy.com/api/auth/google/callback,GET,,500,wcqb7-1769328569219-189498041897,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/google/callback,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:09:29,1769328569219,api.jabclubegy.com/api/auth/google/callback,GET,,500,wcqb7-1769328569219-189498041897,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,364,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT36TY4JQ5P06D24T9V08AD,,-1
+2026-01-25 08:08:13,1769328493853,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328493131-fece256b51b3,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/me,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:08:13,1769328493131,api.jabclubegy.com/api/auth/me,GET,,500,c6gh8-1769328493131-fece256b51b3,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,375,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT34GWM23FBWVVZHG4HZC7H,,-1
+2026-01-25 08:08:05,1769328485464,api.jabclubegy.com/favicon.ico,GET,,500,9s8j2-1769328484718-8ce73bd95540,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/favicon.ico,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:08:04,1769328484718,api.jabclubegy.com/favicon.ico,GET,,500,9s8j2-1769328484718-8ce73bd95540,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,391,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT348NXRENC9CRKRCTXWQTP,,-1
+2026-01-25 08:08:04,1769328484332,api.jabclubegy.com/api/auth/google,GET,,500,l682h-1769328483606-621e735423d3,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/google,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:08:03,1769328483606,api.jabclubegy.com/api/auth/google,GET,,500,l682h-1769328483606-621e735423d3,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,362,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT347K65T67C9C047ET5HMN,,-1
+2026-01-25 08:08:03,1769328483870,api.jabclubegy.com/api/auth/me,GET,,,5shxl-1769328482865-0efdb198bb99,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,,serverless,,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:08:02,1769328482865,api.jabclubegy.com/api/auth/me,GET,,,5shxl-1769328482865-0efdb198bb99,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,360,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT34751JZX7F5XDBHJPAJ30,,-1
+2026-01-25 08:02:10,1769328130851,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,hk2h5-1769328130371-1eb89002e1bf,vercel-screenshot/1.0,error,production,main,MISS,serverless,/favicon.ico,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:02:10,1769328130371,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,hk2h5-1769328130371-1eb89002e1bf,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,423,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2SEB81YFEPJVJKBYXYVMP,,-1
+2026-01-25 08:02:10,1769328130787,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,gwp4z-1769328130278-0984fb4574a9,vercel-screenshot/1.0,error,production,main,MISS,serverless,/favicon.ico,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:02:10,1769328130278,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/favicon.ico,GET,,500,gwp4z-1769328130278-0984fb4574a9,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,367,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2SEB74CNT34G4M5QBM0JX,,-1
+2026-01-25 08:02:10,1769328130189,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,,z9zbx-1769328129747-d02931188472,vercel-screenshot/1.0,error,production,main,,serverless,,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:02:09,1769328129747,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,,z9zbx-1769328129747-d02931188472,vercel-screenshot/1.0,,production,main,,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,387,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2SDQV3KJKJG6DB3X7TRVT,,-1
+2026-01-25 08:02:10,1769328130302,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,xqdpc-1769328129721-302968c6274a,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:02:09,1769328129721,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,xqdpc-1769328129721-302968c6274a,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,374,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2SDVJGDRHG95WSCEGKGDW,,-1
+2026-01-25 08:02:09,1769328129612,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,8hnzs-1769328128285-6d91b3ec760d,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:02:08,1769328128285,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,8hnzs-1769328128285-6d91b3ec760d,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,376,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2SCGGTW4MHSVJWYYEY77J,,-1
+2026-01-25 08:02:09,1769328129605,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,vndwp-1769328128271-4ddea8137efd,vercel-screenshot/1.0,error,production,main,MISS,serverless,/,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:02:08,1769328128271,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app/,GET,,500,vndwp-1769328128271-4ddea8137efd,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,jabclub-api-backend-ams6hrmik-youssef-madkours-projects.vercel.app,dpl_55zZxFcwKTkhLq1MZnFkRBV7e6pg,389,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2SCGBCF9MJMG72AXYWKVB,,-1
+2026-01-25 08:01:41,1769328101437,api.jabclubegy.com/api/auth/me,OPTIONS,,500,zmrjl-1769328101003-0f4b66a8cd91,vercel-screenshot/1.0,error,production,main,MISS,serverless,/api/auth/me,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:01:41,1769328101003,api.jabclubegy.com/api/auth/me,OPTIONS,,500,zmrjl-1769328101003-0f4b66a8cd91,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,372,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2RHNM5NY153VSDKD4ZNAX,,-1
+2026-01-25 08:01:41,1769328101407,api.jabclubegy.com/api/auth/me,OPTIONS,,500,2b9qr-1769328100957-24eab44a7eb3,vercel-screenshot/1.0,error,production,main,MISS,serverless,/api/auth/me,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 08:01:40,1769328100957,api.jabclubegy.com/api/auth/me,OPTIONS,,500,2b9qr-1769328100957-24eab44a7eb3,vercel-screenshot/1.0,,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,389,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2RHM7VZHQT6CG4E9W4YK6,,-1
+2026-01-25 07:56:32,1769327792408,api.jabclubegy.com/api/auth/login,GET,,500,58bst-1769327791927-21a992ef381b,Mozilla/5.0 (compatible),error,production,main,MISS,serverless,/api/auth/login,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:56:31,1769327791927,api.jabclubegy.com/api/auth/login,GET,,500,58bst-1769327791927-21a992ef381b,Mozilla/5.0 (compatible),,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,374,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2F3WKZ76ZQ2BJDXPTJTZG,,-1
+2026-01-25 07:55:50,1769327750191,api.jabclubegy.com/api/auth/login,OPTIONS,,500,chllt-1769327749707-6b2761831172,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/login,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:49,1769327749707,api.jabclubegy.com/api/auth/login,OPTIONS,,500,chllt-1769327749707-6b2761831172,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,366,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DTNM779AXE2VPWTE5GK8,,-1
+2026-01-25 07:55:49,1769327749134,api.jabclubegy.com/api/auth/me,GET,,500,gb8ks-1769327748646-fc34aa5a90d1,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/me,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:48,1769327748646,api.jabclubegy.com/api/auth/me,GET,,500,gb8ks-1769327748646-fc34aa5a90d1,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,360,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DSMQT3HMHHPSXSRGBNFT,,-1
+2026-01-25 07:55:46,1769327746525,api.jabclubegy.com/api/auth/login,OPTIONS,,500,zsqqz-1769327746027-0f6d88655e84,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/auth/login,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:46,1769327746027,api.jabclubegy.com/api/auth/login,OPTIONS,,500,zsqqz-1769327746027-0f6d88655e84,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,378,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DQ2P8Z0TDJ3KRNY9WHR8,,-1
+2026-01-25 07:55:42,1769327742725,api.jabclubegy.com/api/auth/logout,POST,,,sd92m-1769327742252-64f787044b9c,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,,serverless,,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:42,1769327742252,api.jabclubegy.com/api/auth/logout,POST,,,sd92m-1769327742252-64f787044b9c,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,355,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DKCHCA9BY88MTYY1FHX1,,-1
+2026-01-25 07:55:37,1769327737325,api.jabclubegy.com/api/admin/packages,GET,,500,zsqqz-1769327736831-0dad5544be39,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/packages,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:36,1769327736831,api.jabclubegy.com/api/admin/packages,GET,,500,zsqqz-1769327736831-0dad5544be39,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,378,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DE35916DZMZ7EQG8ZJ9E,,-1
+2026-01-25 07:55:37,1769327737341,api.jabclubegy.com/api/admin/locations,GET,,500,9s8j2-1769327736831-d0cbf9404514,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/locations,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:36,1769327736831,api.jabclubegy.com/api/admin/locations,GET,,500,9s8j2-1769327736831-d0cbf9404514,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,395,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DE346NVC64RHGEQHYSVE,,-1
+2026-01-25 07:55:35,1769327735220,api.jabclubegy.com/api/admin/locations,GET,,,5mtgm-1769327734735-a2bbbe0675c0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,,serverless,,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:34,1769327734735,api.jabclubegy.com/api/admin/locations,GET,,,5mtgm-1769327734735-a2bbbe0675c0,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,370,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2DC1MCDZ5JW84MSKF1YRE,,-1
+2026-01-25 07:55:32,1769327732587,api.jabclubegy.com/api/admin/locations,GET,,500,wckq9-1769327732116-f1b93eb0797b,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/locations,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:32,1769327732116,api.jabclubegy.com/api/admin/locations,GET,,500,wckq9-1769327732116-f1b93eb0797b,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,356,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D9FR4FGK0MBCYSNS16DM,,-1
+2026-01-25 07:55:32,1769327732605,api.jabclubegy.com/api/admin/schedules/default,GET,,500,np8zk-1769327732116-29e46080eb06,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/schedules/default,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:32,1769327732116,api.jabclubegy.com/api/admin/schedules/default,GET,,500,np8zk-1769327732116-29e46080eb06,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,372,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D9FSG9SD6KBJ4PY8Z3Q5,,-1
+2026-01-25 07:55:31,1769327731097,api.jabclubegy.com/api/admin/coaches,GET,,500,rzhm2-1769327730456-fe8ab8e0714f,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/coaches,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:30,1769327730456,api.jabclubegy.com/api/admin/coaches,GET,,500,rzhm2-1769327730456-fe8ab8e0714f,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,361,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D80ZX4XKS39YRM0N4TRF,,-1
+2026-01-25 07:55:30,1769327730919,api.jabclubegy.com/api/admin/locations,GET,,500,c6gh8-1769327730453-02e58ff89dd9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/locations,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:30,1769327730453,api.jabclubegy.com/api/admin/locations,GET,,500,c6gh8-1769327730453-02e58ff89dd9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,352,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D7VSM3E8DZVDKCHKMYZR,,-1
+2026-01-25 07:55:30,1769327730910,api.jabclubegy.com/api/admin/class-types,GET,,500,8tv2c-1769327730451-a2a8a5ddc811,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/class-types,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:30,1769327730451,api.jabclubegy.com/api/admin/class-types,GET,,500,8tv2c-1769327730451-a2a8a5ddc811,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,344,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D7VQASKH0D876XFV7R7R,,-1
+2026-01-25 07:55:30,1769327730922,api.jabclubegy.com/api/admin/schedules/default,GET,,500,z29pp-1769327730450-30b302cf4eb2,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/schedules/default,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:30,1769327730450,api.jabclubegy.com/api/admin/schedules/default,GET,,500,z29pp-1769327730450-30b302cf4eb2,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,353,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D7VVYCC49E4R3TV8GWVF,,-1
+2026-01-25 07:55:25,1769327725303,api.jabclubegy.com/api/admin/coaches,GET,,500,nb4zl-1769327724829-ab3791d6dc69,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/coaches,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:24,1769327724829,api.jabclubegy.com/api/admin/coaches,GET,,500,nb4zl-1769327724829-ab3791d6dc69,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,357,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D2C6PJ702DYV4MY7ZBHH,,-1
+2026-01-25 07:55:25,1769327725519,api.jabclubegy.com/api/admin/class-types,GET,,500,8tv2c-1769327724828-293acba08051,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/class-types,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:24,1769327724828,api.jabclubegy.com/api/admin/class-types,GET,,500,8tv2c-1769327724828-293acba08051,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,357,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D2JXFSR1WZWXAA7X9980,,-1
+2026-01-25 07:55:25,1769327725486,api.jabclubegy.com/api/admin/locations,GET,,500,pkg4f-1769327724827-2e54be11dec5,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/locations,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:24,1769327724827,api.jabclubegy.com/api/admin/locations,GET,,500,pkg4f-1769327724827-2e54be11dec5,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,320,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D2JXFSR1WZWXA6M4MM7V,,-1
+2026-01-25 07:55:25,1769327725305,api.jabclubegy.com/api/admin/classes,GET,startDate=2026-01-25,500,pkg4f-1769327724824-8fd57dfcb8c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/classes,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:24,1769327724824,api.jabclubegy.com/api/admin/classes,GET,startDate=2026-01-25,500,pkg4f-1769327724824-8fd57dfcb8c9,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,360,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2D2C06B2TVT632KX6DSA4,,-1
+2026-01-25 07:55:22,1769327722709,api.jabclubegy.com/api/admin/classes,GET,startDate=2026-01-25,500,s268m-1769327721424-830082b4a740,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/classes,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:21,1769327721424,api.jabclubegy.com/api/admin/classes,GET,startDate=2026-01-25,500,s268m-1769327721424-830082b4a740,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,324,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2CZ98A438N74QZC2QAF98,,-1
+2026-01-25 07:55:22,1769327722821,api.jabclubegy.com/api/admin/locations,GET,,,sd92m-1769327721415-89dc72cfe197,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,,serverless,,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:21,1769327721415,api.jabclubegy.com/api/admin/locations,GET,,,sd92m-1769327721415-89dc72cfe197,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,366,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2CZ8SX3DTXTEVTPPC3PSQ,,-1
+2026-01-25 07:55:22,1769327722814,api.jabclubegy.com/api/admin/class-types,GET,,500,rzhm2-1769327721415-6b21328fa95a,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/class-types,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:21,1769327721415,api.jabclubegy.com/api/admin/class-types,GET,,500,rzhm2-1769327721415-6b21328fa95a,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,360,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2CZA0Q4RNNRYWZAWM3MX2,,-1
+2026-01-25 07:55:22,1769327722778,api.jabclubegy.com/api/admin/coaches,GET,,500,cbh8j-1769327721415-70f18ae53329,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",error,production,main,MISS,serverless,/api/admin/coaches,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,,,,,"TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.
+TypeError: OAuth2Strategy requires a clientID option
+    at Strategy.OAuth2Strategy (/var/task/backend/node_modules/passport-oauth2/lib/strategy.js:87:34)
+    at new Strategy (/var/task/backend/node_modules/passport-google-oauth20/lib/strategy.js:52:18)
+    at Object.<anonymous> (/var/task/backend/src/config/passport.js:10:24)
+    at Module.<anonymous> (/opt/rust/bytecode.js:2:1435)
+    at A.l._compile (/opt/rust/bytecode.js:2:3182)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1480:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1299:12)
+    at /opt/rust/nodejs.js:2:13531
+    at Module.un (/opt/rust/nodejs.js:2:13909)
+Node.js process exited with exit status: 1. The logs above can help with debugging the issue.",prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,,,
+2026-01-25 07:55:21,1769327721415,api.jabclubegy.com/api/admin/coaches,GET,,500,cbh8j-1769327721415-70f18ae53329,"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",,production,main,MISS,serverless,/api/index.ts,api.jabclubegy.com,api.jabclubegy.com,dpl_H8SxwqhkGkiQeHBCoPJWpu9St5wH,348,iad1,-1,2048,,prj_PiULWFp3ADNxPLPvR42vjFB7jwQS,,,01KFT2CZ98A438N74QZD4KCCKZ,,-1

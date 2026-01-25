@@ -342,6 +342,7 @@ import memberRoutes from './routes/memberRoutes';
 import adminRoutes from './routes/adminRoutes';
 import classRoutes from './routes/classRoutes';
 import coachRoutes from './routes/coachRoutes';
+import qrRoutes from './routes/qrRoutes';
 
 // API routes
 app.get('/api', (req, res) => {
@@ -362,6 +363,9 @@ app.use('/api/classes', classRoutes);
 
 // Coach routes
 app.use('/api/coach', coachRoutes);
+
+// QR code routes
+app.use('/api/qr', qrRoutes);
 
 // Import error handling middleware
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
