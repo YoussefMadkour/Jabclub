@@ -30,6 +30,20 @@ A full-stack web application for managing boxing gym bookings, member packages, 
 - **Email Notifications**: Automated email notifications for key events
 - **Responsive Design**: Mobile and desktop optimized
 
+## 🔒 Security Features
+
+- **Rate Limiting**: Protection against brute force and abuse
+  - **Auth endpoints** (login/signup): 5 requests per 15 minutes
+  - **General API**: 100 requests per 15 minutes
+  - **Current user check**: 30 requests per minute
+  - Returns HTTP 429 with clear error messages when limits exceeded
+- **Session-based Authentication**: Secure PostgreSQL-backed sessions
+- **Password Hashing**: Bcrypt with salt rounds
+- **Secure Cookies**: `httpOnly`, `secure`, `sameSite` flags enabled
+- **CORS Protection**: Restricted to allowed origins
+- **Input Validation**: Express validator for all user inputs
+- **SQL Injection Protection**: Prisma ORM with parameterized queries
+
 ## 🛠 Tech Stack
 
 ### Frontend

@@ -318,10 +318,18 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check endpoint
+// Health check endpoint (no rate limiting)
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'JabClub API is running' });
 });
+
+// Import rate limiters
+import { generalRateLimiter } from './middleware/rateLimiter';
+
+// Apply global rate limiter to all /api routes
+// This prevents abuse while being lenient enough for normal use
+// Individual routes can have stricter rate limits
+app.use('/api', generalRateLimiter);
 
 // Import routes
 import authRoutes from './routes/authRoutes';
@@ -335,7 +343,7 @@ app.get('/api', (req, res) => {
   res.json({ message: 'JabClub API v1.0' });
 });
 
-// Auth routes
+// Auth routes (have their own stricter rate limiting)
 app.use('/api/auth', authRoutes);
 
 // Member routes
