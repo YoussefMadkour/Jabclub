@@ -55,25 +55,33 @@ if (isVercelServerless) {
       console.error('❌ PostgreSQL session store error:', error);
     });
     
-    // Log when sessions are loaded
+    // CRITICAL: Wrap get method BEFORE passing to express-session
+    // This ensures express-session uses our wrapped version
     const originalGet = sessionStore.get.bind(sessionStore);
-    sessionStore.get = function(sessionId: string, callback: (err: any, session?: any) => void) {
-      console.log('🔍 Loading session from PostgreSQL:', sessionId);
+    const wrappedGet = function(sessionId: string, callback: (err: any, session?: any) => void) {
+      console.log('🔍 Loading session from PostgreSQL:', {
+        sessionId,
+        timestamp: new Date().toISOString(),
+      });
       originalGet(sessionId, (err, session) => {
         if (err) {
           console.error('❌ Error loading session:', err);
-        } else if (session) {
+          return callback(err);
+        }
+        if (session) {
           console.log('✅ Session loaded from PostgreSQL:', {
             sessionId,
             userId: session.userId,
             role: session.role,
+            cookie: session.cookie,
           });
         } else {
           console.warn('⚠️ Session not found in PostgreSQL:', sessionId);
         }
-        callback(err, session);
+        callback(null, session);
       });
     };
+    sessionStore.get = wrappedGet;
     
     // Log when sessions are saved
     const originalSet = sessionStore.set.bind(sessionStore);
@@ -86,6 +94,15 @@ if (isVercelServerless) {
       originalSet(sessionId, session, callback);
     };
     
+    // Also wrap destroy and touch methods for completeness
+    const originalDestroy = sessionStore.destroy?.bind(sessionStore);
+    if (originalDestroy) {
+      sessionStore.destroy = function(sessionId: string, callback?: (err?: any) => void) {
+        console.log('🗑️ Destroying session:', sessionId);
+        originalDestroy(sessionId, callback);
+      };
+    }
+    
     console.log('✅ PostgreSQL session store created successfully');
   } catch (error) {
     console.error('❌ Failed to create PostgreSQL session store:', error);
@@ -93,6 +110,27 @@ if (isVercelServerless) {
     sessionStore = undefined;
   }
 }
+
+// Add middleware to parse cookies BEFORE session middleware
+// This ensures cookies are available for express-session to read
+app.use((req, res, next) => {
+  // Log incoming cookies for debugging
+  const cookieHeader = req.headers.cookie;
+  if (cookieHeader) {
+    const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('jabclub.sid='));
+    if (sessionCookie) {
+      const sessionId = sessionCookie.split('=')[1]?.trim();
+      console.log('🍪 Cookie found in request:', {
+        cookieHeader: cookieHeader.substring(0, 100) + '...',
+        sessionCookie: sessionCookie,
+        sessionId: sessionId,
+        url: req.url,
+        method: req.method,
+      });
+    }
+  }
+  next();
+});
 
 // Session configuration
 const sessionConfig: session.SessionOptions = {
@@ -113,7 +151,7 @@ const sessionConfig: session.SessionOptions = {
 
 app.use(session(sessionConfig));
 
-// Add middleware to log session info for debugging - MUST be after session middleware
+// Add middleware to log session info and fix session loading - MUST be after session middleware
 app.use((req, res, next) => {
   // Log session info on every request (always log in production for debugging)
   const cookieHeader = req.headers.cookie;
@@ -122,6 +160,41 @@ app.use((req, res, next) => {
   
   // Check if session store is actually being used
   const storeType = req.sessionStore?.constructor?.name || 'unknown';
+  
+  // CRITICAL FIX: If cookie has a session ID but req.sessionID is different,
+  // manually load the session from the store
+  if (sessionCookieValue && req.sessionID !== sessionCookieValue && req.sessionStore && !req.session.userId) {
+    console.log('🔧 Session ID mismatch detected, attempting to load correct session:', {
+      cookieSessionID: sessionCookieValue,
+      reqSessionID: req.sessionID,
+    });
+    
+    // Manually call store.get() to load the session
+    req.sessionStore.get(sessionCookieValue, (err, session) => {
+      if (err) {
+        console.error('❌ Error loading session from store:', err);
+        return next();
+      }
+      if (session) {
+        console.log('✅ Successfully loaded session from store:', {
+          sessionId: sessionCookieValue,
+          userId: session.userId,
+          role: session.role,
+        });
+        // Replace the session data
+        Object.assign(req.session, session);
+        // Update session ID to match cookie
+        (req as any).sessionID = sessionCookieValue;
+        // Mark session as loaded
+        (req.session as any).cookie = session.cookie;
+        return next();
+      } else {
+        console.warn('⚠️ Session not found in store:', sessionCookieValue);
+        return next();
+      }
+    });
+    return; // Don't continue until session is loaded
+  }
   
   console.log('📋 Request session info:', {
     sessionID: req.sessionID,
