@@ -117,7 +117,7 @@ export default function QRCodeModal({
                 </p>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Footer */}
