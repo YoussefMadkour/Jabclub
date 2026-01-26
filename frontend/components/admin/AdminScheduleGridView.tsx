@@ -85,14 +85,23 @@ export default function AdminScheduleGridView() {
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
+  // Helper function to convert 24-hour time string to 12-hour AM/PM format
+  const formatTime12Hour = (time24: string): string => {
+    if (!time24 || !time24.includes(':')) return time24;
+    const [hours, minutes] = time24.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+    return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
+  };
+
   // Define time slots
   const timeSlots = [
-    { start: '09:30', end: '10:30', label: '9:30 AM - 10:30 AM' },
-    { start: '18:00', end: '19:00', label: '6:00 PM - 7:00 PM' },
-    { start: '19:00', end: '20:00', label: '7:00 PM - 8:00 PM' },
-    { start: '20:00', end: '21:00', label: '8:00 PM - 9:00 PM' },
-    { start: '20:30', end: '21:30', label: '8:30 PM - 9:30 PM' },
-    { start: '21:00', end: '22:00', label: '9:00 PM - 10:00 PM' }
+    { start: '09:30', end: '10:30', label: '9:30 AM - 10:30 AM', mobileLabel: '9:30 AM' },
+    { start: '18:00', end: '19:00', label: '6:00 PM - 7:00 PM', mobileLabel: '6:00 PM' },
+    { start: '19:00', end: '20:00', label: '7:00 PM - 8:00 PM', mobileLabel: '7:00 PM' },
+    { start: '20:00', end: '21:00', label: '8:00 PM - 9:00 PM', mobileLabel: '8:00 PM' },
+    { start: '20:30', end: '21:30', label: '8:30 PM - 9:30 PM', mobileLabel: '8:30 PM' },
+    { start: '21:00', end: '22:00', label: '9:00 PM - 10:00 PM', mobileLabel: '9:00 PM' }
   ];
 
   // Helper function to get class for a specific day and time slot
@@ -217,7 +226,7 @@ export default function AdminScheduleGridView() {
             {/* Header Row */}
             <thead>
               <tr>
-                <th className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs font-medium py-2 sm:py-3 px-2 sm:px-4 text-left border-r border-gray-700 sticky left-0 z-10">
+                <th className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs font-medium py-2 sm:py-3 px-3 sm:px-4 text-left border-r border-gray-700 sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
                   TIME
                 </th>
                 {daysOfWeek.map((day) => (
@@ -237,9 +246,9 @@ export default function AdminScheduleGridView() {
               {timeSlots.map((timeSlot, slotIndex) => (
                 <tr key={`${timeSlot.start}-${timeSlot.end}`} className="border-b border-gray-700">
                   {/* Time Column */}
-                  <td className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs py-2 sm:py-4 px-2 sm:px-4 border-r border-gray-700 whitespace-nowrap sticky left-0 z-10">
+                  <td className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs py-2 sm:py-4 px-3 sm:px-4 border-r border-gray-700 whitespace-nowrap sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
                     <div className="hidden sm:block">{timeSlot.label}</div>
-                    <div className="sm:hidden">{timeSlot.start}</div>
+                    <div className="sm:hidden font-medium">{timeSlot.mobileLabel || formatTime12Hour(timeSlot.start)}</div>
                   </td>
                   
                   {/* Day Columns */}
