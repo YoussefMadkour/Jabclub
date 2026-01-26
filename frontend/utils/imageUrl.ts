@@ -7,6 +7,21 @@ export const getStaticFileUrl = (path: string): string => {
     return path; // Server-side rendering
   }
   
+  // If path is empty or null, return as-is
+  if (!path) {
+    return path;
+  }
+  
+  // If it's already a full URL (blob storage or external URL), return as-is
+  if (path.startsWith('https://') || path.startsWith('http://')) {
+    return path;
+  }
+  
+  // If it's a blob storage URL (might be missing protocol), add https://
+  if (path.includes('blob.vercel-storage.com')) {
+    return path.startsWith('https://') ? path : `https://${path}`;
+  }
+  
   // Get the API base URL from environment or use default
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
   
