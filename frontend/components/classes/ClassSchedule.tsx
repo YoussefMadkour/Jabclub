@@ -222,7 +222,7 @@ export default function ClassSchedule() {
           <div className="mt-4">
             <button
               onClick={handleClearFilters}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm text-[#FF7A00] hover:text-orange-800 font-medium"
             >
               Clear all filters
             </button>
@@ -246,7 +246,7 @@ export default function ClassSchedule() {
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
-                className="mt-2 text-blue-600 hover:text-blue-800 font-medium"
+                className="mt-2 text-[#FF7A00] hover:text-orange-800 font-medium"
               >
                 Clear filters to see all classes
               </button>

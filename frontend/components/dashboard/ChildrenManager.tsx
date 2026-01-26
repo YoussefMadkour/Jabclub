@@ -203,7 +203,7 @@ export default function ChildrenManager() {
           <h2 className="text-2xl font-bold text-gray-900">Children Profiles</h2>
           <button
             onClick={handleAddClick}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -217,7 +217,7 @@ export default function ChildrenManager() {
             {children.map((child) => (
               <div
                 key={child.id}
-                className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                className="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex-1">
@@ -235,7 +235,7 @@ export default function ChildrenManager() {
                     
                     {child.upcomingBookingsCount > 0 && (
                       <div className="mt-2 flex items-center gap-2 text-sm">
-                        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full font-medium">
+                        <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">
                           {child.upcomingBookingsCount} upcoming {child.upcomingBookingsCount === 1 ? 'class' : 'classes'}
                         </span>
                       </div>
@@ -271,7 +271,7 @@ export default function ChildrenManager() {
             </p>
             <button
               onClick={handleAddClick}
-              className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-6 py-3 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors"
             >
               Add Your First Child
             </button>
@@ -289,7 +289,7 @@ export default function ChildrenManager() {
 
           <div className="flex min-h-full items-center justify-center p-4">
             <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 rounded-t-lg">
+              <div className="bg-gradient-to-r from-[#FF7A00] to-[#F57A00] px-6 py-4 rounded-t-lg">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">Add Child Profile</h2>
                   <button
@@ -367,7 +367,7 @@ export default function ChildrenManager() {
                     <button
                       onClick={handleAddSubmit}
                       disabled={isSubmitting}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors disabled:opacity-50"
                     >
                       {isSubmitting ? 'Adding...' : 'Add Child'}
                     </button>
@@ -389,7 +389,7 @@ export default function ChildrenManager() {
 
           <div className="flex min-h-full items-center justify-center p-4">
             <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 rounded-t-lg">
+              <div className="bg-gradient-to-r from-[#FF7A00] to-[#F57A00] px-6 py-4 rounded-t-lg">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">Edit Child Profile</h2>
                   <button
@@ -467,7 +467,7 @@ export default function ChildrenManager() {
                     <button
                       onClick={handleEditSubmit}
                       disabled={isSubmitting}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors disabled:opacity-50"
                     >
                       {isSubmitting ? 'Saving...' : 'Save Changes'}
                     </button>

@@ -16,6 +16,7 @@ export default function MemberDashboard() {
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [qrData, setQrData] = useState<any>(null);
   const [qrLoading, setQrLoading] = useState(false);
+  const [qrLoadingBookingId, setQrLoadingBookingId] = useState<number | null>(null);
   const [qrError, setQrError] = useState<string | null>(null);
 
   const handleCancelClick = (booking: any) => {
@@ -37,13 +38,30 @@ export default function MemberDashboard() {
     }
   };
 
+  const handleGenerateQRCode = async (bookingId: number) => {
+    setQrLoading(true);
+    setQrLoadingBookingId(bookingId);
+    setQrError(null);
+
+    try {
+      const response = await apiClient.post(`/qr/generate/${bookingId}`);
+      setQrData(response.data);
+      setIsQRModalOpen(true);
+    } catch (error: any) {
+      setQrError(error.response?.data?.error || 'Failed to generate QR code');
+    } finally {
+      setQrLoading(false);
+      setQrLoadingBookingId(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
-        </div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+          </div>
       </div>
     );
   }
@@ -79,7 +97,7 @@ export default function MemberDashboard() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-sm text-gray-600 mb-1">Available Credits</p>
-            <p className="text-4xl font-bold text-blue-600">{credits.total}</p>
+            <p className="text-4xl font-bold text-[#FF7A00]">{credits.total}</p>
           </div>
           
           {/* Visual indicator */}
@@ -105,12 +123,12 @@ export default function MemberDashboard() {
           <div className={`p-4 rounded-lg mb-4 ${
             nextExpiringPackage.daysUntilExpiry <= 7 
               ? 'bg-red-50 border border-red-200' 
-              : 'bg-blue-50 border border-blue-200'
+              : 'bg-orange-50 border border-orange-200'
           }`}>
             <div className="flex items-start justify-between">
               <div>
                 <p className={`font-medium ${
-                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-800' : 'text-blue-800'
+                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-800' : 'text-orange-800'
                 }`}>
                   {nextExpiringPackage.daysUntilExpiry <= 7 ? '⚠️ Expiring Soon' : 'ℹ️ Next Expiry'}
                 </p>
@@ -120,7 +138,7 @@ export default function MemberDashboard() {
               </div>
               <div className="text-right">
                 <p className={`text-lg font-bold ${
-                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-600' : 'text-blue-600'
+                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-600' : 'text-[#FF7A00]'
                 }`}>
                   {nextExpiringPackage.daysUntilExpiry} days
                 </p>
@@ -138,7 +156,7 @@ export default function MemberDashboard() {
             <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Active Packages</h3>
             {credits.packages.map((pkg: any) => {
               const isExpiringSoon = pkg.daysUntilExpiry <= 7;
-              const progressColor = isExpiringSoon ? 'bg-red-600' : 'bg-blue-600';
+              const progressColor = isExpiringSoon ? 'bg-red-600' : 'bg-[#FF7A00]';
               
               return (
                 <div 
@@ -249,7 +267,7 @@ export default function MemberDashboard() {
             <p className="text-gray-600 mb-2">No active packages</p>
             <button 
               onClick={() => router.push('/purchase')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors touch-target"
             >
               Purchase Package
             </button>
@@ -270,7 +288,7 @@ export default function MemberDashboard() {
               const canCancel = hoursUntilClass >= 1;
 
               return (
-                <div key={booking.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+                <div key={booking.id} className="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
@@ -331,11 +349,11 @@ export default function MemberDashboard() {
                       {canCancel && (
                         <button
                           onClick={() => handleGenerateQRCode(booking.id)}
-                          disabled={qrLoading && selectedBooking?.id === booking.id}
+                          disabled={qrLoading && qrLoadingBookingId === booking.id}
                           className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Get your check-in QR code for this class"
                         >
-                          {qrLoading && selectedBooking?.id === booking.id ? (
+                          {qrLoading && qrLoadingBookingId === booking.id ? (
                             <span className="flex items-center gap-2">
                               <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -364,7 +382,7 @@ export default function MemberDashboard() {
             <p className="text-gray-600 mb-2">No upcoming bookings</p>
             <button 
               onClick={() => router.push('/classes')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors touch-target"
             >
               Browse Classes
             </button>
@@ -416,7 +434,7 @@ export default function MemberDashboard() {
                       </span>
                     )}
                     {booking.status === 'confirmed' && (
-                      <span className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium">
+                      <span className="px-3 py-1 bg-orange-100 text-orange-800 text-sm rounded-full font-medium">
                         Completed
                       </span>
                     )}

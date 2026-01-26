@@ -262,7 +262,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
               <p className="text-lg font-medium">Upload QR Code</p>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="mt-4 px-6 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium"
               >
                 Choose Image
               </button>
@@ -289,7 +289,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
       <div className="mt-4 text-center">
         <button
           onClick={toggleScannerMode}
-          className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+          className="text-[#FF7A00] hover:text-orange-700 text-sm font-medium transition-colors"
           disabled={disabled || processing}
         >
           {useCamera ? 'Use File Upload Instead' : 'Use Camera Instead'}
@@ -299,19 +299,19 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
       {/* Instructions */}
       <div className="mt-4 space-y-2">
         <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#FF7A00] font-semibold text-xs">
             1
           </div>
           <p>{useCamera ? 'Position QR code within green frame' : 'Upload a clear image of the QR code'}</p>
         </div>
         <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#FF7A00] font-semibold text-xs">
             2
           </div>
           <p>{useCamera ? 'Hold steady until QR code is recognized' : 'Ensure the QR code is clearly visible'}</p>
         </div>
         <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#FF7A00] font-semibold text-xs">
             3
           </div>
           <p>Wait for confirmation before scanning next</p>

@@ -311,14 +311,14 @@ export default function MembersList() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditModal(member)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-[#FF7A00] hover:text-orange-900"
                         >
                           Edit
                         </button>
                         <span className="text-gray-300">|</span>
                         <Link
                           href={`/admin/members/${member.id}`}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-[#FF7A00] hover:text-orange-900"
                         >
                           View Details →
                         </Link>
@@ -401,7 +401,7 @@ export default function MembersList() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update'}
               </button>

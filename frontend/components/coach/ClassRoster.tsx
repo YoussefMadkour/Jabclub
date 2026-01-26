@@ -142,7 +142,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
             <div className="flex items-center gap-2 mb-2">
               <h1 className="text-3xl font-bold text-gray-900">{classInfo.classType}</h1>
               {isToday && (
-                <span className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full font-medium">
+                <span className="px-3 py-1 bg-[#FF7A00] text-white text-sm rounded-full font-medium">
                   Today
                 </span>
               )}
@@ -250,10 +250,10 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
           </div>
         </div>
         
-        <div className="bg-blue-50 border border-blue-200 rounded-lg shadow-md p-4">
+        <div className="bg-orange-50 border border-orange-200 rounded-lg shadow-md p-4">
           <div className="text-center">
-            <p className="text-3xl font-bold text-blue-600">{summary.confirmed}</p>
-            <p className="text-sm text-blue-800 mt-1">Confirmed</p>
+            <p className="text-3xl font-bold text-[#FF7A00]">{summary.confirmed}</p>
+            <p className="text-sm text-orange-800 mt-1">Confirmed</p>
           </div>
         </div>
         
@@ -300,7 +300,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                         </span>
                       )}
                       {!booking.isChildBooking && booking.bookedFor !== 'Self' && (
-                        <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+                        <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full font-medium">
                           {booking.bookedFor}
                         </span>
                       )}
@@ -316,7 +316,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                       )}
                       <Link
                         href={`/coach/members/${booking.memberId}`}
-                        className="inline-block mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        className="inline-block mt-2 text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
                       >
                         View Member Details →
                       </Link>
@@ -376,12 +376,12 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
 
       {/* Attendance Instructions */}
       {isToday && summary.confirmed > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <span className="text-2xl">ℹ️</span>
             <div>
               <p className="font-medium text-blue-900">Attendance Marking</p>
-              <p className="text-sm text-blue-800 mt-1">
+              <p className="text-sm text-orange-800 mt-1">
                 Mark attendance for each participant as they arrive. Use "Present" for attendees and "No-Show" for those who don't show up.
                 Attendance can only be marked on the day of the class.
               </p>

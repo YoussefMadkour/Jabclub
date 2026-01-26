@@ -63,9 +63,9 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
       {/* Header with class type */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+      <div className="bg-gradient-to-r from-[#FF7A00] to-[#F57A00] px-6 py-4">
         <h3 className="text-xl font-bold text-white">{classInstance.classType}</h3>
-        <p className="text-blue-100 text-sm mt-1">{classInstance.duration} minutes</p>
+        <p className="text-orange-100 text-sm mt-1">{classInstance.duration} minutes</p>
       </div>
 
       {/* Content */}
@@ -131,10 +131,10 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
         <button
           onClick={handleBookClick}
           disabled={classInstance.isFull}
-          className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors duration-200 ${
+          className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors duration-200 touch-target ${
             classInstance.isFull
               ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800'
+              : 'bg-[#FF7A00] text-white hover:bg-[#F57A00] active:bg-[#E56A00]'
           }`}
         >
           {classInstance.isFull ? 'Class Full' : 'Book Class'}

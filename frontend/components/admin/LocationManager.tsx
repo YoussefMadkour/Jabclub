@@ -190,7 +190,7 @@ export default function LocationManager() {
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -256,7 +256,7 @@ export default function LocationManager() {
               <div className="flex space-x-2 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => openEditModal(location)}
-                  className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors text-sm font-medium"
+                  className="flex-1 px-3 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg transition-colors text-sm font-medium"
                 >
                   Edit
                 </button>
@@ -328,7 +328,7 @@ export default function LocationManager() {
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Location'}
               </button>
@@ -384,7 +384,7 @@ export default function LocationManager() {
                   id="isActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
                   Active
@@ -406,7 +406,7 @@ export default function LocationManager() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Location'}
               </button>

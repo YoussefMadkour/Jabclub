@@ -82,7 +82,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00]"></div>
       </div>
     );
   }
@@ -215,7 +215,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
               className={`bg-white border-2 rounded-lg p-6 hover:shadow-lg transition-all duration-200 ${
                 isMemberPrice 
                   ? 'border-purple-300 hover:border-purple-500' 
-                  : 'border-gray-200 hover:border-blue-500'
+                  : 'border-gray-200 hover:border-[#FF7A00]'
               }`}
           >
             <div className="text-center">
@@ -229,7 +229,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
               <h3 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
               
               <div className="my-4">
-                  <div className={`text-4xl font-bold ${isMemberPrice ? 'text-purple-600' : 'text-blue-600'}`}>
+                  <div className={`text-4xl font-bold ${isMemberPrice ? 'text-purple-600' : 'text-[#FF7A00]'}`}>
                     EGP {totalAmount.toFixed(2)}
                   </div>
                   {includeVat && (
@@ -258,7 +258,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
                 </div>
                 
                 <div className="flex items-center justify-center text-gray-700">
-                  <svg className="w-5 h-5 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 mr-2 text-[#FF7A00]" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
                   <span>Valid for {pkg.expiryDays} days</span>
@@ -271,7 +271,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
 
               <button
                   onClick={() => onSelectPackage(pkg.id, pkg.name, displayPrice, selectedLocationId!)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+                className="w-full bg-[#FF7A00] hover:bg-[#F57A00] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 touch-target"
               >
                 Select Package
               </button>

@@ -247,7 +247,7 @@ export default function BookingManager() {
       case 'cancelled':
         return 'bg-red-100 text-red-800';
       case 'attended':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-orange-100 text-orange-800';
       case 'no_show':
         return 'bg-yellow-100 text-yellow-800';
       default:
@@ -311,7 +311,7 @@ export default function BookingManager() {
               setShowCreateModal(true);
               fetchClasses();
             }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -399,7 +399,7 @@ export default function BookingManager() {
                         <div className="text-sm text-gray-500">{booking.member.email}</div>
                         <Link
                           href={`/admin/members/${booking.member.id}`}
-                          className="text-xs text-blue-600 hover:text-blue-700 font-medium mt-1 inline-block"
+                          className="text-xs text-[#FF7A00] hover:text-orange-700 font-medium mt-1 inline-block"
                         >
                           View Details →
                         </Link>
@@ -505,7 +505,7 @@ export default function BookingManager() {
               <button
                 onClick={handleCreateBooking}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Booking'}
               </button>

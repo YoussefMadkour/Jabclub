@@ -166,7 +166,7 @@ export default function PaymentUpload({
     <div className="bg-white rounded-lg p-6 max-w-2xl mx-auto">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Payment Proof</h2>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
           <p className="text-sm text-gray-700">
             <span className="font-semibold">Package:</span> {packageName}
           </p>
@@ -186,7 +186,7 @@ export default function PaymentUpload({
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             isDragging
-              ? 'border-blue-500 bg-blue-50'
+              ? 'border-[#FF7A00] bg-orange-50'
               : 'border-gray-300 hover:border-gray-400'
           }`}
         >
@@ -218,7 +218,7 @@ export default function PaymentUpload({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-blue-600 hover:text-blue-700 font-semibold"
+            className="text-[#FF7A00] hover:text-[#F57A00] font-semibold"
           >
             browse files
           </button>
@@ -262,7 +262,7 @@ export default function PaymentUpload({
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-[#FF7A00] h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -296,7 +296,7 @@ export default function PaymentUpload({
         <button
           onClick={handleUpload}
           disabled={!selectedFile || uploading}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
         >
           {uploading ? 'Uploading...' : 'Submit Payment'}
         </button>

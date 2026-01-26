@@ -156,7 +156,7 @@ export default function BookingModal({
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 rounded-t-lg">
+          <div className="bg-gradient-to-r from-[#FF7A00] to-[#F57A00] px-6 py-4 rounded-t-lg">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Book Class</h2>
               <button
@@ -227,11 +227,11 @@ export default function BookingModal({
                 </div>
 
                 {/* Credit Balance */}
-                <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="mb-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Available Credits</p>
-                      <p className="text-2xl font-bold text-blue-600">{credits ?? '...'}</p>
+                      <p className="text-2xl font-bold text-[#FF7A00]">{credits ?? '...'}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Cost</p>
@@ -251,7 +251,7 @@ export default function BookingModal({
                   <select
                     value={selectedBookingFor}
                     onChange={(e) => setSelectedBookingFor(e.target.value === 'self' ? 'self' : parseInt(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7A00] focus:border-transparent"
                     disabled={isLoading}
                   >
                     <option value="self">Yourself</option>
@@ -289,7 +289,7 @@ export default function BookingModal({
                   <button
                     onClick={handleBooking}
                     disabled={isLoading || credits === null || credits < 1}
-                    className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                    className="flex-1 px-4 py-3 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold touch-target"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center">

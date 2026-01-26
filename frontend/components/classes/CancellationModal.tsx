@@ -135,14 +135,14 @@ export default function CancellationModal({
             </div>
           ) : (
             <div className="mb-6">
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+              <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg mb-4">
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">ℹ️</span>
                   <div>
-                    <p className="font-semibold text-blue-800 mb-1">
+                    <p className="font-semibold text-orange-800 mb-1">
                       Credit Refund
                     </p>
-                    <p className="text-sm text-blue-700">
+                    <p className="text-sm text-orange-700">
                       One session credit will be refunded to your account upon cancellation.
                     </p>
                   </div>

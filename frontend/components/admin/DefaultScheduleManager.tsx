@@ -476,7 +476,7 @@ export default function DefaultScheduleManager() {
           <div className="flex gap-2">
             <button
               onClick={openCreateModal}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors"
             >
               + Add Schedule
             </button>
@@ -502,12 +502,12 @@ export default function DefaultScheduleManager() {
       </div>
 
       {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
         <div className="flex items-start">
-          <svg className="w-5 h-5 text-blue-600 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-5 h-5 text-[#FF7A00] mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
-          <div className="text-sm text-blue-800">
+          <div className="text-sm text-orange-800">
             <p className="font-semibold mb-1">How Default Schedules Work:</p>
             <ul className="list-disc list-inside space-y-1 ml-2">
               <li>Default schedules automatically generate classes each month</li>
@@ -621,7 +621,7 @@ export default function DefaultScheduleManager() {
                                   setSelectedSchedule(schedule);
                                   setShowEditModal(true);
                                 }}
-                                className="text-blue-600 hover:text-blue-900"
+                                className="text-[#FF7A00] hover:text-orange-900"
                               >
                                 Edit
                               </button>
@@ -760,7 +760,7 @@ export default function DefaultScheduleManager() {
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
               >
                 {processing ? 'Creating...' : 'Create Schedule'}
               </button>
@@ -881,7 +881,7 @@ export default function DefaultScheduleManager() {
                       name="applyOption"
                       checked={!applyToCurrentMonth}
                       onChange={() => setApplyToCurrentMonth(false)}
-                      className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                      className="mr-2 h-4 w-4 text-[#FF7A00] focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">
                       Future months only (recommended)
@@ -893,7 +893,7 @@ export default function DefaultScheduleManager() {
                       name="applyOption"
                       checked={applyToCurrentMonth}
                       onChange={() => setApplyToCurrentMonth(true)}
-                      className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                      className="mr-2 h-4 w-4 text-[#FF7A00] focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">
                       This month and future months
@@ -917,7 +917,7 @@ export default function DefaultScheduleManager() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update Schedule'}
               </button>

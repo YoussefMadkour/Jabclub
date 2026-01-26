@@ -163,7 +163,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
       case 'no_show':
         return 'bg-red-100 text-red-800';
       case 'confirmed':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-orange-100 text-orange-800';
       case 'cancelled':
         return 'bg-gray-100 text-gray-800';
       default:
@@ -230,7 +230,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <p className="text-sm text-gray-600">Confirmed</p>
-          <p className="text-2xl font-bold text-blue-600">{data.statistics.confirmedBookings}</p>
+          <p className="text-2xl font-bold text-[#FF7A00]">{data.statistics.confirmedBookings}</p>
         </div>
         {isAdmin && data.statistics.totalCredits !== undefined && (
           <>
@@ -304,7 +304,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
                     </div>
                     <div className="bg-white rounded-lg p-3">
                       <p className="text-xs text-gray-600">Confirmed</p>
-                      <p className="text-xl font-bold text-blue-600">
+                      <p className="text-xl font-bold text-[#FF7A00]">
                         {child.statistics.confirmedBookings || 0}
                       </p>
                     </div>
@@ -623,7 +623,7 @@ function MemberActions({ memberId, memberData }: { memberId: number; memberData:
           <button
             onClick={handleUnfreeze}
             disabled={processing}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors disabled:opacity-50"
           >
             Unfreeze
           </button>
@@ -871,7 +871,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openPriceModal(pkg)}
-                          className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                          className="text-[#FF7A00] hover:text-orange-800 text-xs font-medium"
                         >
                           {pkg.hasCustomPrice ? 'Edit' : 'Set'}
                         </button>

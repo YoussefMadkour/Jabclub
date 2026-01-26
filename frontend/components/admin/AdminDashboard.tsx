@@ -119,7 +119,7 @@ export default function AdminDashboard() {
           {overview.pendingPaymentsCount > 0 && (
             <Link
               href="/admin/payments"
-              className="mt-3 block text-sm text-blue-600 hover:text-blue-700 font-medium"
+              className="mt-3 block text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
             >
               Review payments →
             </Link>
@@ -157,7 +157,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Upcoming Classes</p>
-              <p className="text-3xl font-bold text-blue-600">{overview.upcomingClasses}</p>
+              <p className="text-3xl font-bold text-[#FF7A00]">{overview.upcomingClasses}</p>
               <p className="text-xs text-gray-500 mt-1">Today: {overview.todayClasses}</p>
             </div>
             <div className="text-4xl">📚</div>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold text-gray-900">Recent Pending Payments</h2>
           <Link
             href="/admin/payments"
-            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            className="text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
           >
             View All →
           </Link>
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
                   </div>
                   <Link
                     href="/admin/payments"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center text-sm"
+                    className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors text-center text-sm"
                   >
                     Review
                   </Link>
@@ -244,7 +244,7 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold text-gray-900">Upcoming Classes</h2>
           <Link
             href="/admin/classes"
-            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            className="text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
           >
             View All →
           </Link>
@@ -260,8 +260,8 @@ export default function AdminDashboard() {
               return (
                 <div
                   key={classInstance.id}
-                  className={`border rounded-lg p-4 hover:border-blue-300 transition-colors ${
-                    isToday ? 'border-blue-300 bg-blue-50' : 'border-gray-200'
+                  className={`border rounded-lg p-4 hover:border-orange-300 transition-colors ${
+                    isToday ? 'border-orange-300 bg-orange-50' : 'border-gray-200'
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">{classInstance.classType}</h3>
                         {isToday && (
-                          <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full font-medium">
+                          <span className="px-2 py-1 bg-[#FF7A00] text-white text-xs rounded-full font-medium">
                             Today
                           </span>
                         )}
@@ -307,7 +307,7 @@ export default function AdminDashboard() {
                       </div>
                       <Link
                         href={`/admin/classes/${classInstance.id}/roster`}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center text-sm"
+                        className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors text-center text-sm"
                       >
                         View Details
                       </Link>
@@ -322,7 +322,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600 mb-2">No upcoming classes</p>
             <Link
               href="/admin/classes"
-              className="inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="inline-block px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors"
             >
               Create Class
             </Link>
@@ -336,7 +336,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/admin/payments"
-            className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
           >
             <div className="text-2xl mb-2">💰</div>
             <h3 className="font-semibold text-gray-900 mb-1">Review Payments</h3>
@@ -345,7 +345,7 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/classes"
-            className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
           >
             <div className="text-2xl mb-2">📚</div>
             <h3 className="font-semibold text-gray-900 mb-1">Manage Classes</h3>
@@ -354,7 +354,7 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/bookings"
-            className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
           >
             <div className="text-2xl mb-2">📅</div>
             <h3 className="font-semibold text-gray-900 mb-1">View Bookings</h3>
@@ -363,7 +363,7 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/reports/revenue"
-            className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
           >
             <div className="text-2xl mb-2">📊</div>
             <h3 className="font-semibold text-gray-900 mb-1">View Reports</h3>

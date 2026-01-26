@@ -182,7 +182,7 @@ export default function CoachesList() {
           </div>
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors"
           >
             + Add Coach
           </button>
@@ -346,14 +346,14 @@ export default function CoachesList() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditModal(coach)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-[#FF7A00] hover:text-orange-900"
                         >
                           Edit
                         </button>
                         <span className="text-gray-300">|</span>
                         <Link
                           href={`/admin/coaches/${coach.id}`}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-[#FF7A00] hover:text-orange-900"
                         >
                           View Details →
                         </Link>
@@ -436,7 +436,7 @@ export default function CoachesList() {
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
               >
                 {processing ? 'Creating...' : 'Create'}
               </button>
@@ -514,7 +514,7 @@ export default function CoachesList() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update'}
               </button>

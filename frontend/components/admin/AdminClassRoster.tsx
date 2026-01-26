@@ -98,7 +98,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
       case 'no_show':
         return 'bg-red-100 text-red-800';
       case 'confirmed':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-orange-100 text-orange-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -110,7 +110,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
       <div>
         <Link
           href="/admin/classes"
-          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
+          className="inline-flex items-center gap-2 text-[#FF7A00] hover:text-orange-700 transition-colors"
         >
           <span>←</span>
           <span>Back to Classes</span>
@@ -124,7 +124,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
             <div className="flex items-center gap-2 mb-2">
               <h1 className="text-3xl font-bold text-gray-900">{classInfo.classType}</h1>
               {isToday && (
-                <span className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full font-medium">
+                <span className="px-3 py-1 bg-[#FF7A00] text-white text-sm rounded-full font-medium">
                   Today
                 </span>
               )}
@@ -180,7 +180,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Confirmed</p>
-              <p className="text-3xl font-bold text-blue-600">{summary.confirmed}</p>
+              <p className="text-3xl font-bold text-[#FF7A00]">{summary.confirmed}</p>
             </div>
             <div className="text-4xl">⏳</div>
           </div>
@@ -257,7 +257,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
                         )}
                         <Link
                           href={`/admin/members/${booking.memberId}`}
-                          className="text-xs text-blue-600 hover:text-blue-700 font-medium mt-1 inline-block"
+                          className="text-xs text-[#FF7A00] hover:text-orange-700 font-medium mt-1 inline-block"
                         >
                           View Member →
                         </Link>
@@ -289,7 +289,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Link
                         href={`/admin/bookings?classInstanceId=${classInstanceId}`}
-                        className="text-blue-600 hover:text-blue-700"
+                        className="text-[#FF7A00] hover:text-orange-700"
                       >
                         View Booking
                       </Link>

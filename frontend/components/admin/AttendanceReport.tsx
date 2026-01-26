@@ -116,7 +116,7 @@ export default function AttendanceReport() {
             <button
               onClick={fetchReport}
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+              className="flex-1 bg-[#FF7A00] text-white px-4 py-2 rounded-md hover:bg-[#F57A00] disabled:bg-gray-400"
             >
               {loading ? 'Loading...' : 'Generate Report'}
             </button>
@@ -141,9 +141,9 @@ export default function AttendanceReport() {
           <div className="space-y-6">
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="bg-orange-50 p-4 rounded-lg">
                 <div className="text-sm text-gray-600">Total Bookings</div>
-                <div className="text-2xl font-bold text-blue-600">
+                <div className="text-2xl font-bold text-[#FF7A00]">
                   {reportData.summary.totalBookings}
                 </div>
               </div>

@@ -76,7 +76,7 @@ export default function CoachDashboard() {
               onClick={() => setFilter('today')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'today'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#FF7A00] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -86,7 +86,7 @@ export default function CoachDashboard() {
               onClick={() => setFilter('week')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'week'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#FF7A00] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -96,7 +96,7 @@ export default function CoachDashboard() {
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'all'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#FF7A00] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -126,8 +126,8 @@ export default function CoachDashboard() {
               return (
                 <div 
                   key={classInstance.id} 
-                  className={`border rounded-lg p-4 hover:border-blue-300 transition-colors ${
-                    isToday ? 'border-blue-300 bg-blue-50' : 'border-gray-200'
+                  className={`border rounded-lg p-4 hover:border-orange-300 transition-colors ${
+                    isToday ? 'border-orange-300 bg-orange-50' : 'border-gray-200'
                   }`}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -135,7 +135,7 @@ export default function CoachDashboard() {
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">{classInstance.classType}</h3>
                         {isToday && (
-                          <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded-full font-medium">
+                          <span className="px-2 py-1 bg-[#FF7A00] text-white text-xs rounded-full font-medium">
                             Today
                           </span>
                         )}
@@ -173,7 +173,7 @@ export default function CoachDashboard() {
                       </div>
                       <Link
                         href={`/coach/roster/${classInstance.id}`}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center"
+                        className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors text-center"
                       >
                         View Class
                       </Link>

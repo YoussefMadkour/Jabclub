@@ -441,7 +441,7 @@ export default function ClassScheduleManager() {
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -652,13 +652,13 @@ export default function ClassScheduleManager() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                       <Link
                         href={`/admin/classes/${classInstance.id}/roster`}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
+                        className="text-[#FF7A00] hover:text-orange-900 font-medium"
                       >
                         View Class
                       </Link>
                       <button
                         onClick={() => openEditModal(classInstance)}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
+                        className="text-[#FF7A00] hover:text-orange-900 font-medium"
                       >
                         Edit
                       </button>
@@ -773,7 +773,7 @@ export default function ClassScheduleManager() {
               <button
                 onClick={() => handleCreate(false)}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create'}
               </button>
@@ -828,8 +828,8 @@ export default function ClassScheduleManager() {
                 />
               </div>
 
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-800">
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                <p className="text-sm text-orange-800">
                   This will create multiple class instances based on your selected frequency.
                 </p>
               </div>
@@ -942,7 +942,7 @@ export default function ClassScheduleManager() {
                   id="isCancelled"
                   checked={form.isCancelled}
                   onChange={(e) => setForm({ ...form, isCancelled: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="isCancelled" className="ml-2 block text-sm text-gray-700">
                   Mark as cancelled
@@ -964,7 +964,7 @@ export default function ClassScheduleManager() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Class'}
               </button>

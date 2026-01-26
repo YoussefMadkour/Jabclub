@@ -191,7 +191,7 @@ export default function PaymentReview() {
             </div>
 
             {/* Package Info */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-4">
+            <div className="bg-orange-50 rounded-lg p-4 mb-4">
               <div className="flex justify-between items-start mb-2">
                 <div>
                   <p className="font-semibold text-gray-900">{payment.package.name}</p>
@@ -199,7 +199,7 @@ export default function PaymentReview() {
                   <p className="text-sm text-gray-600">Valid for {payment.package.expiryDays} days</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-blue-600">EGP {typeof payment.amount === 'string' ? parseFloat(payment.amount).toFixed(2) : payment.amount.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-[#FF7A00]">EGP {typeof payment.amount === 'string' ? parseFloat(payment.amount).toFixed(2) : payment.amount.toFixed(2)}</p>
                 </div>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function PaymentReview() {
             <div className="mb-4">
               <button
                 onClick={() => openImageModal(payment)}
-                className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 hover:bg-blue-50 transition-all"
+                className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-[#FF7A00] hover:bg-orange-50 transition-all"
               >
                 <div className="flex items-center justify-center space-x-2">
                   <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

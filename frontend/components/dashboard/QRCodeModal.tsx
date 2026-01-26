@@ -101,9 +101,9 @@ export default function QRCodeModal({
                   </p>
                 </div>
 
-                <div className="text-center bg-blue-50 rounded-lg p-3">
+                <div className="text-center bg-orange-50 rounded-lg p-3">
                   <p className="text-sm text-gray-600">For</p>
-                  <p className="font-semibold text-blue-900">{classInfo.forChild}</p>
+                  <p className="font-semibold text-orange-900">{classInfo.forChild}</p>
                 </div>
               </div>
 
@@ -124,7 +124,7 @@ export default function QRCodeModal({
         <div className="p-4 border-t bg-gray-50 rounded-b-lg">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="w-full px-4 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium touch-target"
           >
             Close
           </button>

@@ -318,7 +318,7 @@ export default function PackageManager() {
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -381,7 +381,7 @@ export default function PackageManager() {
 
                 <div className="flex items-center justify-between pt-3 border-t border-gray-200">
                   <span className="text-sm text-gray-600">Total Purchases:</span>
-                  <span className="text-sm font-semibold text-blue-600">{pkg.purchaseCount}</span>
+                  <span className="text-sm font-semibold text-[#FF7A00]">{pkg.purchaseCount}</span>
                 </div>
 
                 {/* Location Prices */}
@@ -402,7 +402,7 @@ export default function PackageManager() {
                                   openLocationPriceModal(pkg, location);
                                 }
                               }}
-                              className="text-blue-600 hover:text-blue-800 text-xs"
+                              className="text-[#FF7A00] hover:text-orange-800 text-xs"
                             >
                               Edit
                             </button>
@@ -427,7 +427,7 @@ export default function PackageManager() {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => openEditModal(pkg)}
-                    className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors text-sm font-medium"
+                    className="flex-1 px-3 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg transition-colors text-sm font-medium"
                   >
                     Edit
                   </button>
@@ -526,7 +526,7 @@ export default function PackageManager() {
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Package'}
               </button>
@@ -603,7 +603,7 @@ export default function PackageManager() {
                   id="includeVat"
                   checked={form.includeVat}
                   onChange={(e) => setForm({ ...form, includeVat: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="includeVat" className="ml-2 block text-sm text-gray-700">
                   Include VAT (14%) - Default for all locations
@@ -616,7 +616,7 @@ export default function PackageManager() {
                   id="isActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
                   Active (visible to members)
@@ -638,7 +638,7 @@ export default function PackageManager() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Package'}
               </button>
@@ -669,7 +669,7 @@ export default function PackageManager() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Purchases:</span>
-                  <span className="font-medium text-blue-600">{selectedPackage.purchaseCount}</span>
+                  <span className="font-medium text-[#FF7A00]">{selectedPackage.purchaseCount}</span>
                 </div>
               </div>
             </div>

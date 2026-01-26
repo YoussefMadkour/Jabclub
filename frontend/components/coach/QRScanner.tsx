@@ -228,19 +228,19 @@ export default function QRScanner({ onScanSuccess, onError, disabled = false }: 
       {/* Instructions */}
       <div className="mt-4 space-y-2">
         <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#FF7A00] font-semibold text-xs">
             1
           </div>
           <p>Position QR code within green frame</p>
         </div>
         <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#FF7A00] font-semibold text-xs">
             2
           </div>
           <p>Hold steady until QR code is recognized</p>
         </div>
         <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#FF7A00] font-semibold text-xs">
             3
           </div>
           <p>Wait for confirmation before scanning next</p>
@@ -251,7 +251,7 @@ export default function QRScanner({ onScanSuccess, onError, disabled = false }: 
       <div className="mt-4 text-center">
         <button
           onClick={resetScannerComponent}
-          className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
+          className="text-[#FF7A00] hover:text-orange-700 text-sm font-medium transition-colors"
         >
           Reset Scanner
         </button>
