@@ -31,7 +31,7 @@ router.post('/generate/:bookingId', async (req: any, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Fetch booking with all necessary relations
+    // Fetch the booking
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
@@ -44,7 +44,6 @@ router.post('/generate/:bookingId', async (req: any, res) => {
         },
         user: true,
         child: true,
-        memberPackage: true,
       },
     });
 
@@ -52,7 +51,7 @@ router.post('/generate/:bookingId', async (req: any, res) => {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
-    // Verify booking belongs to user
+    // Verify the booking belongs to the user
     if (booking.userId !== userId) {
       return res.status(403).json({ error: 'Access denied' });
     }
@@ -64,7 +63,7 @@ router.post('/generate/:bookingId', async (req: any, res) => {
       });
     }
 
-    // Check if class is within 2 hours (prevent early QR generation)
+    // Check if the class is within 2 hours (prevent early QR generation)
     const now = new Date();
     const classStartTime = new Date(booking.classInstance.startTime);
     const hoursUntilClass = (classStartTime.getTime() - now.getTime()) / (1000 * 60 * 60);
@@ -130,7 +129,7 @@ router.post('/validate', async (req: any, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Verify coach role
+    // Verify the coach role
     const coach = await prisma.user.findUnique({
       where: { id: coachId },
     });
@@ -170,18 +169,18 @@ router.post('/validate', async (req: any, res) => {
       });
     }
 
-    // Fetch booking with all necessary relations
+    // Fetch the booking
     const booking = await prisma.booking.findUnique({
       where: { id: payload.bookingId },
       include: {
         classInstance: {
           include: {
-            classType: true,
             coach: true,
           },
         },
         user: true,
         child: true,
+        memberPackage: true,
       },
     });
 
@@ -189,7 +188,7 @@ router.post('/validate', async (req: any, res) => {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
-    // Verify booking matches QR data
+    // Verify the booking matches the QR data
     if (booking.userId !== payload.userId) {
       return res.status(400).json({ error: 'Booking ID does not match' });
     }
@@ -198,7 +197,7 @@ router.post('/validate', async (req: any, res) => {
       return res.status(400).json({ error: 'Child ID does not match' });
     }
 
-    // Check if coach is assigned to this class
+    // Check if the coach is assigned to this class
     if (booking.classInstance.coachId !== coachId && coach.role !== 'admin') {
       return res.status(403).json({
         error: 'You are not assigned to this class',
@@ -245,7 +244,7 @@ router.post('/validate', async (req: any, res) => {
       },
     });
 
-    // Log check-in for analytics
+    // Log the check-in for analytics
     console.log(`Check-in: Booking ${booking.id} marked by Coach ${coachId}`);
 
     res.json({
@@ -299,7 +298,6 @@ router.get('/status/:bookingId', async (req: any, res) => {
     const now = new Date();
     const classStartTime = new Date(booking.classInstance.startTime);
     const hoursUntilClass = (classStartTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-
     const canGenerateQR =
       booking.status === 'confirmed' && hoursUntilClass <= 2 && hoursUntilClass >= -1;
 
