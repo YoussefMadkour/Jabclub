@@ -258,7 +258,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
         ) : !useCamera ? (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
             <div className="text-center text-white">
-              <ArrowUpTrayIcon className="h-16 w-16 mx-auto mb-4 text-blue-400" />
+              <ArrowUpTrayIcon className="h-16 w-16 mx-auto mb-4 text-orange-400" />
               <p className="text-lg font-medium">Upload QR Code</p>
               <button
                 onClick={() => fileInputRef.current?.click()}

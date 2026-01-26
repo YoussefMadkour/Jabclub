@@ -110,7 +110,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading roster...</p>
         </div>
       </div>
@@ -380,7 +380,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
           <div className="flex items-start gap-3">
             <span className="text-2xl">ℹ️</span>
             <div>
-              <p className="font-medium text-blue-900">Attendance Marking</p>
+              <p className="font-medium text-orange-900">Attendance Marking</p>
               <p className="text-sm text-orange-800 mt-1">
                 Mark attendance for each participant as they arrive. Use "Present" for attendees and "No-Show" for those who don't show up.
                 Attendance can only be marked on the day of the class.
