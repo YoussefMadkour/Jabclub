@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import MobileMenu from './MobileMenu';
+import Footer from './Footer';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface MainLayoutProps {
@@ -15,7 +16,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-main">
+    <div className="min-h-screen bg-main flex flex-col">
       <Navbar />
       
       {isAuthenticated && (
@@ -28,11 +29,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </>
       )}
 
-      <main className={`${isAuthenticated ? 'lg:pl-64' : ''} pt-16`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className={`${isAuthenticated ? 'lg:pl-64' : ''} pt-16 flex-1`}>
+        <div className={`${isAuthenticated ? 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' : ''}`}>
           {children}
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 };

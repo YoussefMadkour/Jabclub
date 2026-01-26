@@ -16,8 +16,11 @@ export default function Home() {
             <h1 className="text-4xl md:text-6xl font-bold text-headline mb-6">
               Welcome to <span className="text-primary">JabClub</span>
             </h1>
-            <p className="text-xl md:text-2xl text-body mb-8 max-w-3xl mx-auto">
-              Train like a champion. Book classes, track progress, and join the ultimate boxing community.
+            <p className="text-xl md:text-2xl text-body mb-4 max-w-3xl mx-auto">
+              The official membership platform for <span className="font-semibold text-primary">JabClub Gym</span> members.
+            </p>
+            <p className="text-lg text-body/80 mb-8 max-w-2xl mx-auto">
+              Book boxing classes, manage your session credits, track your progress, and stay connected with the JabClub community. This platform is exclusively for JabClub Gym members.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (
@@ -33,13 +36,13 @@ export default function Home() {
                     href="/signup"
                     className="btn-primary touch-target inline-flex items-center justify-center px-8 py-3 text-lg font-medium rounded-lg transition-all hover:scale-105"
                   >
-                    Get Started
+                    Member Sign Up
                   </Link>
                   <Link
                     href="/login"
                     className="btn-secondary touch-target inline-flex items-center justify-center px-8 py-3 text-lg font-medium rounded-lg transition-all hover:scale-105"
                   >
-                    Sign In
+                    Member Sign In
                   </Link>
                 </>
               )}
@@ -48,15 +51,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* About Section */}
       <section className="py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-headline mb-4">
-              Why Choose <span className="text-primary">JabClub</span>?
+              What is <span className="text-primary">JabClub</span>?
+            </h2>
+            <p className="text-lg text-body max-w-3xl mx-auto mb-6">
+              JabClub is the exclusive online platform designed specifically for JabClub Gym members. Whether you're training at Edge Fit Zayed Dunes, GOFIT Arena, or CORE, this platform helps you manage your membership seamlessly.
+            </p>
+            <p className="text-base text-body/80 max-w-2xl mx-auto">
+              <span className="font-semibold text-primary">For Members Only:</span> This platform is exclusively available to active JabClub Gym members. If you're not yet a member, visit one of our locations to join the JabClub family.
+            </p>
+          </div>
+          
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-headline mb-4">
+              What Can You Do?
             </h2>
             <p className="text-lg text-body max-w-2xl mx-auto">
-              Experience the best boxing training with our expert coaches and state-of-the-art facilities.
+              Manage your membership, book classes, and track your progress all in one place.
             </p>
           </div>
           
@@ -104,17 +119,21 @@ export default function Home() {
       <section className="py-16 lg:py-24 bg-gradient-to-r from-primary to-accent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Ready to Start Your Journey?
+            {isAuthenticated ? 'Ready to Book Your Next Class?' : 'Already a JabClub Gym Member?'}
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join JabClub today and transform your fitness with the power of boxing.
+            {isAuthenticated 
+              ? 'Browse our schedule and book your next boxing class today.'
+              : 'Sign up with your membership details to access the platform and start booking classes.'}
           </p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-primary rounded-lg transition-all hover:scale-105 touch-target"
-          >
-            Sign Up Now
-          </Link>
+          {!isAuthenticated && (
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center px-8 py-3 text-lg font-medium bg-white text-primary rounded-lg transition-all hover:scale-105 touch-target"
+            >
+              Member Sign Up
+            </Link>
+          )}
         </div>
       </section>
     </div>
