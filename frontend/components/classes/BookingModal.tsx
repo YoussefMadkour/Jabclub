@@ -12,13 +12,13 @@ interface Coach {
 interface Location {
   id: number;
   name: string;
-  address: string;
+  address?: string;
 }
 
 interface ClassInstance {
   id: number;
   classType: string;
-  description: string;
+  description?: string | null;
   duration: number;
   startTime: string;
   endTime: string;
@@ -27,7 +27,7 @@ interface ClassInstance {
   capacity: number;
   bookedCount: number;
   availableSpots: number;
-  isFull: boolean;
+  isFull?: boolean;
 }
 
 interface Child {
@@ -211,7 +211,9 @@ export default function BookingModal({
                       </svg>
                       <div>
                         <p className="font-medium text-gray-900">{classInstance.location.name}</p>
-                        <p className="text-gray-600 text-xs">{classInstance.location.address}</p>
+                        {classInstance.location.address && (
+                          <p className="text-gray-600 text-xs">{classInstance.location.address}</p>
+                        )}
                       </div>
                     </div>
 
