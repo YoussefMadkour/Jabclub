@@ -118,8 +118,12 @@ apiClient.interceptors.response.use(
     // Handle 401 Unauthorized - redirect to login
     if (status === 401) {
       if (typeof window !== 'undefined') {
-        // Only redirect if not already on login/signup page
-        if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
+        const currentPath = window.location.pathname;
+        // Only redirect if not on public pages (homepage, login, signup, privacy policy, terms)
+        const publicPaths = ['/', '/login', '/signup', '/privacy-policy', '/terms-of-service'];
+        const isPublicPath = publicPaths.includes(currentPath);
+        
+        if (!isPublicPath) {
           window.location.href = '/login';
         }
       }
