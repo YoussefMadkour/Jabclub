@@ -65,7 +65,6 @@ export default function QRCodeModal({
                   value={qrData}
                   size={200}
                   level="H"
-                  includeMargin
                 />
               </div>
 

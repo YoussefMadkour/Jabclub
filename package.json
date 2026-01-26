@@ -7,7 +7,14 @@
     "dev:frontend": "cd frontend && npm run dev",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "vercel:list": "vercel ls",
+    "vercel:list-failed": "vercel ls --status ERROR",
+    "vercel:list-jabclub": "vercel ls jabclub",
+    "vercel:list-backend": "vercel ls jabclub-api-backend",
+    "vercel:delete-failed": "./scripts/delete-failed-deployments.sh",
+    "vercel:delete-failed:dry-run": "./scripts/delete-failed-deployments.sh --dry-run",
+    "vercel:delete-failed:yes": "./scripts/delete-failed-deployments.sh --yes"
   },
   "keywords": ["booking", "gym", "management"],
   "author": "",
