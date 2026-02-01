@@ -102,6 +102,7 @@ export const getPackages = async (req: AuthRequest, res: Response): Promise<void
     }
 
     // Build include object conditionally
+    // Always include member-specific prices (apply to both first-time and renewals)
     const includeObj: any = {
       locationPackagePrices: {
         where: locationIdNum && !isNaN(locationIdNum)
@@ -124,14 +125,13 @@ export const getPackages = async (req: AuthRequest, res: Response): Promise<void
       }
     };
 
-    if (isRenewal) {
-      includeObj.memberPackagePrices = {
-        where: {
-          userId,
-          isActive: true
-        }
-      };
-    }
+    // Always include member-specific prices (apply to both first-time and renewals)
+    includeObj.memberPackagePrices = {
+      where: {
+        userId,
+        isActive: true
+      }
+    };
 
     // Fetch all active session packages with location prices and member-specific prices
     const packages = await prisma.sessionPackage.findMany({
@@ -144,18 +144,15 @@ export const getPackages = async (req: AuthRequest, res: Response): Promise<void
       }
     });
 
-    // Check if member actually has special renewal prices set (not just existing packages)
-    let hasSpecialRenewalPrices = false;
-    if (isRenewal) {
-      const memberPrices = await prisma.memberPackagePrice.findMany({
-        where: {
-          userId,
-          isActive: true
-        },
-        take: 1
-      });
-      hasSpecialRenewalPrices = memberPrices.length > 0;
-    }
+    // Check if member has special member-specific prices set (applies to all purchases)
+    const memberPrices = await prisma.memberPackagePrice.findMany({
+      where: {
+        userId,
+        isActive: true
+      },
+      take: 1
+    });
+    const hasSpecialMemberPrices = memberPrices.length > 0;
 
     // Format packages with location-specific and member-specific prices
     const formattedPackages = packages.map(pkg => {
@@ -178,8 +175,8 @@ export const getPackages = async (req: AuthRequest, res: Response): Promise<void
       // VAT priority: location-specific VAT > package-level VAT > no VAT
       let includeVat = (pkg as any).includeVat || false; // Default to package-level VAT
 
-      // Check for member-specific price (only for renewals)
-      if (isRenewal && pkgTyped.memberPackagePrices && pkgTyped.memberPackagePrices.length > 0) {
+      // Check for member-specific price (applies to all purchases, not just renewals)
+      if (pkgTyped.memberPackagePrices && pkgTyped.memberPackagePrices.length > 0) {
         const memberPrice = pkgTyped.memberPackagePrices[0];
         displayPrice = memberPrice.price;
         priceType = 'member';
@@ -207,7 +204,7 @@ export const getPackages = async (req: AuthRequest, res: Response): Promise<void
         defaultPrice: pkg.price,
         priceType, // Indicates which price is being used
         isRenewal, // Indicates if this is a renewal scenario
-        hasSpecialRenewalPrices, // Indicates if member has special prices set
+        hasSpecialRenewalPrices: hasSpecialMemberPrices, // Indicates if member has special prices set
         expiryDays: pkg.expiryDays,
         includeVat, // VAT setting from location price
         locationPrices: pkgTyped.locationPackagePrices.map((lp) => ({
@@ -216,7 +213,7 @@ export const getPackages = async (req: AuthRequest, res: Response): Promise<void
           price: lp.price,
           includeVat: lp.includeVat || false
         })),
-        memberPrice: isRenewal && pkgTyped.memberPackagePrices && pkgTyped.memberPackagePrices.length > 0
+        memberPrice: pkgTyped.memberPackagePrices && pkgTyped.memberPackagePrices.length > 0
           ? pkgTyped.memberPackagePrices[0].price
           : null,
         createdAt: pkg.createdAt
@@ -311,14 +308,13 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
       };
     }
     
-    if (isRenewal) {
-      purchaseIncludeObj.memberPackagePrices = {
-        where: {
-          userId,
-          isActive: true
-        }
-      };
-    }
+    // Always include member-specific prices (apply to both first-time and renewals)
+    purchaseIncludeObj.memberPackagePrices = {
+      where: {
+        userId,
+        isActive: true
+      }
+    };
 
     // Verify package exists and is active
     const sessionPackage = await prisma.sessionPackage.findUnique({
@@ -380,8 +376,8 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
     };
     const sessionPackageTyped = sessionPackage as SessionPackageWithRelations;
 
-    // Check for member-specific price (only for renewals)
-    if (isRenewal && sessionPackageTyped.memberPackagePrices && sessionPackageTyped.memberPackagePrices.length > 0) {
+    // Check for member-specific price (applies to all purchases, not just renewals)
+    if (sessionPackageTyped.memberPackagePrices && sessionPackageTyped.memberPackagePrices.length > 0) {
       const memberPrice = sessionPackageTyped.memberPackagePrices.find(mp => mp.packageId === parseInt(packageId));
       if (memberPrice) {
         packagePrice = memberPrice.price;

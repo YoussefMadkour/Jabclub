@@ -177,7 +177,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
         )}
       </div>
       
-      {/* Renewal Notice - Only show if member actually has special renewal prices set */}
+      {/* Member-Specific Pricing Notice - Only show if member actually has special prices set */}
       {packages.length > 0 && packages[0]?.hasSpecialRenewalPrices && (
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
           <div className="flex items-start">
@@ -185,9 +185,9 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
             </svg>
             <div>
-              <p className="text-sm font-semibold text-purple-900">Special Renewal Pricing Available</p>
+              <p className="text-sm font-semibold text-purple-900">Special Member Pricing Available</p>
               <p className="text-xs text-purple-700 mt-1">
-                You have special renewal prices set for you. These discounted prices will apply when you renew your packages.
+                You have special member-specific prices set for you. These prices apply to <strong>all purchases</strong> (both first-time and renewals), regardless of location.
               </p>
             </div>
           </div>
@@ -222,7 +222,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
                 {isMemberPrice && (
                   <div className="mb-2">
                     <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                      Renewal Price
+                      Member Price
                     </span>
                   </div>
                 )}
@@ -244,7 +244,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
                   )}
                   {isMemberPrice && (
                     <div className="text-xs text-purple-600 mt-1 font-medium">
-                      Special renewal price
+                      Special member price (applies to all purchases)
                     </div>
                   )}
               </div>

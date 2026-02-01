@@ -756,7 +756,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
         }
       );
       
-      alert('Member-specific price updated successfully! This price will apply when the member renews their package.');
+      alert('Member-specific price updated successfully! This price will apply to all purchases (first-time and renewals) for this member.');
       setShowPriceModal(false);
       setSelectedPackage(null);
       queryClient.invalidateQueries({ queryKey: ['member-package-prices', memberId] });
@@ -899,16 +899,16 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Set Renewal Price for {selectedPackage.packageName}
+              Set Member-Specific Price for {selectedPackage.packageName}
             </h3>
             <p className="text-sm text-gray-600 mb-4">
-              This price will apply when the member renews this package. If they don't renew and buy a new package, they'll pay normal rates.
+              This price will apply to <strong>all purchases</strong> (both first-time and renewals) for this member, regardless of location or other pricing rules. This takes priority over location-specific and default prices.
             </p>
             
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Renewal Price (EGP) *
+                  Member-Specific Price (EGP) *
                 </label>
                 <input
                   type="number"

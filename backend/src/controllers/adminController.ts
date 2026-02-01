@@ -3327,7 +3327,7 @@ export const getMemberPackagePrices = async (req: AuthRequest, res: Response): P
 
 /**
  * PUT /api/admin/members/:memberId/package-prices/:packageId
- * Set or update member-specific price for a package (for renewals)
+ * Set or update member-specific price for a package (applies to all purchases, not just renewals)
  */
 export const setMemberPackagePrice = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
