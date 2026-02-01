@@ -43,6 +43,87 @@ npm run vercel:delete-failed:yes
 3. Shows a summary of what will be deleted
 4. Deletes all failed deployments in bulk
 
+---
+
+### `delete-cancelled-deployments.sh`
+
+Bulk delete cancelled deployments from both Vercel projects.
+
+#### Usage
+
+```bash
+# Dry run (preview what will be deleted)
+./scripts/delete-cancelled-deployments.sh --dry-run
+
+# Delete with confirmation prompt
+./scripts/delete-cancelled-deployments.sh
+
+# Delete without confirmation (auto-yes)
+./scripts/delete-cancelled-deployments.sh --yes
+```
+
+#### Using npm scripts
+
+```bash
+# Preview cancelled deployments
+npm run vercel:delete-cancelled:dry-run
+
+# Delete cancelled deployments (with confirmation)
+npm run vercel:delete-cancelled
+
+# Delete cancelled deployments (without confirmation)
+npm run vercel:delete-cancelled:yes
+```
+
+#### What it does
+
+1. Checks both `jabclub` and `jabclub-api-backend` projects for cancelled deployments
+2. Extracts deployment IDs from cancelled deployment URLs
+3. Shows a summary of what will be deleted
+4. Deletes all cancelled deployments in bulk
+
+---
+
+### `delete-old-ready-deployments.sh`
+
+Delete old READY deployments that are not the current production deployment. This helps clean up old successful deployments while protecting the active production deployment.
+
+#### Usage
+
+```bash
+# Dry run (preview what will be deleted)
+./scripts/delete-old-ready-deployments.sh --dry-run
+
+# Delete with confirmation prompt
+./scripts/delete-old-ready-deployments.sh
+
+# Delete without confirmation (auto-yes)
+./scripts/delete-old-ready-deployments.sh --yes
+```
+
+#### Using npm scripts
+
+```bash
+# Preview old READY deployments
+npm run vercel:delete-old-ready:dry-run
+
+# Delete old READY deployments (with confirmation)
+npm run vercel:delete-old-ready
+
+# Delete old READY deployments (without confirmation)
+npm run vercel:delete-old-ready:yes
+```
+
+#### What it does
+
+1. Checks both `jabclub` and `jabclub-api-backend` projects for READY deployments
+2. Identifies the current production deployment (by checking for main project alias)
+3. Excludes the current production deployment from deletion
+4. Shows a summary of what will be deleted (including which production is protected)
+5. Deletes all old READY deployments in bulk
+
+**Important**: This script automatically protects the current production deployment. It identifies production by checking which deployment has the main project alias (e.g., `jabclub-youssef-madkours-projects.vercel.app`).
+
 ## Other Useful Commands
 
 ### List all deployments
@@ -69,9 +150,13 @@ vercel project ls
 vercel ls jabclub
 vercel ls jabclub-api-backend
 
-# List only failed deployments
-vercel ls jabclub --status ERROR
+# List deployments by status
+vercel ls jabclub --status ERROR          # Failed deployments
+vercel ls jabclub --status CANCELLED      # Cancelled deployments
+vercel ls jabclub --status READY          # Ready deployments
 vercel ls jabclub-api-backend --status ERROR
+vercel ls jabclub-api-backend --status CANCELLED
+vercel ls jabclub-api-backend --status READY
 
 # Delete a specific deployment
 vercel remove dpl_xxxxxxxxxxxxx

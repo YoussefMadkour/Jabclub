@@ -14,7 +14,13 @@
     "vercel:list-backend": "vercel ls jabclub-api-backend",
     "vercel:delete-failed": "./scripts/delete-failed-deployments.sh",
     "vercel:delete-failed:dry-run": "./scripts/delete-failed-deployments.sh --dry-run",
-    "vercel:delete-failed:yes": "./scripts/delete-failed-deployments.sh --yes"
+    "vercel:delete-failed:yes": "./scripts/delete-failed-deployments.sh --yes",
+    "vercel:delete-cancelled": "./scripts/delete-cancelled-deployments.sh",
+    "vercel:delete-cancelled:dry-run": "./scripts/delete-cancelled-deployments.sh --dry-run",
+    "vercel:delete-cancelled:yes": "./scripts/delete-cancelled-deployments.sh --yes",
+    "vercel:delete-old-ready": "./scripts/delete-old-ready-deployments.sh",
+    "vercel:delete-old-ready:dry-run": "./scripts/delete-old-ready-deployments.sh --dry-run",
+    "vercel:delete-old-ready:yes": "./scripts/delete-old-ready-deployments.sh --yes"
   },
   "keywords": ["booking", "gym", "management"],
   "author": "",

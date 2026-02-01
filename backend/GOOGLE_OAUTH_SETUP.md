@@ -18,10 +18,11 @@ This guide will help you set up Google OAuth authentication for JabClub.
    - Name: "JabClub" (or your preferred name)
    - Click "Create"
 
-3. **Enable Google+ API**
+3. **Enable Google Identity API**
    - Go to "APIs & Services" → "Library"
-   - Search for "Google+ API" or "Google Identity"
+   - Search for **"Google Identity"** or **"Google Identity Services API"**
    - Click on it and click "Enable"
+   - ⚠️ **Note:** The old "Google+ API" is deprecated - use "Google Identity" instead
 
 4. **Configure OAuth Consent Screen**
    - Go to "APIs & Services" → "OAuth consent screen"
