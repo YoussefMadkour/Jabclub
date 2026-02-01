@@ -19,6 +19,13 @@ interface Booking {
   status: 'confirmed' | 'attended' | 'no_show';
   bookedAt: string;
   attendanceMarkedAt?: string;
+  note?: {
+    id: number;
+    rating: number | null;
+    notes: string | null;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
 }
 
 interface ClassInfo {
@@ -55,6 +62,11 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [scanResult, setScanResult] = useState<any | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
+  const [noteModalOpen, setNoteModalOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
+  const [noteRating, setNoteRating] = useState<number | null>(null);
+  const [noteText, setNoteText] = useState<string>('');
+  const [savingNote, setSavingNote] = useState(false);
 
   // Fetch class roster
   const { data, isLoading, error } = useQuery<ClassRosterResponse>({
@@ -104,6 +116,44 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
     setTimeout(() => {
       setScanError(null);
     }, 5000);
+  };
+
+  // Note mutation
+  const saveNoteMutation = useMutation({
+    mutationFn: async ({ bookingId, rating, notes }: { bookingId: number; rating: number | null; notes: string }) => {
+      const response = await apiClient.post(`/coach/notes/${bookingId}`, { rating, notes });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['class-roster', classInstanceId] });
+      setNoteModalOpen(false);
+      setSelectedBookingId(null);
+      setNoteRating(null);
+      setNoteText('');
+      setSavingNote(false);
+    },
+    onError: (error: any) => {
+      console.error('Error saving note:', error);
+      alert(error.response?.data?.error?.message || 'Failed to save note');
+      setSavingNote(false);
+    }
+  });
+
+  const handleOpenNoteModal = (bookingId: number, existingNote?: Booking['note']) => {
+    setSelectedBookingId(bookingId);
+    setNoteRating(existingNote?.rating || null);
+    setNoteText(existingNote?.notes || '');
+    setNoteModalOpen(true);
+  };
+
+  const handleSaveNote = async () => {
+    if (!selectedBookingId) return;
+    setSavingNote(true);
+    await saveNoteMutation.mutateAsync({
+      bookingId: selectedBookingId,
+      rating: noteRating,
+      notes: noteText
+    });
   };
 
   if (isLoading) {
@@ -361,6 +411,40 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                         Attendance on class day only
                       </span>
                     )}
+
+                    {/* Note Section - Only show after class ends */}
+                    {classEnded && (
+                      <div className="mt-2 w-full lg:w-auto">
+                        {booking.note ? (
+                          <div className="space-y-2">
+                            <button
+                              onClick={() => handleOpenNoteModal(booking.bookingId, booking.note)}
+                              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                            >
+                              Edit Note
+                            </button>
+                            <div className="bg-gray-50 rounded-md p-2 text-xs">
+                              {booking.note.rating && (
+                                <div className="flex items-center gap-1 mb-1">
+                                  <span className="font-medium">Rating:</span>
+                                  <span className="text-yellow-600">{'★'.repeat(booking.note.rating)}{'☆'.repeat(5 - booking.note.rating)}</span>
+                                </div>
+                              )}
+                              {booking.note.notes && (
+                                <p className="text-gray-700 line-clamp-2">{booking.note.notes}</p>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleOpenNoteModal(booking.bookingId)}
+                            className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm"
+                          >
+                            Add Note
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -385,6 +469,110 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                 Mark attendance for each participant as they arrive. Use "Present" for attendees and "No-Show" for those who don't show up.
                 Attendance can only be marked on the day of the class.
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Note Modal */}
+      {noteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {selectedBookingId && roster.find(b => b.bookingId === selectedBookingId)?.note ? 'Edit Note' : 'Add Note'}
+              </h2>
+              <button
+                onClick={() => {
+                  setNoteModalOpen(false);
+                  setSelectedBookingId(null);
+                  setNoteRating(null);
+                  setNoteText('');
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Close"
+              >
+                <XMarkIcon className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {selectedBookingId && (
+                <>
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-600 mb-2">Member:</p>
+                    <p className="font-medium text-gray-900">
+                      {roster.find(b => b.bookingId === selectedBookingId)?.memberName}
+                      {roster.find(b => b.bookingId === selectedBookingId)?.isChildBooking && 
+                        ` (${roster.find(b => b.bookingId === selectedBookingId)?.bookedFor})`
+                      }
+                    </p>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Rating (Optional)
+                    </label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <button
+                          key={rating}
+                          type="button"
+                          onClick={() => setNoteRating(noteRating === rating ? null : rating)}
+                          className={`text-2xl transition-all ${
+                            noteRating && noteRating >= rating
+                              ? 'text-yellow-500'
+                              : 'text-gray-300 hover:text-yellow-400'
+                          }`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                    {noteRating && (
+                      <p className="text-xs text-gray-500 mt-1">{noteRating} out of 5 stars</p>
+                    )}
+                  </div>
+
+                  {/* Notes */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Notes (Optional)
+                    </label>
+                    <textarea
+                      value={noteText}
+                      onChange={(e) => setNoteText(e.target.value)}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FF7A00] focus:border-transparent resize-none"
+                      placeholder="Add your notes about this member's performance..."
+                    />
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => {
+                        setNoteModalOpen(false);
+                        setSelectedBookingId(null);
+                        setNoteRating(null);
+                        setNoteText('');
+                      }}
+                      disabled={savingNote}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveNote}
+                      disabled={savingNote}
+                      className="flex-1 px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {savingNote ? 'Saving...' : 'Save Note'}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

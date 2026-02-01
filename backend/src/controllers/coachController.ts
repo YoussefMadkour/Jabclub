@@ -3,6 +3,341 @@ import { AuthRequest } from '../middleware/auth';
 import prisma from '../config/database';
 
 /**
+ * POST /api/coach/notes/:bookingId
+ * Create or update a class note for a booking
+ */
+export const createOrUpdateNote = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const bookingId = parseInt(req.params.bookingId);
+    const { rating, notes } = req.body;
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated'
+        }
+      });
+      return;
+    }
+
+    // Verify user is a coach
+    const coach = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!coach || coach.role !== 'coach' && coach.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Only coaches can add notes'
+        }
+      });
+      return;
+    }
+
+    // Fetch booking with class instance to verify coach assignment
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        classInstance: {
+          include: {
+            coach: true
+          }
+        }
+      }
+    });
+
+    if (!booking) {
+      res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Booking not found'
+        }
+      });
+      return;
+    }
+
+    // Verify coach is assigned to this class
+    if (booking.classInstance.coachId !== userId && coach.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'You can only add notes for your own classes'
+        }
+      });
+      return;
+    }
+
+    // Validate rating if provided (1-5)
+    if (rating !== undefined && rating !== null) {
+      const ratingNum = parseInt(rating);
+      if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Rating must be between 1 and 5'
+          }
+        });
+        return;
+      }
+    }
+
+    // Create or update note (upsert)
+    const classNote = await prisma.classNote.upsert({
+      where: { bookingId },
+      update: {
+        rating: rating !== undefined ? parseInt(rating) : null,
+        notes: notes || null,
+        updatedAt: new Date()
+      },
+      create: {
+        bookingId,
+        coachId: userId,
+        rating: rating !== undefined ? parseInt(rating) : null,
+        notes: notes || null
+      },
+      include: {
+        coach: {
+          select: {
+            firstName: true,
+            lastName: true
+          }
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      data: {
+        note: {
+          id: classNote.id,
+          bookingId: classNote.bookingId,
+          rating: classNote.rating,
+          notes: classNote.notes,
+          coachName: `${classNote.coach.firstName} ${classNote.coach.lastName}`,
+          createdAt: classNote.createdAt,
+          updatedAt: classNote.updatedAt
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error creating/updating note:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while saving the note'
+      }
+    });
+  }
+};
+
+/**
+ * GET /api/coach/notes/:bookingId
+ * Get note for a specific booking
+ */
+export const getNote = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const bookingId = parseInt(req.params.bookingId);
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated'
+        }
+      });
+      return;
+    }
+
+    const classNote = await prisma.classNote.findUnique({
+      where: { bookingId },
+      include: {
+        coach: {
+          select: {
+            firstName: true,
+            lastName: true
+          }
+        }
+      }
+    });
+
+    if (!classNote) {
+      res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Note not found'
+        }
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: {
+        note: {
+          id: classNote.id,
+          bookingId: classNote.bookingId,
+          rating: classNote.rating,
+          notes: classNote.notes,
+          coachName: `${classNote.coach.firstName} ${classNote.coach.lastName}`,
+          createdAt: classNote.createdAt,
+          updatedAt: classNote.updatedAt
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching note:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while fetching the note'
+      }
+    });
+  }
+};
+
+/**
+ * GET /api/coach/classes/:id/notes
+ * Get all notes for a class
+ */
+export const getClassNotes = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    const classInstanceId = parseInt(req.params.id);
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'User not authenticated'
+        }
+      });
+      return;
+    }
+
+    // Verify coach is assigned to this class
+    const classInstance = await prisma.classInstance.findUnique({
+      where: { id: classInstanceId },
+      include: {
+        coach: true
+      }
+    });
+
+    if (!classInstance) {
+      res.status(404).json({
+        success: false,
+        error: {
+          code: 'NOT_FOUND',
+          message: 'Class not found'
+        }
+      });
+      return;
+    }
+
+    const coach = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!coach || (coach.role !== 'coach' && coach.role !== 'admin')) {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Only coaches can view notes'
+        }
+      });
+      return;
+    }
+
+    if (classInstance.coachId !== userId && coach.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'You can only view notes for your own classes'
+        }
+      });
+      return;
+    }
+
+    // Get all bookings for this class with their notes
+    const bookings = await prisma.booking.findMany({
+      where: { classInstanceId },
+      include: {
+        classNotes: {
+          include: {
+            coach: {
+              select: {
+                firstName: true,
+                lastName: true
+              }
+            }
+          }
+        },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true
+          }
+        },
+        child: {
+          select: {
+            firstName: true,
+            lastName: true
+          }
+        }
+      }
+    });
+
+    const notes = bookings
+      .filter(b => b.classNotes && b.classNotes.length > 0)
+      .map(b => {
+        const note = b.classNotes[0]; // Should only be one note per booking
+        return {
+          bookingId: b.id,
+          memberName: b.child 
+            ? `${b.child.firstName} ${b.child.lastName}` 
+            : `${b.user.firstName} ${b.user.lastName}`,
+          rating: note.rating,
+          notes: note.notes,
+          coachName: `${note.coach.firstName} ${note.coach.lastName}`,
+          createdAt: note.createdAt,
+          updatedAt: note.updatedAt
+        };
+      });
+
+    res.json({
+      success: true,
+      data: {
+        notes
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching class notes:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while fetching notes'
+      }
+    });
+  }
+};
+
+/**
  * PUT /api/coach/attendance/:bookingId
  * Mark attendance for a booking (attended or no_show)
  */
@@ -255,6 +590,16 @@ export const getClassRoster = async (req: AuthRequest, res: Response): Promise<v
             lastName: true,
             age: true
           }
+        },
+        classNotes: {
+          include: {
+            coach: {
+              select: {
+                firstName: true,
+                lastName: true
+              }
+            }
+          }
         }
       },
       orderBy: [
@@ -276,7 +621,14 @@ export const getClassRoster = async (req: AuthRequest, res: Response): Promise<v
       childAge: booking.child?.age,
       status: booking.status,
       bookedAt: booking.bookedAt,
-      attendanceMarkedAt: booking.attendanceMarkedAt
+      attendanceMarkedAt: booking.attendanceMarkedAt,
+      note: booking.classNotes && booking.classNotes.length > 0 ? {
+        id: booking.classNotes[0].id,
+        rating: booking.classNotes[0].rating,
+        notes: booking.classNotes[0].notes,
+        createdAt: booking.classNotes[0].createdAt,
+        updatedAt: booking.classNotes[0].updatedAt
+      } : null
     }));
 
     // Calculate attendance summary

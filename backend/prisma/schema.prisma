@@ -61,6 +61,7 @@ model User {
   classSchedules      ClassSchedule[]
   paymentsReviewed    Payment[] @relation("PaymentReviewer")
   memberPackagePrices MemberPackagePrice[]
+  classNotes          ClassNote[]
 
   @@map("users")
 }
@@ -251,11 +252,31 @@ model Booking {
   child             Child?            @relation(fields: [childId], references: [id], onDelete: Cascade)
   memberPackage     MemberPackage     @relation(fields: [memberPackageId], references: [id])
   creditTransactions CreditTransaction[]
+  classNotes        ClassNote[]
 
   @@unique([classInstanceId, userId, childId])
   @@index([userId])
   @@index([classInstanceId])
   @@map("bookings")
+}
+
+model ClassNote {
+  id          Int      @id @default(autoincrement())
+  bookingId   Int      @map("booking_id")
+  coachId     Int      @map("coach_id")
+  rating      Int?     // Rating from 1-5 (optional)
+  notes       String?  @db.Text // Coach's notes about the member's performance
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  coach   User    @relation(fields: [coachId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId]) // One note per booking
+  @@index([coachId])
+  @@index([bookingId])
+  @@map("class_notes")
 }
 
 model CreditTransaction {

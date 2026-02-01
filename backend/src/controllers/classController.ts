@@ -70,7 +70,9 @@ export const getSchedule = async (req: AuthRequest, res: Response): Promise<void
             status: 'confirmed'
           },
           select: {
-            id: true
+            id: true,
+            userId: true,
+            childId: true
           }
         }
       },

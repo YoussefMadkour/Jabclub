@@ -29,11 +29,11 @@ export default function QRCodeModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold text-gray-900">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b flex-shrink-0">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900">
             Check-in QR Code
           </h2>
           <button
@@ -45,49 +45,49 @@ export default function QRCodeModal({
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
+        {/* Content - Scrollable */}
+        <div className="p-3 sm:p-6 overflow-y-auto flex-1">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00]"></div>
-              <p className="mt-4 text-gray-600">Generating QR code...</p>
+            <div className="flex flex-col items-center justify-center py-8 sm:py-12">
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[#FF7A00]"></div>
+              <p className="mt-4 text-sm sm:text-base text-gray-600">Generating QR code...</p>
             </div>
           ) : error ? (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 text-sm sm:text-base text-red-800">
               <p>{error}</p>
             </div>
           ) : qrData && classInfo ? (
             <div className="flex flex-col items-center">
-              {/* QR Code - Display the image from backend */}
-              <div className="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
+              {/* QR Code - Smaller on mobile */}
+              <div className="bg-white p-2 sm:p-4 rounded-lg border-2 border-gray-200 shadow-sm">
                 <img 
                   src={qrData} 
                   alt="Check-in QR Code" 
-                  className="w-[200px] h-[200px]"
+                  className="w-[160px] h-[160px] sm:w-[200px] sm:h-[200px]"
                 />
               </div>
 
-              {/* Class Information */}
-              <div className="mt-6 w-full space-y-3">
+              {/* Class Information - Compact on mobile */}
+              <div className="mt-4 sm:mt-6 w-full space-y-2 sm:space-y-3">
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Class</p>
-                  <p className="text-lg font-semibold text-gray-900">{classInfo.className}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">Class</p>
+                  <p className="text-base sm:text-lg font-semibold text-gray-900">{classInfo.className}</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 text-center">
                   <div>
-                    <p className="text-sm text-gray-500">Location</p>
-                    <p className="font-medium text-gray-900">{classInfo.location}</p>
+                    <p className="text-xs sm:text-sm text-gray-500">Location</p>
+                    <p className="text-sm sm:text-base font-medium text-gray-900 break-words">{classInfo.location}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Coach</p>
-                    <p className="font-medium text-gray-900">{classInfo.coach}</p>
+                    <p className="text-xs sm:text-sm text-gray-500">Coach</p>
+                    <p className="text-sm sm:text-base font-medium text-gray-900 break-words">{classInfo.coach}</p>
                   </div>
                 </div>
 
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Date & Time</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-xs sm:text-sm text-gray-500">Date & Time</p>
+                  <p className="text-sm sm:text-base font-medium text-gray-900">
                     {new Date(classInfo.date).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
@@ -99,18 +99,18 @@ export default function QRCodeModal({
                   </p>
                 </div>
 
-                <div className="text-center bg-orange-50 rounded-lg p-3">
-                  <p className="text-sm text-gray-600">For</p>
-                  <p className="font-semibold text-orange-900">{classInfo.forChild}</p>
+                <div className="text-center bg-orange-50 rounded-lg p-2 sm:p-3">
+                  <p className="text-xs sm:text-sm text-gray-600">For</p>
+                  <p className="text-sm sm:text-base font-semibold text-orange-900">{classInfo.forChild}</p>
                 </div>
               </div>
 
-              {/* Instructions */}
-              <div className="mt-6 bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-700 text-center">
+              {/* Instructions - Compact on mobile */}
+              <div className="mt-4 sm:mt-6 bg-gray-50 rounded-lg p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-gray-700 text-center">
                   📱 Show this QR code to your coach when checking in to your class
                 </p>
-                <p className="text-xs text-gray-500 text-center mt-2">
+                <p className="text-[10px] sm:text-xs text-gray-500 text-center mt-1 sm:mt-2">
                   QR code is valid until class ends
                 </p>
               </div>
@@ -118,11 +118,11 @@ export default function QRCodeModal({
           ) : null}
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t bg-gray-50 rounded-b-lg">
+        {/* Footer - Always visible */}
+        <div className="p-3 sm:p-4 border-t bg-gray-50 rounded-b-lg flex-shrink-0">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium touch-target"
+            className="w-full px-4 py-2.5 sm:py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium touch-target text-sm sm:text-base"
           >
             Close
           </button>
