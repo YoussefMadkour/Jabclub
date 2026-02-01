@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import QRCode from 'react-qr-code';
 
 interface QRCodeModalProps {
   isOpen: boolean;
@@ -59,12 +58,12 @@ export default function QRCodeModal({
             </div>
           ) : qrData && classInfo ? (
             <div className="flex flex-col items-center">
-              {/* QR Code */}
+              {/* QR Code - Display the image from backend */}
               <div className="bg-white p-4 rounded-lg border-2 border-gray-200 shadow-sm">
-                <QRCode
-                  value={qrData}
-                  size={200}
-                  level="H"
+                <img 
+                  src={qrData} 
+                  alt="Check-in QR Code" 
+                  className="w-[200px] h-[200px]"
                 />
               </div>
 

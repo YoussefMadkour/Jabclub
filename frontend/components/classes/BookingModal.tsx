@@ -57,6 +57,9 @@ export default function BookingModal({
   const [children, setChildren] = useState<Child[]>([]);
   const [selectedBookingFor, setSelectedBookingFor] = useState<'self' | number>('self');
   const [loadingData, setLoadingData] = useState(true);
+  const [bookingId, setBookingId] = useState<number | null>(null);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [qrLoading, setQrLoading] = useState(false);
 
   // Fetch user's credits and children when modal opens
   useEffect(() => {
@@ -106,17 +109,18 @@ export default function BookingModal({
       const response = await axios.post('/members/bookings', payload);
 
       if (response.data.success) {
+        const newBookingId = response.data.data.bookingId;
+        setBookingId(newBookingId);
         setSuccess(true);
         // Update credits display
         if (credits !== null) {
           setCredits(credits - 1);
         }
         
-        // Call success callback after a short delay
-        setTimeout(() => {
-          onBookingSuccess?.();
-          onClose();
-        }, 1500);
+        // Generate QR code immediately after booking
+        if (newBookingId) {
+          generateQRCode(newBookingId);
+        }
       }
     } catch (err: any) {
       console.error('Booking error:', err);
@@ -127,8 +131,26 @@ export default function BookingModal({
     }
   };
 
+  const generateQRCode = async (bookingId: number) => {
+    setQrLoading(true);
+    try {
+      const response = await axios.post(`/qr/generate/${bookingId}`);
+      if (response.data.qrCode) {
+        setQrCode(response.data.qrCode);
+      }
+    } catch (err: any) {
+      console.error('Error generating QR code:', err);
+      // Don't show error to user, QR code can be generated later from dashboard
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
   const handleClose = () => {
-    if (!isLoading) {
+    if (!isLoading && !qrLoading) {
+      setQrCode(null);
+      setBookingId(null);
+      onBookingSuccess?.();
       onClose();
     }
   };
@@ -185,7 +207,32 @@ export default function BookingModal({
                   </svg>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Booking Confirmed!</h3>
-                <p className="text-gray-600">Your class has been booked successfully.</p>
+                <p className="text-gray-600 mb-4">Your class has been booked successfully.</p>
+                
+                {/* QR Code Display */}
+                {qrLoading ? (
+                  <div className="flex flex-col items-center justify-center py-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7A00] mb-2"></div>
+                    <p className="text-sm text-gray-600">Generating QR code...</p>
+                  </div>
+                ) : qrCode ? (
+                  <div className="flex flex-col items-center justify-center py-4">
+                    <p className="text-sm font-medium text-gray-700 mb-3">Your Check-in QR Code:</p>
+                    <img 
+                      src={qrCode} 
+                      alt="QR Code" 
+                      className="w-48 h-48 border-2 border-gray-300 rounded-lg p-2 bg-white"
+                    />
+                    <p className="text-xs text-gray-500 mt-2">Show this QR code at check-in</p>
+                  </div>
+                ) : null}
+                
+                <button
+                  onClick={handleClose}
+                  className="mt-6 px-6 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium"
+                >
+                  Close
+                </button>
               </div>
             ) : (
               <>

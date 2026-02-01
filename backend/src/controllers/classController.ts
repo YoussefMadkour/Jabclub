@@ -79,10 +79,20 @@ export const getSchedule = async (req: AuthRequest, res: Response): Promise<void
       }
     });
 
-    // Format response with calculated available spots
+    // Get current user ID if authenticated
+    const userId = req.user?.id;
+
+    // Format response with calculated available spots and user booking status
     const formattedClasses = classInstances.map(classInstance => {
       const bookedCount = classInstance.bookings.length;
       const availableSpots = classInstance.capacity - bookedCount;
+      
+      // Check if current user is booked in this class
+      const userBooking = userId 
+        ? classInstance.bookings.find(b => b.userId === userId)
+        : null;
+      const isBooked = !!userBooking;
+      const bookingId = userBooking?.id || null;
 
       return {
         id: classInstance.id,
@@ -103,7 +113,9 @@ export const getSchedule = async (req: AuthRequest, res: Response): Promise<void
         capacity: classInstance.capacity,
         bookedCount,
         availableSpots,
-        isFull: availableSpots <= 0
+        isFull: availableSpots <= 0,
+        isBooked,
+        bookingId
       };
     });
 
@@ -145,7 +157,9 @@ export const getClassAvailability = async (req: AuthRequest, res: Response): Pro
             status: 'confirmed'
           },
           select: {
-            id: true
+            id: true,
+            userId: true,
+            childId: true
           }
         }
       }

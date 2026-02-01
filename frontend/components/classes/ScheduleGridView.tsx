@@ -26,6 +26,8 @@ interface ClassInstance {
   bookedCount: number;
   availableSpots: number;
   isFull?: boolean;
+  isBooked?: boolean;
+  bookingId?: number | null;
 }
 
 interface Location {
@@ -145,7 +147,7 @@ export default function ScheduleGridView() {
   };
 
   const handleClassClick = (classInstance: ClassInstance) => {
-    if (classInstance.isFull || !classInstance.availableSpots) return;
+    if (classInstance.isFull || !classInstance.availableSpots || classInstance.isBooked) return;
     setSelectedClass(classInstance);
     setIsBookingModalOpen(true);
   };
@@ -283,17 +285,21 @@ export default function ScheduleGridView() {
                     const classDateTime = classInstance ? new Date(classInstance.startTime) : null;
                     const now = new Date();
                     const isPast = classDateTime ? classDateTime < now : false;
+                    const isBooked = classInstance?.isBooked || false;
                     const isClickable = classInstance && 
                                       !classInstance.isFull && 
                                       classInstance.availableSpots > 0 && 
-                                      !isPast;
+                                      !isPast &&
+                                      !isBooked;
                     
                     return (
                       <td
                         key={`${day.toISOString()}-${timeSlot.start}`}
                         className={`py-2 px-1 sm:py-4 sm:px-4 border-r border-gray-700 last:border-r-0 text-center transition-all ${
                           classInstance
-                            ? classInstance.isFull || isPast
+                            ? isBooked
+                              ? 'bg-green-600 text-white'
+                              : classInstance.isFull || isPast
                               ? 'bg-gray-600 text-gray-400'
                               : 'bg-orange-500 text-white hover:bg-orange-600 cursor-pointer active:scale-95'
                             : isToday
@@ -307,7 +313,12 @@ export default function ScheduleGridView() {
                             <div className="text-[10px] sm:text-xs font-medium leading-tight px-1">
                               {classInstance.classType}
                             </div>
-                            {isClickable && (
+                            {isBooked && (
+                              <span className="text-[9px] sm:text-xs font-semibold bg-green-100 text-green-700 px-2 py-0.5 sm:px-3 sm:py-1 rounded mt-1">
+                                BOOKED
+                              </span>
+                            )}
+                            {isClickable && !isBooked && (
                               <button
                                 className="text-[9px] sm:text-xs font-semibold bg-white text-orange-500 px-2 py-0.5 sm:px-3 sm:py-1 rounded mt-1 hover:bg-orange-50 transition-colors touch-target"
                                 onClick={(e) => {
@@ -318,7 +329,7 @@ export default function ScheduleGridView() {
                                 BOOK
                               </button>
                             )}
-                            {classInstance.isFull && (
+                            {classInstance.isFull && !isBooked && (
                               <span className="text-[9px] sm:text-xs text-gray-300">FULL</span>
                             )}
                             {isPast && (

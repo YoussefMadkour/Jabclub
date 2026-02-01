@@ -64,15 +64,14 @@ router.post('/generate/:bookingId', async (req: any, res) => {
       });
     }
 
-    // Check if class is within 2 hours (prevent early QR generation)
+    // Allow QR code generation immediately after booking (no time restriction)
     const now = new Date();
     const classStartTime = new Date(booking.classInstance.startTime);
-    const hoursUntilClass = (classStartTime.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-    if (hoursUntilClass > 2) {
+    
+    // Only check that class hasn't ended yet
+    if (classStartTime < now) {
       return res.status(400).json({
-        error: 'QR codes are only available 2 hours before class start',
-        hoursUntilClass,
+        error: 'Cannot generate QR code for past classes',
       });
     }
 
@@ -300,8 +299,9 @@ router.get('/status/:bookingId', async (req: any, res) => {
     const classStartTime = new Date(booking.classInstance.startTime);
     const hoursUntilClass = (classStartTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
+    // QR codes can be generated immediately after booking, until class ends
     const canGenerateQR =
-      booking.status === 'confirmed' && hoursUntilClass <= 2 && hoursUntilClass >= -1;
+      booking.status === 'confirmed' && hoursUntilClass >= -1;
 
     res.json({
       bookingId: booking.id,
