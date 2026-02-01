@@ -332,10 +332,37 @@ export default function MemberDashboard() {
                       <span className="text-xs text-gray-500">
                         Booked {formatDistanceToNow(new Date(booking.bookedAt || booking.startTime), { addSuffix: true })}
                       </span>
+                      
+                      {/* Get QR Code Button - Always show for upcoming classes */}
+                      <button
+                        onClick={() => handleGenerateQRCode(booking.id)}
+                        disabled={qrLoading && qrLoadingBookingId === booking.id}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+                        title="Get your check-in QR code for this class"
+                      >
+                        {qrLoading && qrLoadingBookingId === booking.id ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8 0 4 4 0 00-4 4 0 004zm0 8a8 8 0 01-16 0 4 4 0 014 4 4 01 8 0 00-4-4 4-014z"></path>
+                            </svg>
+                            Loading...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2m4 0h4m-4 0h4m-9-7V9a2 2 0 012-2h10a2 2 0 012 2v9m-6 0h6" />
+                            </svg>
+                            Get QR Code
+                          </span>
+                        )}
+                      </button>
+                      
+                      {/* Cancel Booking Button */}
                       <button 
                         onClick={() => handleCancelClick(booking)}
                         disabled={!canCancel}
-                        className={`px-4 py-2 rounded-md transition-colors text-sm ${
+                        className={`px-4 py-2 rounded-md transition-colors text-sm touch-target ${
                           canCancel 
                             ? 'bg-red-600 text-white hover:bg-red-700' 
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -344,33 +371,6 @@ export default function MemberDashboard() {
                       >
                         Cancel Booking
                       </button>
-                      
-                      {/* Get QR Code Button */}
-                      {canCancel && (
-                        <button
-                          onClick={() => handleGenerateQRCode(booking.id)}
-                          disabled={qrLoading && qrLoadingBookingId === booking.id}
-                          className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                          title="Get your check-in QR code for this class"
-                        >
-                          {qrLoading && qrLoadingBookingId === booking.id ? (
-                            <span className="flex items-center gap-2">
-                              <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8 0 4 4 0 00-4 4 0 004zm0 8a8 8 0 01-16 0 4 4 0 014 4 4 01 8 0 00-4-4 4-014z"></path>
-                              </svg>
-                              Loading...
-                            </span>
-                          ) : (
-                            <span className="flex items-center gap-2">
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2m4 0h4m-4 0h4m-9-7V9a2 2 0 012-2h10a2 2 0 012 2v9m-6 0h6" />
-                              </svg>
-                              Get QR Code
-                            </span>
-                          )}
-                        </button>
-                      )}
                     </div>
                   </div>
                 </div>
