@@ -1415,44 +1415,117 @@ export const deleteLocation = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Check if location has future classes
-    const futureClasses = await prisma.classInstance.count({
+    // Get all future classes at this location
+    const futureClassInstances = await prisma.classInstance.findMany({
       where: {
         locationId: locationId,
         startTime: {
           gte: new Date()
         },
         isCancelled: false
+      },
+      include: {
+        bookings: {
+          include: {
+            memberPackage: true,
+            user: true
+          }
+        },
+        classType: true
       }
     });
 
-    if (futureClasses > 0) {
-      res.status(400).json({
-        success: false,
-        error: {
-          code: 'LOCATION_HAS_CLASSES',
-          message: `Cannot delete location. There are ${futureClasses} future class(es) scheduled at this location.`,
-          details: {
-            futureClassCount: futureClasses
+    // Use transaction to cancel all future classes, refund credits, and deactivate location
+    const result = await prisma.$transaction(async (tx) => {
+      let totalRefundedCredits = 0;
+      let totalCancelledBookings = 0;
+
+      // Cancel all future classes and refund bookings
+      for (const classInstance of futureClassInstances) {
+        // Cancel the class instance
+        await tx.classInstance.update({
+          where: { id: classInstance.id },
+          data: {
+            isCancelled: true
+          }
+        });
+
+        // Process each booking for this class
+        for (const booking of classInstance.bookings) {
+          if (booking.status === 'confirmed') {
+            // Cancel the booking
+            await tx.booking.update({
+              where: { id: booking.id },
+              data: {
+                status: 'cancelled',
+                cancelledAt: new Date()
+              }
+            });
+
+            // Refund credit
+            const updatedPackage = await tx.memberPackage.update({
+              where: { id: booking.memberPackageId },
+              data: {
+                sessionsRemaining: booking.memberPackage.sessionsRemaining + 1
+              }
+            });
+
+            // Create credit transaction log
+            await tx.creditTransaction.create({
+              data: {
+                userId: booking.userId,
+                memberPackageId: booking.memberPackageId,
+                bookingId: booking.id,
+                transactionType: 'refund',
+                creditsChange: 1,
+                balanceAfter: updatedPackage.sessionsRemaining,
+                notes: `Refund due to location deletion: ${classInstance.classType.name} on ${classInstance.startTime.toISOString()}`
+              }
+            });
+
+            totalRefundedCredits++;
+            totalCancelledBookings++;
           }
         }
-      });
-      return;
-    }
-
-    // Soft delete by setting isActive to false
-    const deletedLocation = await prisma.location.update({
-      where: { id: locationId },
-      data: {
-        isActive: false
       }
+
+      // Deactivate all class schedules for this location
+      await tx.classSchedule.updateMany({
+        where: {
+          locationId: locationId,
+          isActive: true
+        },
+        data: {
+          isActive: false
+        }
+      });
+
+      // Soft delete by setting isActive to false
+      const deletedLocation = await tx.location.update({
+        where: { id: locationId },
+        data: {
+          isActive: false
+        }
+      });
+
+      return {
+        location: deletedLocation,
+        cancelledClasses: futureClassInstances.length,
+        cancelledBookings: totalCancelledBookings,
+        refundedCredits: totalRefundedCredits
+      };
     });
 
     res.json({
       success: true,
       data: {
-        location: deletedLocation,
-        message: 'Location deactivated successfully'
+        location: result.location,
+        message: `Location deactivated successfully. ${result.cancelledClasses} future class(es) cancelled, ${result.refundedCredits} credit(s) refunded.`,
+        details: {
+          cancelledClasses: result.cancelledClasses,
+          cancelledBookings: result.cancelledBookings,
+          refundedCredits: result.refundedCredits
+        }
       }
     });
   } catch (error) {

@@ -113,9 +113,22 @@ export default function LocationManager() {
 
     try {
       setProcessing(true);
-      await apiClient.delete(`/admin/locations/${selectedLocation.id}`);
+      const response = await apiClient.delete(`/admin/locations/${selectedLocation.id}`);
       
-      alert('Location deactivated successfully!');
+      const message = response.data?.data?.message || 'Location deactivated successfully!';
+      const details = response.data?.data?.details;
+      
+      let successMessage = message;
+      if (details) {
+        if (details.cancelledClasses > 0) {
+          successMessage += `\n\n• ${details.cancelledClasses} future class(es) cancelled`;
+        }
+        if (details.refundedCredits > 0) {
+          successMessage += `\n• ${details.refundedCredits} credit(s) refunded to members`;
+        }
+      }
+      
+      alert(successMessage);
       setShowDeleteModal(false);
       setSelectedLocation(null);
       fetchLocations();
@@ -421,7 +434,16 @@ export default function LocationManager() {
           <div className="bg-white rounded-lg max-w-md w-full p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Deactivate Location</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Are you sure you want to deactivate this location? It will no longer be available for new class scheduling.
+              Are you sure you want to deactivate this location? This will:
+            </p>
+            <ul className="text-sm text-gray-600 mb-4 list-disc list-inside space-y-1">
+              <li>Cancel all future classes scheduled at this location</li>
+              <li>Automatically refund credits to members who had bookings</li>
+              <li>Deactivate all class schedules for this location</li>
+              <li>Make the location unavailable for new class scheduling</li>
+            </ul>
+            <p className="text-sm font-medium text-orange-600 mb-4">
+              ⚠️ This action cannot be undone.
             </p>
             
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
