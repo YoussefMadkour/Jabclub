@@ -549,7 +549,7 @@ export default function DefaultScheduleManager() {
 
       setShowBulkImportModal(false);
       setShowConflictPreview(false);
-      setBulkForm({ locationId: '', coachId: '', capacity: '20' });
+      setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
       setTimeSlots(['19:00', '20:00']);
       setScheduleGrid({});
       setExistingSchedulesGrid({});
