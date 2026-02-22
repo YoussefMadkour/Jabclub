@@ -5979,7 +5979,18 @@ export const deleteCoach = async (req: AuthRequest, res: Response): Promise<void
  */
 export const createSchedule = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { classTypeId, coachId, locationId, dayOfWeek, startTime, capacity } = req.body;
+    const { 
+      classTypeId, 
+      coachId, 
+      locationId, 
+      dayOfWeek, 
+      startTime, 
+      capacity,
+      isTemporary,
+      overrideStartDate,
+      overrideEndDate,
+      baseScheduleId
+    } = req.body;
 
     // Validate required fields
     if (!classTypeId || !coachId || !locationId || dayOfWeek === undefined || !startTime || !capacity) {
@@ -5991,6 +6002,32 @@ export const createSchedule = async (req: AuthRequest, res: Response): Promise<v
         }
       });
       return;
+    }
+
+    // Validate temporary schedule fields
+    if (isTemporary) {
+      if (!overrideStartDate || !overrideEndDate) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'overrideStartDate and overrideEndDate are required for temporary schedules'
+          }
+        });
+        return;
+      }
+      const startDate = new Date(overrideStartDate);
+      const endDate = new Date(overrideEndDate);
+      if (startDate >= endDate) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'overrideStartDate must be before overrideEndDate'
+          }
+        });
+        return;
+      }
     }
 
     // Validate dayOfWeek (0-6)
@@ -6084,17 +6121,45 @@ export const createSchedule = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
+    // For temporary schedules, find base schedule if not provided
+    let finalBaseScheduleId = baseScheduleId;
+    if (isTemporary && !finalBaseScheduleId) {
+      const baseSchedule = await prisma.classSchedule.findFirst({
+        where: {
+          locationId: parseInt(locationId),
+          dayOfWeek: parseInt(dayOfWeek),
+          startTime: startTime.trim(),
+          isOverride: false,
+          isActive: true
+        }
+      });
+      if (baseSchedule) {
+        finalBaseScheduleId = baseSchedule.id;
+      }
+    }
+
     // Create schedule
+    const scheduleData: any = {
+      classTypeId: parseInt(classTypeId),
+      coachId: parseInt(coachId),
+      locationId: parseInt(locationId),
+      dayOfWeek: parseInt(dayOfWeek),
+      startTime: startTime.trim(),
+      capacity: capacityNum,
+      isActive: true,
+      isOverride: !!isTemporary
+    };
+
+    if (isTemporary) {
+      scheduleData.overrideStartDate = new Date(overrideStartDate);
+      scheduleData.overrideEndDate = new Date(overrideEndDate);
+      if (finalBaseScheduleId) {
+        scheduleData.baseScheduleId = parseInt(finalBaseScheduleId);
+      }
+    }
+
     const schedule = await prisma.classSchedule.create({
-      data: {
-        classTypeId: parseInt(classTypeId),
-        coachId: parseInt(coachId),
-        locationId: parseInt(locationId),
-        dayOfWeek: parseInt(dayOfWeek),
-        startTime: startTime.trim(),
-        capacity: capacityNum,
-        isActive: true
-      },
+      data: scheduleData,
       include: {
         classType: {
           select: {
@@ -6233,6 +6298,407 @@ export const getAllSchedules = async (req: AuthRequest, res: Response): Promise<
 };
 
 /**
+ * GET /api/admin/schedules/location/:locationId/grid
+ * Get schedules for a location and coach in grid format (for bulk import)
+ */
+export const getSchedulesForGrid = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const locationId = parseInt(req.params.locationId);
+    const { coachId } = req.query;
+
+    if (!locationId || isNaN(locationId)) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Valid location ID is required'
+        }
+      });
+      return;
+    }
+
+    // Build where clause
+    const whereClause: any = {
+      locationId,
+      isActive: true
+    };
+
+    if (coachId) {
+      whereClause.coachId = parseInt(coachId as string);
+    }
+
+    // Fetch schedules
+    const schedules = await prisma.classSchedule.findMany({
+      where: whereClause,
+      include: {
+        classType: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        coach: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true
+          }
+        }
+      },
+      orderBy: [
+        { dayOfWeek: 'asc' },
+        { startTime: 'asc' }
+      ]
+    });
+
+    // Format as grid: { "day-time": { scheduleId, classTypeId, ... } }
+    const grid: Record<string, any> = {};
+    
+    schedules.forEach(schedule => {
+      const key = `${schedule.dayOfWeek}-${schedule.startTime}`;
+      grid[key] = {
+        scheduleId: schedule.id,
+        classTypeId: schedule.classType.id,
+        classTypeName: schedule.classType.name,
+        coachId: schedule.coach.id,
+        coachName: `${schedule.coach.firstName} ${schedule.coach.lastName}`,
+        dayOfWeek: schedule.dayOfWeek,
+        startTime: schedule.startTime,
+        capacity: schedule.capacity,
+        isActive: schedule.isActive
+      };
+    });
+
+    res.json({
+      success: true,
+      data: {
+        grid,
+        schedules: schedules.map(s => ({
+          id: s.id,
+          classTypeId: s.classType.id,
+          classTypeName: s.classType.name,
+          coachId: s.coach.id,
+          dayOfWeek: s.dayOfWeek,
+          startTime: s.startTime,
+          capacity: s.capacity
+        }))
+      }
+    });
+  } catch (error) {
+    console.error('Get schedules for grid error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while fetching schedules'
+      }
+    });
+  }
+};
+
+/**
+ * POST /api/admin/schedules/bulk-import-smart
+ * Smart bulk import with conflict detection and handling
+ * Supports temporary schedules (override schedules) with date ranges
+ */
+export const bulkImportSchedulesSmart = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { schedules, conflictAction, isTemporary, overrideStartDate, overrideEndDate } = req.body;
+    // conflictAction: 'skip' | 'update' | 'cancel'
+    // isTemporary: boolean - if true, creates override schedules
+    // overrideStartDate/overrideEndDate: ISO date strings for temporary schedules
+
+    if (!schedules || !Array.isArray(schedules) || schedules.length === 0) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Schedules array is required'
+        }
+      });
+      return;
+    }
+
+    if (!['skip', 'update', 'cancel'].includes(conflictAction)) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'conflictAction must be "skip", "update", or "cancel"'
+        }
+      });
+      return;
+    }
+
+    // Validate temporary schedule dates
+    if (isTemporary) {
+      if (!overrideStartDate || !overrideEndDate) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'overrideStartDate and overrideEndDate are required for temporary schedules'
+          }
+        });
+        return;
+      }
+      const startDate = new Date(overrideStartDate);
+      const endDate = new Date(overrideEndDate);
+      if (startDate >= endDate) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'overrideStartDate must be before overrideEndDate'
+          }
+        });
+        return;
+      }
+    }
+
+    const results = {
+      created: 0,
+      updated: 0,
+      skipped: 0,
+      failed: 0,
+      errors: [] as Array<{ schedule: any; error: string }>
+    };
+
+    // For temporary schedules, find base schedules to link to
+    const baseScheduleMap = new Map<string, number>();
+    if (isTemporary) {
+      for (const schedule of schedules) {
+        const key = `${schedule.locationId}-${schedule.dayOfWeek}-${schedule.startTime}`;
+        const baseSchedule = await prisma.classSchedule.findFirst({
+          where: {
+            locationId: parseInt(schedule.locationId),
+            dayOfWeek: parseInt(schedule.dayOfWeek),
+            startTime: schedule.startTime.trim(),
+            isOverride: false,
+            isActive: true
+          }
+        });
+        if (baseSchedule) {
+          baseScheduleMap.set(key, baseSchedule.id);
+        }
+      }
+    }
+
+    // Check for conflicts first
+    const conflictChecks = await Promise.all(
+      schedules.map(async (schedule: any) => {
+        const whereClause: any = {
+          classTypeId: parseInt(schedule.classTypeId),
+          coachId: parseInt(schedule.coachId),
+          locationId: parseInt(schedule.locationId),
+          dayOfWeek: parseInt(schedule.dayOfWeek),
+          startTime: schedule.startTime.trim()
+        };
+
+        // For temporary schedules, also check override dates
+        if (isTemporary) {
+          whereClause.isOverride = true;
+          whereClause.overrideStartDate = new Date(overrideStartDate);
+          whereClause.overrideEndDate = new Date(overrideEndDate);
+        } else {
+          whereClause.isOverride = false;
+        }
+
+        const existing = await prisma.classSchedule.findFirst({
+          where: whereClause
+        });
+        return { schedule, existing };
+      })
+    );
+
+    // Process each schedule based on conflict action
+    for (const { schedule, existing } of conflictChecks) {
+      try {
+        if (existing) {
+          // Conflict exists
+          if (conflictAction === 'skip') {
+            results.skipped++;
+            continue;
+          } else if (conflictAction === 'update') {
+            // Update existing schedule
+            const updateData: any = {
+              capacity: parseInt(schedule.capacity),
+              isActive: true
+            };
+            
+            if (isTemporary) {
+              updateData.overrideStartDate = new Date(overrideStartDate);
+              updateData.overrideEndDate = new Date(overrideEndDate);
+            }
+            
+            await prisma.classSchedule.update({
+              where: { id: existing.id },
+              data: updateData
+            });
+            results.updated++;
+          } else {
+            // cancel - skip this one
+            results.skipped++;
+            continue;
+          }
+        } else {
+          // No conflict, create new
+          const createData: any = {
+            classTypeId: parseInt(schedule.classTypeId),
+            coachId: parseInt(schedule.coachId),
+            locationId: parseInt(schedule.locationId),
+            dayOfWeek: parseInt(schedule.dayOfWeek),
+            startTime: schedule.startTime.trim(),
+            capacity: parseInt(schedule.capacity),
+            isActive: true,
+            isOverride: !!isTemporary
+          };
+
+          if (isTemporary) {
+            createData.overrideStartDate = new Date(overrideStartDate);
+            createData.overrideEndDate = new Date(overrideEndDate);
+            
+            // Link to base schedule if found
+            const key = `${schedule.locationId}-${schedule.dayOfWeek}-${schedule.startTime}`;
+            if (baseScheduleMap.has(key)) {
+              createData.baseScheduleId = baseScheduleMap.get(key);
+            }
+          }
+
+          await prisma.classSchedule.create({
+            data: createData
+          });
+          results.created++;
+        }
+      } catch (error: any) {
+        results.failed++;
+        results.errors.push({
+          schedule,
+          error: error.message || 'Unknown error'
+        });
+      }
+    }
+
+    // Regenerate classes if any schedules were created or updated
+    if (results.created > 0 || results.updated > 0) {
+      const { generateClassesFromSchedules } = require('../services/scheduleService');
+      await generateClassesFromSchedules(2);
+    }
+
+    res.json({
+      success: true,
+      data: {
+        results,
+        message: `Created ${results.created}, updated ${results.updated}, skipped ${results.skipped}, failed ${results.failed}`
+      }
+    });
+  } catch (error) {
+    console.error('Smart bulk import error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while importing schedules'
+      }
+    });
+  }
+};
+
+/**
+ * GET /api/admin/schedules/monthly-review-check
+ * Check if schedules need monthly review (prompt admin to review schedules)
+ */
+export const checkMonthlyReview = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    // Get the last review date from user preferences or default to null
+    // For now, we'll check if it's been more than 30 days since last review
+    // In a real implementation, you'd store this in a user_preferences table
+    
+    const now = new Date();
+    const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    // Check if there are any schedules that haven't been reviewed this month
+    // We'll use the updatedAt timestamp as a proxy for "last reviewed"
+    const schedulesNeedingReview = await prisma.classSchedule.findMany({
+      where: {
+        isActive: true,
+        isOverride: false, // Only check base schedules
+        OR: [
+          {
+            updatedAt: {
+              lt: firstOfMonth // Updated before this month
+            }
+          },
+          {
+            createdAt: {
+              gte: firstOfMonth // Created this month (new schedules)
+            }
+          }
+        ]
+      },
+      include: {
+        location: {
+          select: {
+            name: true
+          }
+        },
+        _count: {
+          select: {
+            instances: true
+          }
+        }
+      },
+      take: 10 // Limit to 10 for performance
+    });
+
+    // Check if there are temporary schedules ending soon (within 7 days)
+    const sevenDaysFromNow = new Date(now);
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+    
+    const temporarySchedulesEndingSoon = await prisma.classSchedule.findMany({
+      where: {
+        isActive: true,
+        isOverride: true,
+        overrideEndDate: {
+          lte: sevenDaysFromNow,
+          gte: now
+        }
+      },
+      include: {
+        location: {
+          select: {
+            name: true
+          }
+        }
+      }
+    });
+
+    const needsReview = schedulesNeedingReview.length > 0 || temporarySchedulesEndingSoon.length > 0;
+
+    res.json({
+      success: true,
+      data: {
+        needsReview,
+        schedulesNeedingReview: schedulesNeedingReview.length,
+        temporarySchedulesEndingSoon: temporarySchedulesEndingSoon.length,
+        message: needsReview
+          ? `You have ${schedulesNeedingReview.length} schedule(s) that may need review, and ${temporarySchedulesEndingSoon.length} temporary schedule(s) ending soon.`
+          : 'All schedules are up to date.'
+      }
+    });
+  } catch (error) {
+    console.error('Check monthly review error:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'SERVER_ERROR',
+        message: 'An error occurred while checking for monthly review'
+      }
+    });
+  }
+};
+
+/**
  * GET /api/admin/schedules/default
  * Get all recurring schedules grouped by location (for default schedule page)
  */
@@ -6245,7 +6711,7 @@ export const getDefaultSchedules = async (req: AuthRequest, res: Response): Prom
       },
       include: {
         classSchedules: {
-          // Include both active and inactive schedules
+          // Include both active and inactive schedules, base and override
           include: {
             classType: {
               select: {
@@ -6262,6 +6728,13 @@ export const getDefaultSchedules = async (req: AuthRequest, res: Response): Prom
                 email: true
               }
             },
+            baseSchedule: {
+              select: {
+                id: true,
+                classTypeId: true,
+                coachId: true
+              }
+            },
             _count: {
               select: {
                 instances: true
@@ -6269,6 +6742,7 @@ export const getDefaultSchedules = async (req: AuthRequest, res: Response): Prom
             }
           },
           orderBy: [
+            { isOverride: 'asc' }, // Base schedules first
             { dayOfWeek: 'asc' },
             { startTime: 'asc' }
           ]
@@ -6299,6 +6773,10 @@ export const getDefaultSchedules = async (req: AuthRequest, res: Response): Prom
         startTime: schedule.startTime,
         capacity: schedule.capacity,
         isActive: schedule.isActive,
+        isOverride: schedule.isOverride,
+        overrideStartDate: schedule.overrideStartDate,
+        overrideEndDate: schedule.overrideEndDate,
+        baseScheduleId: schedule.baseScheduleId,
         instanceCount: schedule._count.instances,
         createdAt: schedule.createdAt,
         updatedAt: schedule.updatedAt

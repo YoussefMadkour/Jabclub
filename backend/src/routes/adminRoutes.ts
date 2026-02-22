@@ -51,6 +51,9 @@ import {
   createSchedule,
   getAllSchedules,
   getDefaultSchedules,
+  getSchedulesForGrid,
+  bulkImportSchedulesSmart,
+  checkMonthlyReview,
   updateSchedule,
   deleteSchedule,
   generateClassesFromSchedules
@@ -191,8 +194,14 @@ router.delete('/coaches/:id', deleteCoach);
 router.get('/schedules', getAllSchedules);
 // GET /api/admin/schedules/default - Get schedules grouped by location (default schedule page)
 router.get('/schedules/default', getDefaultSchedules);
+// GET /api/admin/schedules/monthly-review-check - Check if schedules need monthly review
+router.get('/schedules/monthly-review-check', checkMonthlyReview);
+// GET /api/admin/schedules/location/:locationId/grid - Get schedules in grid format for bulk import
+router.get('/schedules/location/:locationId/grid', getSchedulesForGrid);
 // POST /api/admin/schedules - Create a recurring schedule
 router.post('/schedules', createSchedule);
+// POST /api/admin/schedules/bulk-import-smart - Smart bulk import with conflict handling
+router.post('/schedules/bulk-import-smart', bulkImportSchedulesSmart);
 // PUT /api/admin/schedules/:id - Update a recurring schedule
 router.put('/schedules/:id', updateSchedule);
 // DELETE /api/admin/schedules/:id - Deactivate a recurring schedule

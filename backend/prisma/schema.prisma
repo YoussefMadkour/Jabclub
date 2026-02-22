@@ -211,25 +211,34 @@ model ClassInstance {
 }
 
 model ClassSchedule {
-  id          Int      @id @default(autoincrement())
-  classTypeId Int      @map("class_type_id")
-  coachId     Int      @map("coach_id")
-  locationId  Int      @map("location_id")
-  dayOfWeek   Int      @map("day_of_week") // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-  startTime   String   @map("start_time") // HH:MM format
-  capacity    Int
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id              Int       @id @default(autoincrement())
+  classTypeId     Int       @map("class_type_id")
+  coachId         Int       @map("coach_id")
+  locationId      Int       @map("location_id")
+  dayOfWeek       Int       @map("day_of_week") // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime       String    @map("start_time") // HH:MM format
+  capacity        Int
+  isActive        Boolean   @default(true) @map("is_active")
+  isOverride      Boolean   @default(false) @map("is_override") // Temporary schedule that replaces base schedule
+  overrideStartDate DateTime? @map("override_start_date") // Start date for temporary schedule
+  overrideEndDate   DateTime? @map("override_end_date") // End date for temporary schedule
+  baseScheduleId   Int?      @map("base_schedule_id") // Link to base schedule being overridden
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  classType ClassType     @relation(fields: [classTypeId], references: [id])
-  coach     User          @relation(fields: [coachId], references: [id])
-  location  Location      @relation(fields: [locationId], references: [id])
-  instances ClassInstance[]
+  classType     ClassType     @relation(fields: [classTypeId], references: [id])
+  coach         User          @relation(fields: [coachId], references: [id])
+  location      Location      @relation(fields: [locationId], references: [id])
+  instances     ClassInstance[]
+  baseSchedule  ClassSchedule? @relation("ScheduleOverride", fields: [baseScheduleId], references: [id], onDelete: Cascade)
+  overrideSchedules ClassSchedule[] @relation("ScheduleOverride")
 
-  @@unique([classTypeId, coachId, locationId, dayOfWeek, startTime])
+  @@unique([classTypeId, coachId, locationId, dayOfWeek, startTime, overrideStartDate, overrideEndDate])
   @@index([isActive])
+  @@index([isOverride])
+  @@index([overrideStartDate, overrideEndDate])
+  @@index([baseScheduleId])
   @@map("class_schedules")
 }
 

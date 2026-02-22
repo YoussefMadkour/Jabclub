@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiClient from '@/lib/axios';
 
@@ -38,6 +38,8 @@ interface DefaultSchedulesResponse {
 interface GridCell {
   classTypeId: string;
   classTypeName: string;
+  isExisting?: boolean;
+  scheduleId?: number;
 }
 
 export default function DefaultScheduleManager() {
@@ -60,12 +62,20 @@ export default function DefaultScheduleManager() {
   const [bulkForm, setBulkForm] = useState({
     locationId: '',
     coachId: '',
-    capacity: '20'
+    capacity: '20',
+    isTemporary: false,
+    overrideStartDate: '',
+    overrideEndDate: ''
   });
   const [timeSlots, setTimeSlots] = useState<string[]>(['19:00', '20:00']); // Default to 7:00 PM and 8:00 PM in 24-hour format
   const [scheduleGrid, setScheduleGrid] = useState<Record<string, GridCell>>({});
+  const [existingSchedulesGrid, setExistingSchedulesGrid] = useState<Record<string, any>>({});
+  const [showConflictPreview, setShowConflictPreview] = useState(false);
+  const [conflictPreview, setConflictPreview] = useState<{ conflicts: number; newSchedules: number; updates: number } | null>(null);
+  const [conflictAction, setConflictAction] = useState<'skip' | 'update' | 'cancel'>('skip');
   const [processing, setProcessing] = useState(false);
   const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [loadingExistingSchedules, setLoadingExistingSchedules] = useState(false);
 
   const { data, isLoading, error, refetch } = useQuery<DefaultSchedulesResponse>({
     queryKey: ['admin-default-schedules'],
@@ -269,14 +279,31 @@ export default function DefaultScheduleManager() {
 
   const updateGridCell = (timeIndex: number, dayOfWeek: number, classTypeId: string, classTypeName: string) => {
     const key = `${timeIndex}-${dayOfWeek}`;
+    const existingCell = scheduleGrid[key];
+    
+    // Don't allow editing existing schedules directly (they're read-only)
+    if (existingCell?.isExisting) {
+      return;
+    }
+    
     if (classTypeId) {
-      setScheduleGrid({ ...scheduleGrid, [key]: { classTypeId, classTypeName } });
+      setScheduleGrid({ ...scheduleGrid, [key]: { classTypeId, classTypeName, isExisting: false } });
     } else {
       const newGrid = { ...scheduleGrid };
       delete newGrid[key];
       setScheduleGrid(newGrid);
     }
   };
+
+  // Fetch existing schedules when location/coach changes
+  useEffect(() => {
+    if (showBulkImportModal && bulkForm.locationId && bulkForm.coachId) {
+      fetchExistingSchedules();
+    } else {
+      setExistingSchedulesGrid({});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bulkForm.locationId, bulkForm.coachId, showBulkImportModal]);
 
   const formatTimeDisplay = (time24: string): string => {
     // Convert 24-hour format (HH:MM) to 12-hour format (h:mm AM/PM)
@@ -344,13 +371,62 @@ export default function DefaultScheduleManager() {
     return null;
   };
 
-  const handleBulkImport = async () => {
-    if (!bulkForm.locationId || !bulkForm.coachId || !bulkForm.capacity) {
-      alert('Please select location, coach, and set capacity');
+  // Fetch existing schedules when location/coach is selected
+  const fetchExistingSchedules = async () => {
+    if (!bulkForm.locationId || !bulkForm.coachId) {
+      setExistingSchedulesGrid({});
       return;
     }
 
-    // Collect all schedules to create
+    try {
+      setLoadingExistingSchedules(true);
+      const response = await apiClient.get(`/admin/schedules/location/${bulkForm.locationId}/grid`, {
+        params: { coachId: bulkForm.coachId }
+      });
+      const grid = response.data.data.grid || {};
+      setExistingSchedulesGrid(grid);
+      
+      // Pre-populate grid with existing schedules (read-only, grayed out)
+      const prePopulatedGrid: Record<string, GridCell> = {};
+      Object.keys(grid).forEach(key => {
+        const schedule = grid[key];
+        // Find matching time slot index
+        const time24 = schedule.startTime;
+        const timeIndex = timeSlots.findIndex(ts => {
+          const ts24 = convertTo24Hour(ts.trim());
+          return ts24 === time24;
+        });
+        
+        if (timeIndex >= 0) {
+          const gridKey = `${timeIndex}-${schedule.dayOfWeek}`;
+          prePopulatedGrid[gridKey] = {
+            classTypeId: schedule.classTypeId.toString(),
+            classTypeName: schedule.classTypeName,
+            isExisting: true,
+            scheduleId: schedule.scheduleId
+          };
+        }
+      });
+      
+      // Merge with user's current grid (preserve existing, add new user selections)
+      const mergedGrid: Record<string, GridCell> = { ...prePopulatedGrid };
+      Object.keys(scheduleGrid).forEach(key => {
+        // Only add user selections if they're not overwriting existing schedules
+        if (!prePopulatedGrid[key] || !scheduleGrid[key]?.isExisting) {
+          mergedGrid[key] = scheduleGrid[key];
+        }
+      });
+      setScheduleGrid(mergedGrid);
+    } catch (err: any) {
+      console.error('Error fetching existing schedules:', err);
+      setExistingSchedulesGrid({});
+    } finally {
+      setLoadingExistingSchedules(false);
+    }
+  };
+
+  // Check for conflicts before submission
+  const checkConflicts = (): { conflicts: number; updates: number; newSchedules: number; schedulesToCreate: any[] } => {
     const schedulesToCreate: Array<{
       classTypeId: number;
       coachId: number;
@@ -374,17 +450,13 @@ export default function DefaultScheduleManager() {
       const timeSlot = timeSlots[timeIndex];
       if (!timeSlot.trim()) continue;
       
-      // Convert time format (e.g., "7:00 PM" to "19:00")
       const time24 = convertTo24Hour(timeSlot.trim());
-      if (!time24) {
-        alert(`Invalid time format: ${timeSlot}. Please use format like "7:00 PM" or "19:00"`);
-        return;
-      }
+      if (!time24) continue;
 
       days.forEach(day => {
         const key = `${timeIndex}-${day.value}`;
         const cell = scheduleGrid[key];
-        if (cell && cell.classTypeId) {
+        if (cell && cell.classTypeId && !cell.isExisting) {
           schedulesToCreate.push({
             classTypeId: parseInt(cell.classTypeId),
             coachId: parseInt(bulkForm.coachId),
@@ -397,38 +469,95 @@ export default function DefaultScheduleManager() {
       });
     }
 
-    if (schedulesToCreate.length === 0) {
-      alert('Please fill in at least one class in the grid');
+    // Check for conflicts
+    let conflicts = 0;
+    let updates = 0;
+    let newSchedules = 0;
+
+    schedulesToCreate.forEach(schedule => {
+      const existingKey = `${schedule.dayOfWeek}-${schedule.startTime}`;
+      const existing = existingSchedulesGrid[existingKey];
+      if (existing) {
+        if (existing.classTypeId === schedule.classTypeId) {
+          updates++;
+        } else {
+          conflicts++;
+        }
+      } else {
+        newSchedules++;
+      }
+    });
+
+    return { conflicts, updates, newSchedules, schedulesToCreate };
+  };
+
+  const handleBulkImport = async () => {
+    if (!bulkForm.locationId || !bulkForm.coachId || !bulkForm.capacity) {
+      alert('Please select location, coach, and set capacity');
       return;
     }
 
+    // Validate temporary schedule dates
+    if (bulkForm.isTemporary) {
+      if (!bulkForm.overrideStartDate || !bulkForm.overrideEndDate) {
+        alert('Please provide start and end dates for temporary schedule');
+        return;
+      }
+      const startDate = new Date(bulkForm.overrideStartDate);
+      const endDate = new Date(bulkForm.overrideEndDate);
+      if (startDate >= endDate) {
+        alert('Start date must be before end date');
+        return;
+      }
+    }
+
+    // Check for conflicts first
+    const { conflicts, updates, newSchedules, schedulesToCreate } = checkConflicts();
+
+    if (schedulesToCreate.length === 0) {
+      alert('Please fill in at least one new class in the grid');
+      return;
+    }
+
+    // Show conflict preview if there are conflicts
+    if (conflicts > 0 || updates > 0) {
+      setConflictPreview({ conflicts, updates, newSchedules });
+      setShowConflictPreview(true);
+      return;
+    }
+
+    // No conflicts, proceed directly
+    await executeBulkImport(schedulesToCreate, 'skip');
+  };
+
+  const executeBulkImport = async (schedulesToCreate: any[], action: 'skip' | 'update' | 'cancel') => {
     try {
       setBulkProcessing(true);
       
-      // Create schedules one by one (or we could create a bulk endpoint)
-      const results = await Promise.allSettled(
-        schedulesToCreate.map(schedule => 
-          apiClient.post('/admin/schedules', schedule)
-        )
-      );
+      const response = await apiClient.post('/admin/schedules/bulk-import-smart', {
+        schedules: schedulesToCreate,
+        conflictAction: action,
+        isTemporary: bulkForm.isTemporary,
+        overrideStartDate: bulkForm.isTemporary ? bulkForm.overrideStartDate : undefined,
+        overrideEndDate: bulkForm.isTemporary ? bulkForm.overrideEndDate : undefined
+      });
 
-      const successful = results.filter(r => r.status === 'fulfilled').length;
-      const failed = results.filter(r => r.status === 'rejected').length;
+      const results = response.data.data.results;
+      const message = response.data.data.message;
 
-      if (failed > 0) {
-        alert(`Created ${successful} schedules successfully. ${failed} failed. Some schedules may already exist.`);
-      } else {
-        alert(`Successfully created ${successful} schedules! Classes will be generated automatically each month.`);
-      }
+      alert(`✅ ${message}\n\nCreated: ${results.created}\nUpdated: ${results.updated}\nSkipped: ${results.skipped}\nFailed: ${results.failed}`);
 
       setShowBulkImportModal(false);
+      setShowConflictPreview(false);
       setBulkForm({ locationId: '', coachId: '', capacity: '20' });
       setTimeSlots(['19:00', '20:00']);
       setScheduleGrid({});
+      setExistingSchedulesGrid({});
+      setConflictPreview(null);
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
     } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Failed to create schedules');
+      alert(err.response?.data?.error?.message || 'Failed to import schedules');
     } finally {
       setBulkProcessing(false);
     }
@@ -482,7 +611,7 @@ export default function DefaultScheduleManager() {
             </button>
             <button
               onClick={() => {
-                setBulkForm({ locationId: '', coachId: '', capacity: '20' });
+                setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
                 setTimeSlots(['19:00', '20:00']);
                 setScheduleGrid({});
                 setShowBulkImportModal(true);
@@ -573,17 +702,27 @@ export default function DefaultScheduleManager() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {location.schedules.map((schedule) => (
-                        <tr key={schedule.id} className={`hover:bg-gray-50 ${!schedule.isActive ? 'opacity-60' : ''}`}>
+                      {location.schedules.map((schedule: any) => (
+                        <tr key={schedule.id} className={`hover:bg-gray-50 ${!schedule.isActive ? 'opacity-60' : ''} ${schedule.isOverride ? 'bg-orange-50' : ''}`}>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center gap-2">
                               <div className="text-sm font-medium text-gray-900">{schedule.classType}</div>
+                              {schedule.isOverride && (
+                                <span className="px-2 py-0.5 text-xs bg-orange-200 text-orange-800 rounded-full font-medium">
+                                  Temporary
+                                </span>
+                              )}
                               {!schedule.isActive && (
                                 <span className="px-2 py-0.5 text-xs bg-gray-200 text-gray-600 rounded-full">
                                   Inactive
                                 </span>
                               )}
                             </div>
+                            {schedule.isOverride && schedule.overrideStartDate && schedule.overrideEndDate && (
+                              <div className="text-xs text-orange-700 mt-1">
+                                {new Date(schedule.overrideStartDate).toLocaleDateString()} - {new Date(schedule.overrideEndDate).toLocaleDateString()}
+                              </div>
+                            )}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{schedule.coach}</div>
@@ -936,57 +1075,105 @@ export default function DefaultScheduleManager() {
             </p>
             
             {/* Bulk Form Settings */}
-            <div className="grid grid-cols-3 gap-4 mb-6 pb-4 border-b">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
-                <select
-                  value={bulkForm.locationId}
-                  onChange={(e) => setBulkForm({ ...bulkForm, locationId: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                  required
-                >
-                  <option value="">Select location</option>
-                  {locationsData?.map((loc: any) => (
-                    <option key={loc.id} value={loc.id}>
-                      {loc.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Coach *</label>
-                <select
-                  value={bulkForm.coachId}
-                  onChange={(e) => setBulkForm({ ...bulkForm, coachId: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                  required
-                >
-                  <option value="">Select coach</option>
-                  {Array.isArray(coachesData) && coachesData.length > 0 ? (
-                    coachesData.map((coach: any) => (
-                      <option key={coach.id} value={coach.id}>
-                        {coach.firstName} {coach.lastName}
+            <div className="space-y-4 mb-6 pb-4 border-b">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+                  <select
+                    value={bulkForm.locationId}
+                    onChange={(e) => setBulkForm({ ...bulkForm, locationId: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+                    required
+                  >
+                    <option value="">Select location</option>
+                    {locationsData?.map((loc: any) => (
+                      <option key={loc.id} value={loc.id}>
+                        {loc.name}
                       </option>
-                    ))
-                  ) : (
-                    <option value="" disabled>No coaches available</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Coach *</label>
+                  <select
+                    value={bulkForm.coachId}
+                    onChange={(e) => setBulkForm({ ...bulkForm, coachId: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+                    required
+                  >
+                    <option value="">Select coach</option>
+                    {Array.isArray(coachesData) && coachesData.length > 0 ? (
+                      coachesData.map((coach: any) => (
+                        <option key={coach.id} value={coach.id}>
+                          {coach.firstName} {coach.lastName}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>No coaches available</option>
+                    )}
+                  </select>
+                  {Array.isArray(coachesData) && coachesData.length === 0 && (
+                    <p className="mt-1 text-xs text-gray-500">No coaches found. Please create coaches first.</p>
                   )}
-                </select>
-                {Array.isArray(coachesData) && coachesData.length === 0 && (
-                  <p className="mt-1 text-xs text-gray-500">No coaches found. Please create coaches first.</p>
-                )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Capacity *</label>
+                  <input
+                    type="number"
+                    value={bulkForm.capacity}
+                    onChange={(e) => setBulkForm({ ...bulkForm, capacity: e.target.value })}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+                    min="1"
+                    required
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Capacity *</label>
+              
+              {/* Temporary Schedule Toggle */}
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                 <input
-                  type="number"
-                  value={bulkForm.capacity}
-                  onChange={(e) => setBulkForm({ ...bulkForm, capacity: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                  min="1"
-                  required
+                  type="checkbox"
+                  id="isTemporary"
+                  checked={bulkForm.isTemporary}
+                  onChange={(e) => setBulkForm({ ...bulkForm, isTemporary: e.target.checked })}
+                  className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                 />
+                <label htmlFor="isTemporary" className="text-sm font-medium text-gray-700 cursor-pointer">
+                  This is a temporary schedule (e.g., Ramadan)
+                </label>
               </div>
+
+              {/* Temporary Schedule Date Range */}
+              {bulkForm.isTemporary && (
+                <div className="grid grid-cols-2 gap-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
+                    <input
+                      type="date"
+                      value={bulkForm.overrideStartDate}
+                      onChange={(e) => setBulkForm({ ...bulkForm, overrideStartDate: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+                      required={bulkForm.isTemporary}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
+                    <input
+                      type="date"
+                      value={bulkForm.overrideEndDate}
+                      onChange={(e) => setBulkForm({ ...bulkForm, overrideEndDate: e.target.value })}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+                      required={bulkForm.isTemporary}
+                      min={bulkForm.overrideStartDate}
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs text-gray-600">
+                      This temporary schedule will replace the base schedule during the specified date range.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Time Slots Management */}
@@ -1062,32 +1249,47 @@ export default function DefaultScheduleManager() {
                       {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => {
                         const key = `${timeIndex}-${dayOfWeek}`;
                         const cell = scheduleGrid[key];
+                        const isExisting = cell?.isExisting;
                         return (
-                          <td key={dayOfWeek} className="px-2 py-2 border border-gray-300">
-                            <select
-                              value={cell?.classTypeId || ''}
-                              onChange={(e) => {
-                                const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
-                                updateGridCell(
-                                  timeIndex,
-                                  dayOfWeek,
-                                  e.target.value,
-                                  selectedClassType?.name || ''
-                                );
-                              }}
-                              className="w-full text-xs border border-gray-300 rounded px-2 py-1 bg-white text-gray-800"
-                            >
-                              <option value="">-</option>
-                              {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
-                                <option key={ct.id} value={ct.id}>
-                                  {ct.name}
-                                </option>
-                              ))}
-                            </select>
-                            {cell?.classTypeName && (
-                              <div className="mt-1 text-xs text-gray-600 truncate">
-                                {cell.classTypeName}
+                          <td 
+                            key={dayOfWeek} 
+                            className={`px-2 py-2 border border-gray-300 ${isExisting ? 'bg-gray-100' : ''}`}
+                          >
+                            {isExisting ? (
+                              <div className="text-xs">
+                                <div className="text-gray-500 italic mb-1">Existing:</div>
+                                <div className="font-medium text-gray-700">{cell.classTypeName}</div>
+                                <div className="text-xs text-gray-400 mt-1">Read-only</div>
                               </div>
+                            ) : (
+                              <>
+                                <select
+                                  value={cell?.classTypeId || ''}
+                                  onChange={(e) => {
+                                    const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
+                                    updateGridCell(
+                                      timeIndex,
+                                      dayOfWeek,
+                                      e.target.value,
+                                      selectedClassType?.name || ''
+                                    );
+                                  }}
+                                  className="w-full text-xs border border-gray-300 rounded px-2 py-1 bg-white text-gray-800"
+                                  disabled={loadingExistingSchedules}
+                                >
+                                  <option value="">-</option>
+                                  {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
+                                    <option key={ct.id} value={ct.id}>
+                                      {ct.name}
+                                    </option>
+                                  ))}
+                                </select>
+                                {cell?.classTypeName && (
+                                  <div className="mt-1 text-xs text-gray-600 truncate">
+                                    {cell.classTypeName}
+                                  </div>
+                                )}
+                              </>
                             )}
                           </td>
                         );
@@ -1098,13 +1300,23 @@ export default function DefaultScheduleManager() {
               </table>
             </div>
 
+            {loadingExistingSchedules && (
+              <div className="mb-4 text-sm text-gray-600 flex items-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+                Loading existing schedules...
+              </div>
+            )}
+
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => {
                   setShowBulkImportModal(false);
-                  setBulkForm({ locationId: '', coachId: '', capacity: '20' });
+                  setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
                   setTimeSlots(['19:00', '20:00']);
                   setScheduleGrid({});
+                  setExistingSchedulesGrid({});
+                  setShowConflictPreview(false);
+                  setConflictPreview(null);
                 }}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
               >
@@ -1112,10 +1324,71 @@ export default function DefaultScheduleManager() {
               </button>
               <button
                 onClick={handleBulkImport}
-                disabled={bulkProcessing || Object.keys(scheduleGrid).length === 0}
+                disabled={bulkProcessing || loadingExistingSchedules || Object.keys(scheduleGrid).filter(k => !scheduleGrid[k]?.isExisting).length === 0}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {bulkProcessing ? 'Creating...' : `Create ${Object.keys(scheduleGrid).length} Schedule(s)`}
+                {bulkProcessing ? 'Processing...' : `Import ${Object.keys(scheduleGrid).filter(k => !scheduleGrid[k]?.isExisting).length} New Schedule(s)`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Conflict Preview Modal */}
+      {showConflictPreview && conflictPreview && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4 text-gray-700">Conflict Detection</h2>
+            <div className="mb-4 space-y-2">
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <div className="text-sm font-medium text-blue-900">New Schedules: {conflictPreview.newSchedules}</div>
+              </div>
+              {conflictPreview.conflicts > 0 && (
+                <div className="p-3 bg-yellow-50 rounded-lg">
+                  <div className="text-sm font-medium text-yellow-900">Conflicts: {conflictPreview.conflicts}</div>
+                  <div className="text-xs text-yellow-700 mt-1">Schedules with different class types at the same time</div>
+                </div>
+              )}
+              {conflictPreview.updates > 0 && (
+                <div className="p-3 bg-green-50 rounded-lg">
+                  <div className="text-sm font-medium text-green-900">Updates: {conflictPreview.updates}</div>
+                  <div className="text-xs text-green-700 mt-1">Schedules with same class type (will update capacity)</div>
+                </div>
+              )}
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                How should conflicts be handled?
+              </label>
+              <select
+                value={conflictAction}
+                onChange={(e) => setConflictAction(e.target.value as 'skip' | 'update' | 'cancel')}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
+              >
+                <option value="skip">Skip conflicts (keep existing)</option>
+                <option value="update">Update existing schedules</option>
+                <option value="cancel">Cancel import</option>
+              </select>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => {
+                  setShowConflictPreview(false);
+                  setConflictPreview(null);
+                }}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  const { schedulesToCreate } = checkConflicts();
+                  await executeBulkImport(schedulesToCreate, conflictAction);
+                }}
+                disabled={bulkProcessing || conflictAction === 'cancel'}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {bulkProcessing ? 'Processing...' : conflictAction === 'cancel' ? 'Cancelled' : 'Proceed'}
               </button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import apiClient from '@/lib/axios';
@@ -40,6 +41,8 @@ interface DashboardStats {
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const [showMonthlyReview, setShowMonthlyReview] = useState(false);
+  const [monthlyReviewDismissed, setMonthlyReviewDismissed] = useState(false);
 
   const { data, isLoading, error } = useQuery<DashboardStats>({
     queryKey: ['admin-dashboard-stats'],
@@ -48,6 +51,46 @@ export default function AdminDashboard() {
       return response.data.data;
     }
   });
+
+  // Check for monthly review
+  const { data: monthlyReviewData } = useQuery({
+    queryKey: ['admin-monthly-review-check'],
+    queryFn: async () => {
+      const response = await apiClient.get('/admin/schedules/monthly-review-check');
+      return response.data.data;
+    },
+    refetchOnMount: true,
+    refetchOnWindowFocus: false
+  });
+
+  // Show monthly review modal if needed
+  useEffect(() => {
+    if (monthlyReviewData?.needsReview && !monthlyReviewDismissed) {
+      // Check if user has dismissed this month's review (stored in localStorage)
+      const lastDismissed = localStorage.getItem('monthlyReviewDismissed');
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+      
+      if (lastDismissed) {
+        const dismissedDate = new Date(lastDismissed);
+        const dismissedMonth = dismissedDate.getMonth();
+        const dismissedYear = dismissedDate.getFullYear();
+        
+        // Only show if not dismissed this month
+        if (dismissedMonth !== currentMonth || dismissedYear !== currentYear) {
+          setShowMonthlyReview(true);
+        }
+      } else {
+        setShowMonthlyReview(true);
+      }
+    }
+  }, [monthlyReviewData, monthlyReviewDismissed]);
+
+  const handleDismissMonthlyReview = () => {
+    setShowMonthlyReview(false);
+    setMonthlyReviewDismissed(true);
+    localStorage.setItem('monthlyReviewDismissed', new Date().toISOString());
+  };
 
   if (isLoading) {
     return (
@@ -76,6 +119,81 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Monthly Review Prompt Modal */}
+      {showMonthlyReview && monthlyReviewData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Monthly Schedule Review</h2>
+                  <p className="text-sm text-gray-600 mt-1">Time to review your schedules</p>
+                </div>
+              </div>
+              <button
+                onClick={handleDismissMonthlyReview}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mb-6 space-y-3">
+              <p className="text-gray-700">{monthlyReviewData.message}</p>
+              
+              {monthlyReviewData.schedulesNeedingReview > 0 && (
+                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-sm font-medium text-blue-900">
+                      {monthlyReviewData.schedulesNeedingReview} schedule(s) may need review
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {monthlyReviewData.temporarySchedulesEndingSoon > 0 && (
+                <div className="p-3 bg-orange-50 rounded-lg border border-orange-200">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-sm font-medium text-orange-900">
+                      {monthlyReviewData.temporarySchedulesEndingSoon} temporary schedule(s) ending soon
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleDismissMonthlyReview}
+                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Remind Me Later
+              </button>
+              <Link
+                href="/admin/schedules/default"
+                onClick={handleDismissMonthlyReview}
+                className="flex-1 px-4 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors text-center"
+              >
+                Review Schedules
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
