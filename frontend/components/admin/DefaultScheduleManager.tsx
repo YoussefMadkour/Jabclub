@@ -38,8 +38,6 @@ interface DefaultSchedulesResponse {
 interface GridCell {
   classTypeId: string;
   classTypeName: string;
-  isExisting?: boolean;
-  scheduleId?: number;
 }
 
 export default function DefaultScheduleManager() {
@@ -69,14 +67,13 @@ export default function DefaultScheduleManager() {
   });
   const [timeSlots, setTimeSlots] = useState<string[]>(['19:00', '20:00']); // Default to 7:00 PM and 8:00 PM in 24-hour format
   const [scheduleGrid, setScheduleGrid] = useState<Record<string, GridCell>>({});
-  const [existingSchedulesGrid, setExistingSchedulesGrid] = useState<Record<string, any>>({});
   const [showConflictPreview, setShowConflictPreview] = useState(false);
   const [conflictPreview, setConflictPreview] = useState<{ conflicts: number; newSchedules: number; updates: number } | null>(null);
   const [conflictAction, setConflictAction] = useState<'skip' | 'update' | 'cancel'>('skip');
   const [processing, setProcessing] = useState(false);
   const [bulkProcessing, setBulkProcessing] = useState(false);
-  const [loadingExistingSchedules, setLoadingExistingSchedules] = useState(false);
-  const [updatingCell, setUpdatingCell] = useState<string | null>(null);
+  const [selectedLocationIdx, setSelectedLocationIdx] = useState(0);
+  const [selectedCoachFilter, setSelectedCoachFilter] = useState<string>('all');
 
   const { data, isLoading, error, refetch } = useQuery<DefaultSchedulesResponse>({
     queryKey: ['admin-default-schedules'],
@@ -280,18 +277,8 @@ export default function DefaultScheduleManager() {
 
   const updateGridCell = (timeIndex: number, dayOfWeek: number, classTypeId: string, classTypeName: string) => {
     const key = `${timeIndex}-${dayOfWeek}`;
-    const existingCell = scheduleGrid[key];
-    
-    // For existing schedules, call update API
-    if (existingCell?.isExisting && existingCell.scheduleId) {
-      if (!classTypeId) return; // Use delete button for removal
-      if (classTypeId === existingCell.classTypeId) return; // No change
-      handleUpdateExistingSchedule(key, parseInt(classTypeId), classTypeName);
-      return;
-    }
-    
     if (classTypeId) {
-      setScheduleGrid({ ...scheduleGrid, [key]: { classTypeId, classTypeName, isExisting: false } });
+      setScheduleGrid({ ...scheduleGrid, [key]: { classTypeId, classTypeName } });
     } else {
       const newGrid = { ...scheduleGrid };
       delete newGrid[key];
@@ -299,57 +286,6 @@ export default function DefaultScheduleManager() {
     }
   };
 
-  const handleUpdateExistingSchedule = async (key: string, classTypeId: number, classTypeName: string) => {
-    const cell = scheduleGrid[key];
-    if (!cell?.scheduleId) return;
-    try {
-      setUpdatingCell(key);
-      await apiClient.put(`/admin/schedules/${cell.scheduleId}`, {
-        classTypeId,
-        applyToCurrentMonth: false
-      });
-      setScheduleGrid(prev => ({
-        ...prev,
-        [key]: { ...cell, classTypeId: classTypeId.toString(), classTypeName }
-      }));
-      queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
-    } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Failed to update schedule');
-    } finally {
-      setUpdatingCell(null);
-    }
-  };
-
-  const handleDeleteExistingSchedule = async (key: string) => {
-    const cell = scheduleGrid[key];
-    if (!cell?.scheduleId) return;
-    if (!confirm(`Delete this schedule (${cell.classTypeName})? No new classes will be generated from it.`)) return;
-    try {
-      setUpdatingCell(key);
-      await apiClient.delete(`/admin/schedules/${cell.scheduleId}`);
-      const newGrid = { ...scheduleGrid };
-      delete newGrid[key];
-      setScheduleGrid(newGrid);
-      queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
-      queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
-      fetchExistingSchedules();
-    } catch (err: any) {
-      alert(err.response?.data?.error?.message || 'Failed to delete schedule');
-    } finally {
-      setUpdatingCell(null);
-    }
-  };
-
-  // Fetch existing schedules when location/coach changes
-  useEffect(() => {
-    if (showBulkImportModal && bulkForm.locationId && bulkForm.coachId) {
-      fetchExistingSchedules();
-    } else {
-      setExistingSchedulesGrid({});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bulkForm.locationId, bulkForm.coachId, showBulkImportModal]);
 
   const formatTimeDisplay = (time24: string): string => {
     // Convert 24-hour format (HH:MM) to 12-hour format (h:mm AM/PM)
@@ -417,59 +353,6 @@ export default function DefaultScheduleManager() {
     return null;
   };
 
-  // Fetch existing schedules when location/coach is selected
-  const fetchExistingSchedules = async () => {
-    if (!bulkForm.locationId || !bulkForm.coachId) {
-      setExistingSchedulesGrid({});
-      return;
-    }
-
-    try {
-      setLoadingExistingSchedules(true);
-      const response = await apiClient.get(`/admin/schedules/location/${bulkForm.locationId}/grid`, {
-        params: { coachId: bulkForm.coachId }
-      });
-      const grid = response.data.data.grid || {};
-      setExistingSchedulesGrid(grid);
-      
-      // Pre-populate grid with existing schedules (read-only, grayed out)
-      const prePopulatedGrid: Record<string, GridCell> = {};
-      Object.keys(grid).forEach(key => {
-        const schedule = grid[key];
-        // Find matching time slot index
-        const time24 = schedule.startTime;
-        const timeIndex = timeSlots.findIndex(ts => {
-          const ts24 = convertTo24Hour(ts.trim());
-          return ts24 === time24;
-        });
-        
-        if (timeIndex >= 0) {
-          const gridKey = `${timeIndex}-${schedule.dayOfWeek}`;
-          prePopulatedGrid[gridKey] = {
-            classTypeId: schedule.classTypeId.toString(),
-            classTypeName: schedule.classTypeName,
-            isExisting: true,
-            scheduleId: schedule.scheduleId
-          };
-        }
-      });
-      
-      // Merge with user's current grid (preserve existing, add new user selections)
-      const mergedGrid: Record<string, GridCell> = { ...prePopulatedGrid };
-      Object.keys(scheduleGrid).forEach(key => {
-        // Only add user selections if they're not overwriting existing schedules
-        if (!prePopulatedGrid[key] || !scheduleGrid[key]?.isExisting) {
-          mergedGrid[key] = scheduleGrid[key];
-        }
-      });
-      setScheduleGrid(mergedGrid);
-    } catch (err: any) {
-      console.error('Error fetching existing schedules:', err);
-      setExistingSchedulesGrid({});
-    } finally {
-      setLoadingExistingSchedules(false);
-    }
-  };
 
   // Check for conflicts before submission
   const checkConflicts = (): { conflicts: number; updates: number; newSchedules: number; schedulesToCreate: any[] } => {
@@ -502,7 +385,7 @@ export default function DefaultScheduleManager() {
       days.forEach(day => {
         const key = `${timeIndex}-${day.value}`;
         const cell = scheduleGrid[key];
-        if (cell && cell.classTypeId && !cell.isExisting) {
+        if (cell && cell.classTypeId) {
           schedulesToCreate.push({
             classTypeId: parseInt(cell.classTypeId),
             coachId: parseInt(bulkForm.coachId),
@@ -515,26 +398,8 @@ export default function DefaultScheduleManager() {
       });
     }
 
-    // Check for conflicts
-    let conflicts = 0;
-    let updates = 0;
-    let newSchedules = 0;
-
-    schedulesToCreate.forEach(schedule => {
-      const existingKey = `${schedule.dayOfWeek}-${schedule.startTime}`;
-      const existing = existingSchedulesGrid[existingKey];
-      if (existing) {
-        if (existing.classTypeId === schedule.classTypeId) {
-          updates++;
-        } else {
-          conflicts++;
-        }
-      } else {
-        newSchedules++;
-      }
-    });
-
-    return { conflicts, updates, newSchedules, schedulesToCreate };
+    // conflicts/updates are now detected server-side via the smart import
+    return { conflicts: 0, updates: 0, newSchedules: schedulesToCreate.length, schedulesToCreate };
   };
 
   const handleBulkImport = async () => {
@@ -598,7 +463,6 @@ export default function DefaultScheduleManager() {
       setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
       setTimeSlots(['19:00', '20:00']);
       setScheduleGrid({});
-      setExistingSchedulesGrid({});
       setConflictPreview(null);
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
@@ -694,141 +558,215 @@ export default function DefaultScheduleManager() {
         </div>
       </div>
 
-      {/* Schedules by Location */}
+      {/* Schedules — Weekly Grid View */}
       {scheduleLocations.length === 0 ? (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           <p className="text-gray-600 text-lg">No default schedules found</p>
-          <p className="text-gray-500 text-sm mt-2">Create schedules in the Classes page to get started</p>
+          <p className="text-gray-500 text-sm mt-2">Click "+ Add Schedule" or "Bulk Import" to get started</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {scheduleLocations.map((location) => (
-            <div key={location.locationId} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">{location.locationName}</h2>
-                <p className="text-sm text-gray-600 mt-1">{location.locationAddress}</p>
-              </div>
-              
-              {location.schedules.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
-                  No schedules for this location
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          {/* Location Tabs */}
+          <div className="flex overflow-x-auto border-b border-gray-200 bg-gray-50">
+            {scheduleLocations.map((location, idx) => (
+              <button
+                key={location.locationId}
+                onClick={() => { setSelectedLocationIdx(idx); setSelectedCoachFilter('all'); }}
+                className={`px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                  selectedLocationIdx === idx
+                    ? 'border-[#FF7A00] text-[#FF7A00] bg-white'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                {location.locationName}
+                <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
+                  {location.schedules.filter((s: any) => s.isActive).length}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {(() => {
+            const location = scheduleLocations[selectedLocationIdx];
+            if (!location) return null;
+
+            const activeSchedules = location.schedules.filter((s: any) => s.isActive);
+            const inactiveSchedules = location.schedules.filter((s: any) => !s.isActive);
+
+            // Collect unique coaches for the filter
+            const coaches = Array.from(
+              new Map(location.schedules.map((s: any) => [s.coachId, s.coach])).entries()
+            );
+
+            // Filter by coach
+            const visibleSchedules = selectedCoachFilter === 'all'
+              ? activeSchedules
+              : activeSchedules.filter((s: any) => s.coachId.toString() === selectedCoachFilter);
+
+            // Derive unique sorted time slots
+            const timeSlotSet = Array.from(new Set(visibleSchedules.map((s: any) => s.startTime))).sort() as string[];
+            const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            // Columns: only days that have at least one schedule
+            const activeDays = Array.from(new Set(visibleSchedules.map((s: any) => s.dayOfWeek))).sort() as number[];
+
+            return (
+              <div className="p-4">
+                {/* Coach filter + inactive count */}
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs text-gray-500 font-medium">Filter by coach:</span>
+                    <button
+                      onClick={() => setSelectedCoachFilter('all')}
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${selectedCoachFilter === 'all' ? 'bg-[#FF7A00] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                    >
+                      All
+                    </button>
+                    {coaches.map(([id, name]) => (
+                      <button
+                        key={id}
+                        onClick={() => setSelectedCoachFilter(id.toString())}
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${selectedCoachFilter === id.toString() ? 'bg-[#FF7A00] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      >
+                        {name as string}
+                      </button>
+                    ))}
+                  </div>
+                  {inactiveSchedules.length > 0 && (
+                    <span className="text-xs text-gray-400">{inactiveSchedules.length} inactive hidden</span>
+                  )}
                 </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Class Type
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Coach
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Day
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Time
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Duration
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Capacity
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Instances
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {location.schedules.map((schedule: any) => (
-                        <tr key={schedule.id} className={`hover:bg-gray-50 ${!schedule.isActive ? 'opacity-60' : ''} ${schedule.isOverride ? 'bg-orange-50' : ''}`}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <div className="text-sm font-medium text-gray-900">{schedule.classType}</div>
-                              {schedule.isOverride && (
-                                <span className="px-2 py-0.5 text-xs bg-orange-200 text-orange-800 rounded-full font-medium">
-                                  Temporary
-                                </span>
-                              )}
-                              {!schedule.isActive && (
-                                <span className="px-2 py-0.5 text-xs bg-gray-200 text-gray-600 rounded-full">
-                                  Inactive
-                                </span>
-                              )}
-                            </div>
-                            {schedule.isOverride && schedule.overrideStartDate && schedule.overrideEndDate && (
-                              <div className="text-xs text-orange-700 mt-1">
-                                {new Date(schedule.overrideStartDate).toLocaleDateString()} - {new Date(schedule.overrideEndDate).toLocaleDateString()}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{schedule.coach}</div>
-                            <div className="text-xs text-gray-500">{schedule.coachEmail}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{schedule.dayName}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{schedule.startTime}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{schedule.durationMinutes} min</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{schedule.capacity}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{schedule.instanceCount}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => {
-                                  // Add locationId to form when editing
-                                  setForm({
-                                    ...form,
-                                    locationId: location.locationId.toString(),
-                                    classTypeId: schedule.classTypeId.toString(),
-                                    coachId: schedule.coachId.toString(),
-                                    dayOfWeek: schedule.dayOfWeek.toString(),
-                                    startTime: schedule.startTime,
-                                    capacity: schedule.capacity.toString()
-                                  });
-                                  setSelectedSchedule(schedule);
-                                  setShowEditModal(true);
-                                }}
-                                className="text-[#FF7A00] hover:text-orange-900"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleToggleActive(schedule.id, schedule.isActive)}
-                                className={schedule.isActive 
-                                  ? "text-red-600 hover:text-red-900" 
-                                  : "text-green-600 hover:text-green-900"
-                                }
-                              >
-                                {schedule.isActive ? 'Deactivate' : 'Activate'}
-                              </button>
-                            </div>
-                          </td>
+
+                {visibleSchedules.length === 0 ? (
+                  <div className="py-12 text-center text-gray-400">No schedules for this location</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr>
+                          <th className="w-20 py-2 pr-3 text-left text-xs font-semibold text-gray-400 uppercase">Time</th>
+                          {activeDays.map(d => (
+                            <th key={d} className="py-2 px-2 text-center text-xs font-semibold text-gray-500 uppercase">
+                              {dayLabels[d]}
+                            </th>
+                          ))}
                         </tr>
+                      </thead>
+                      <tbody>
+                        {timeSlotSet.map(time => (
+                          <tr key={time} className="border-t border-gray-100">
+                            <td className="py-2 pr-3 text-xs font-medium text-gray-400 whitespace-nowrap align-top pt-3">
+                              {formatTimeDisplay(time)}
+                            </td>
+                            {activeDays.map(day => {
+                              const cell = visibleSchedules.filter(
+                                (s: any) => s.startTime === time && s.dayOfWeek === day
+                              );
+                              return (
+                                <td key={day} className="px-1 py-1 align-top min-w-[110px]">
+                                  {cell.length === 0 ? (
+                                    <button
+                                      onClick={() => {
+                                        setForm({ classTypeId: '', coachId: '', locationId: location.locationId.toString(), dayOfWeek: day.toString(), startTime: time, capacity: '20' });
+                                        setSelectedSchedule(null);
+                                        setShowCreateModal(true);
+                                      }}
+                                      className="w-full h-16 rounded-lg border-2 border-dashed border-gray-200 text-gray-300 hover:border-[#FF7A00] hover:text-[#FF7A00] transition-colors text-xl"
+                                      title="Add schedule"
+                                    >
+                                      +
+                                    </button>
+                                  ) : (
+                                    <div className="space-y-1">
+                                      {cell.map((schedule: any) => (
+                                        <div
+                                          key={schedule.id}
+                                          className={`group relative rounded-lg px-3 py-2 text-white text-xs ${schedule.isOverride ? 'bg-orange-500' : 'bg-[#FF7A00]'} ${!schedule.isActive ? 'opacity-50' : ''}`}
+                                        >
+                                          <div className="font-semibold truncate">{schedule.classType}</div>
+                                          <div className="opacity-80 truncate">{schedule.coach}</div>
+                                          <div className="opacity-70">Cap: {schedule.capacity}</div>
+                                          {schedule.isOverride && (
+                                            <span className="absolute top-1 right-1 text-[9px] bg-white text-orange-600 rounded px-1">Temp</span>
+                                          )}
+                                          {/* Action buttons — shown on hover */}
+                                          <div className="absolute inset-0 rounded-lg bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                            <button
+                                              onClick={() => {
+                                                setForm({
+                                                  locationId: location.locationId.toString(),
+                                                  classTypeId: schedule.classTypeId.toString(),
+                                                  coachId: schedule.coachId.toString(),
+                                                  dayOfWeek: schedule.dayOfWeek.toString(),
+                                                  startTime: schedule.startTime,
+                                                  capacity: schedule.capacity.toString()
+                                                });
+                                                setSelectedSchedule(schedule);
+                                                setShowEditModal(true);
+                                              }}
+                                              className="p-1.5 bg-white rounded-full text-[#FF7A00] hover:bg-orange-50 shadow"
+                                              title="Edit"
+                                            >
+                                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                              </svg>
+                                            </button>
+                                            <button
+                                              onClick={() => handleToggleActive(schedule.id, schedule.isActive)}
+                                              className="p-1.5 bg-white rounded-full text-red-500 hover:bg-red-50 shadow"
+                                              title="Deactivate"
+                                            >
+                                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                              </svg>
+                                            </button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {/* Inactive schedules collapsible */}
+                {inactiveSchedules.length > 0 && (
+                  <details className="mt-6 border-t pt-4">
+                    <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                      Show {inactiveSchedules.length} inactive schedule{inactiveSchedules.length > 1 ? 's' : ''}
+                    </summary>
+                    <div className="mt-3 space-y-2">
+                      {inactiveSchedules.map((schedule: any) => (
+                        <div key={schedule.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg opacity-60">
+                          <div className="text-sm">
+                            <span className="font-medium text-gray-700">{schedule.classType}</span>
+                            <span className="text-gray-400 mx-2">·</span>
+                            <span className="text-gray-500">{schedule.dayName} {formatTimeDisplay(schedule.startTime)}</span>
+                            <span className="text-gray-400 mx-2">·</span>
+                            <span className="text-gray-500">{schedule.coach}</span>
+                          </div>
+                          <button
+                            onClick={() => handleToggleActive(schedule.id, false)}
+                            className="text-xs text-green-600 hover:text-green-800 font-medium"
+                          >
+                            Activate
+                          </button>
+                        </div>
                       ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          ))}
+                    </div>
+                  </details>
+                )}
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -1295,62 +1233,22 @@ export default function DefaultScheduleManager() {
                       {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => {
                         const key = `${timeIndex}-${dayOfWeek}`;
                         const cell = scheduleGrid[key];
-                        const isExisting = cell?.isExisting;
-                        const isUpdating = updatingCell === key;
                         return (
-                          <td 
-                            key={dayOfWeek} 
-                            className={`px-2 py-2 border border-gray-300 ${isExisting ? 'bg-gray-50' : ''}`}
-                          >
-                            <div className="flex items-start gap-1">
-                              <select
-                                value={cell?.classTypeId || ''}
-                                onChange={(e) => {
-                                  const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
-                                  updateGridCell(
-                                    timeIndex,
-                                    dayOfWeek,
-                                    e.target.value,
-                                    selectedClassType?.name || ''
-                                  );
-                                }}
-                                className={`flex-1 min-w-0 text-xs border rounded px-2 py-1 ${isExisting ? 'border-amber-300 bg-amber-50/50 text-gray-800' : 'border-gray-300 bg-white text-gray-800'}`}
-                                disabled={loadingExistingSchedules || isUpdating}
-                              >
-                                <option value="">-</option>
-                                {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
-                                  <option key={ct.id} value={ct.id}>
-                                    {ct.name}
-                                  </option>
-                                ))}
-                              </select>
-                              {isExisting && cell?.scheduleId && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteExistingSchedule(key)}
-                                  disabled={isUpdating}
-                                  className="p-1 text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
-                                  title="Delete schedule"
-                                >
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                  </svg>
-                                </button>
-                              )}
-                            </div>
-                            {cell?.classTypeName && !isExisting && (
-                              <div className="mt-1 text-xs text-gray-600 truncate">
-                                {cell.classTypeName}
-                              </div>
-                            )}
-                            {isExisting && (
-                              <div className="mt-1 text-xs text-amber-600">Existing</div>
-                            )}
-                            {isUpdating && (
-                              <div className="mt-1 text-xs text-gray-500 flex items-center gap-1">
-                                <span className="animate-spin">⏳</span> Updating...
-                              </div>
-                            )}
+                          <td key={dayOfWeek} className="px-2 py-2 border border-gray-300">
+                            <select
+                              value={cell?.classTypeId || ''}
+                              onChange={(e) => {
+                                const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
+                                updateGridCell(timeIndex, dayOfWeek, e.target.value, selectedClassType?.name || '');
+                              }}
+                              className="w-full text-xs border border-gray-300 rounded px-2 py-1 bg-white text-gray-800"
+                              disabled={bulkProcessing}
+                            >
+                              <option value="">-</option>
+                              {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
+                                <option key={ct.id} value={ct.id}>{ct.name}</option>
+                              ))}
+                            </select>
                           </td>
                         );
                       })}
@@ -1360,12 +1258,6 @@ export default function DefaultScheduleManager() {
               </table>
             </div>
 
-            {loadingExistingSchedules && (
-              <div className="mb-4 text-sm text-gray-600 flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                Loading existing schedules...
-              </div>
-            )}
 
             <div className="flex gap-2 justify-end">
               <button
@@ -1374,7 +1266,6 @@ export default function DefaultScheduleManager() {
                   setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
                   setTimeSlots(['19:00', '20:00']);
                   setScheduleGrid({});
-                  setExistingSchedulesGrid({});
                   setShowConflictPreview(false);
                   setConflictPreview(null);
                 }}
@@ -1384,10 +1275,10 @@ export default function DefaultScheduleManager() {
               </button>
               <button
                 onClick={handleBulkImport}
-                disabled={bulkProcessing || loadingExistingSchedules || Object.keys(scheduleGrid).filter(k => !scheduleGrid[k]?.isExisting).length === 0}
+                disabled={bulkProcessing || Object.keys(scheduleGrid).length === 0}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {bulkProcessing ? 'Processing...' : `Import ${Object.keys(scheduleGrid).filter(k => !scheduleGrid[k]?.isExisting).length} New Schedule(s)`}
+                {bulkProcessing ? 'Processing...' : `Import ${Object.keys(scheduleGrid).length} Schedule(s)`}
               </button>
             </div>
           </div>
