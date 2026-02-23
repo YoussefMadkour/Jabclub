@@ -2417,6 +2417,60 @@ export const deleteClassInstance = async (req: AuthRequest, res: Response): Prom
 };
 
 /**
+ * POST /api/admin/class-types
+ * Create a new class type
+ */
+export const createClassType = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { name, durationMinutes, description } = req.body;
+
+    if (!name || !durationMinutes) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Name and duration are required' }
+      });
+      return;
+    }
+
+    const durationNum = parseInt(durationMinutes);
+    if (isNaN(durationNum) || durationNum < 1) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Duration must be a positive number' }
+      });
+      return;
+    }
+
+    const existing = await prisma.classType.findFirst({
+      where: { name: { equals: name.trim(), mode: 'insensitive' } }
+    });
+    if (existing) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'DUPLICATE_NAME', message: 'A class type with this name already exists' }
+      });
+      return;
+    }
+
+    const classType = await prisma.classType.create({
+      data: {
+        name: name.trim(),
+        durationMinutes: durationNum,
+        description: description?.trim() || null
+      }
+    });
+
+    res.status(201).json({ success: true, data: { classType } });
+  } catch (error) {
+    console.error('Create class type error:', error);
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Failed to create class type' }
+    });
+  }
+};
+
+/**
  * GET /api/admin/class-types
  * List all class types
  */

@@ -16,6 +16,7 @@ import {
   updateClassInstance,
   deleteClassInstance,
   getAllClassTypes,
+  createClassType,
   getAllCoaches,
   getAllPackages,
   createPackage,
@@ -125,6 +126,8 @@ router.delete('/classes/:id', deleteClassInstance);
 // Class types routes
 // GET /api/admin/class-types - Get all class types
 router.get('/class-types', getAllClassTypes);
+// POST /api/admin/class-types - Create a new class type
+router.post('/class-types', createClassType);
 
 // Coaches routes
 // GET /api/admin/coaches - Get all coaches

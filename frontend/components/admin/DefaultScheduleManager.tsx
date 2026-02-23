@@ -75,6 +75,23 @@ export default function DefaultScheduleManager() {
   const [selectedLocationIdx, setSelectedLocationIdx] = useState(0);
   const [selectedCoachFilter, setSelectedCoachFilter] = useState<string>('all');
 
+  // Drag & drop
+  const [draggingScheduleId, setDraggingScheduleId] = useState<number | null>(null);
+  const [dragOverCell, setDragOverCell] = useState<string | null>(null);
+  const [pendingMove, setPendingMove] = useState<{
+    scheduleId: number; classType: string;
+    fromDay: number; fromTime: string;
+    toDay: number; toTime: string;
+  } | null>(null);
+  const [moveApplyCurrentMonth, setMoveApplyCurrentMonth] = useState(false);
+  const [movingSchedule, setMovingSchedule] = useState(false);
+
+  // New class type creation
+  const [showNewClassTypeModal, setShowNewClassTypeModal] = useState(false);
+  const [newClassTypeForm, setNewClassTypeForm] = useState({ name: '', durationMinutes: '60', description: '' });
+  const [creatingClassType, setCreatingClassType] = useState(false);
+  const [newClassTypeTarget, setNewClassTypeTarget] = useState<'form' | null>(null);
+
   const { data, isLoading, error, refetch } = useQuery<DefaultSchedulesResponse>({
     queryKey: ['admin-default-schedules'],
     queryFn: async () => {
@@ -250,6 +267,61 @@ export default function DefaultScheduleManager() {
     } catch (err: any) {
       alert(err.response?.data?.error?.message || `Failed to ${action} schedule`);
     }
+  };
+
+  // Move schedule (drag & drop result)
+  const executeMoveSchedule = async (applyCurrentMonth: boolean) => {
+    if (!pendingMove) return;
+    try {
+      setMovingSchedule(true);
+      await apiClient.put(`/admin/schedules/${pendingMove.scheduleId}`, {
+        dayOfWeek: pendingMove.toDay,
+        startTime: pendingMove.toTime,
+        applyToCurrentMonth: applyCurrentMonth
+      });
+      setPendingMove(null);
+      setMoveApplyCurrentMonth(false);
+      queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Failed to move schedule');
+    } finally {
+      setMovingSchedule(false);
+    }
+  };
+
+  // Create new class type inline
+  const handleCreateClassType = async () => {
+    if (!newClassTypeForm.name.trim() || !newClassTypeForm.durationMinutes) {
+      alert('Please enter a name and duration');
+      return;
+    }
+    try {
+      setCreatingClassType(true);
+      const response = await apiClient.post('/admin/class-types', {
+        name: newClassTypeForm.name.trim(),
+        durationMinutes: parseInt(newClassTypeForm.durationMinutes),
+        description: newClassTypeForm.description.trim() || undefined
+      });
+      const newType = response.data.data.classType;
+      queryClient.invalidateQueries({ queryKey: ['admin-class-types'] });
+      if (newClassTypeTarget === 'form') {
+        setForm(prev => ({ ...prev, classTypeId: newType.id.toString() }));
+      }
+      setShowNewClassTypeModal(false);
+      setNewClassTypeForm({ name: '', durationMinutes: '60', description: '' });
+      setNewClassTypeTarget(null);
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Failed to create class type');
+    } finally {
+      setCreatingClassType(false);
+    }
+  };
+
+  const openNewClassTypeModal = (target: 'form' | null = null) => {
+    setNewClassTypeTarget(target);
+    setNewClassTypeForm({ name: '', durationMinutes: '60', description: '' });
+    setShowNewClassTypeModal(true);
   };
 
   // Bulk import functions
@@ -661,40 +733,93 @@ export default function DefaultScheduleManager() {
                               {formatTimeDisplay(time)}
                             </td>
                             {activeDays.map(day => {
-                              const cell = visibleSchedules.filter(
+                              const cellKey = `${day}-${time}`;
+                              const cellSchedules = visibleSchedules.filter(
                                 (s: any) => s.startTime === time && s.dayOfWeek === day
                               );
+                              const isDragTarget = dragOverCell === cellKey;
+                              const isDragTargetEmpty = isDragTarget && cellSchedules.length === 0;
+                              const isDragTargetOccupied = isDragTarget && cellSchedules.length > 0 && !cellSchedules.some((s: any) => s.id === draggingScheduleId);
                               return (
-                                <td key={day} className="px-1 py-1 align-top min-w-[110px]">
-                                  {cell.length === 0 ? (
-                                    <button
-                                      onClick={() => {
-                                        setForm({ classTypeId: '', coachId: '', locationId: location.locationId.toString(), dayOfWeek: day.toString(), startTime: time, capacity: '20' });
-                                        setSelectedSchedule(null);
-                                        setShowCreateModal(true);
-                                      }}
-                                      className="w-full h-16 rounded-lg border-2 border-dashed border-gray-200 text-gray-300 hover:border-[#FF7A00] hover:text-[#FF7A00] transition-colors text-xl"
-                                      title="Add schedule"
+                                <td
+                                  key={day}
+                                  className={`px-1 py-1 align-top min-w-[110px] rounded transition-colors
+                                    ${isDragTargetEmpty ? 'bg-green-50 ring-2 ring-green-400 ring-inset' : ''}
+                                    ${isDragTargetOccupied ? 'bg-red-50 ring-2 ring-red-300 ring-inset' : ''}
+                                  `}
+                                  onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; setDragOverCell(cellKey); }}
+                                  onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOverCell(null); }}
+                                  onDrop={(e) => {
+                                    e.preventDefault();
+                                    setDragOverCell(null);
+                                    if (!draggingScheduleId) return;
+                                    const src = visibleSchedules.find((s: any) => s.id === draggingScheduleId) ||
+                                      scheduleLocations.flatMap((l: any) => l.schedules).find((s: any) => s.id === draggingScheduleId);
+                                    if (!src) return;
+                                    if (src.dayOfWeek === day && src.startTime === time) return;
+                                    if (cellSchedules.length > 0 && !cellSchedules.some((s: any) => s.id === draggingScheduleId)) return;
+                                    setPendingMove({ scheduleId: src.id, classType: src.classType, fromDay: src.dayOfWeek, fromTime: src.startTime, toDay: day, toTime: time });
+                                    setDraggingScheduleId(null);
+                                  }}
+                                >
+                                  {cellSchedules.length === 0 ? (
+                                    <div
+                                      className={`w-full h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors
+                                        ${isDragTargetEmpty ? 'border-green-400 bg-green-50 text-green-500 text-2xl' : 'border-gray-200 text-gray-300 hover:border-[#FF7A00] hover:text-[#FF7A00]'}
+                                      `}
                                     >
-                                      +
-                                    </button>
+                                      {isDragTargetEmpty ? (
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                        </svg>
+                                      ) : (
+                                        <button
+                                          onClick={() => {
+                                            setForm({ classTypeId: '', coachId: '', locationId: location.locationId.toString(), dayOfWeek: day.toString(), startTime: time, capacity: '20' });
+                                            setSelectedSchedule(null);
+                                            setShowCreateModal(true);
+                                          }}
+                                          className="w-full h-full flex items-center justify-center text-xl"
+                                          title="Add schedule"
+                                        >+</button>
+                                      )}
+                                    </div>
                                   ) : (
                                     <div className="space-y-1">
-                                      {cell.map((schedule: any) => (
+                                      {cellSchedules.map((schedule: any) => (
                                         <div
                                           key={schedule.id}
-                                          className={`group relative rounded-lg px-3 py-2 text-white text-xs ${schedule.isOverride ? 'bg-orange-500' : 'bg-[#FF7A00]'} ${!schedule.isActive ? 'opacity-50' : ''}`}
+                                          draggable
+                                          onDragStart={(e) => {
+                                            setDraggingScheduleId(schedule.id);
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('text/plain', schedule.id.toString());
+                                          }}
+                                          onDragEnd={() => { setDraggingScheduleId(null); setDragOverCell(null); }}
+                                          className={`group relative rounded-lg px-3 py-2 text-white text-xs cursor-grab active:cursor-grabbing select-none
+                                            ${schedule.isOverride ? 'bg-orange-500' : 'bg-[#FF7A00]'}
+                                            ${draggingScheduleId === schedule.id ? 'opacity-40 ring-2 ring-white' : ''}
+                                            ${!schedule.isActive ? 'opacity-50' : ''}
+                                          `}
                                         >
-                                          <div className="font-semibold truncate">{schedule.classType}</div>
-                                          <div className="opacity-80 truncate">{schedule.coach}</div>
-                                          <div className="opacity-70">Cap: {schedule.capacity}</div>
+                                          {/* Drag handle hint */}
+                                          <div className="absolute top-1.5 left-1.5 opacity-30 group-hover:opacity-60">
+                                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                              <path d="M7 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7 8a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-6 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm6 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                                            </svg>
+                                          </div>
+                                          <div className="pl-3 font-semibold truncate">{schedule.classType}</div>
+                                          <div className="pl-3 opacity-80 truncate">{schedule.coach}</div>
+                                          <div className="pl-3 opacity-70">Cap: {schedule.capacity}</div>
                                           {schedule.isOverride && (
                                             <span className="absolute top-1 right-1 text-[9px] bg-white text-orange-600 rounded px-1">Temp</span>
                                           )}
-                                          {/* Action buttons — shown on hover */}
-                                          <div className="absolute inset-0 rounded-lg bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                                          {/* Action buttons on hover */}
+                                          <div className="absolute inset-0 rounded-lg bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
                                             <button
-                                              onClick={() => {
+                                              onMouseDown={(e) => e.stopPropagation()}
+                                              onClick={(e) => {
+                                                e.stopPropagation();
                                                 setForm({
                                                   locationId: location.locationId.toString(),
                                                   classTypeId: schedule.classTypeId.toString(),
@@ -714,7 +839,8 @@ export default function DefaultScheduleManager() {
                                               </svg>
                                             </button>
                                             <button
-                                              onClick={() => handleToggleActive(schedule.id, schedule.isActive)}
+                                              onMouseDown={(e) => e.stopPropagation()}
+                                              onClick={(e) => { e.stopPropagation(); handleToggleActive(schedule.id, schedule.isActive); }}
                                               className="p-1.5 bg-white rounded-full text-red-500 hover:bg-red-50 shadow"
                                               title="Deactivate"
                                             >
@@ -799,17 +925,19 @@ export default function DefaultScheduleManager() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Class Type *</label>
                 <select
                   value={form.classTypeId}
-                  onChange={(e) => setForm({ ...form, classTypeId: e.target.value })}
+                  onChange={(e) => {
+                    if (e.target.value === '__new__') { openNewClassTypeModal('form'); }
+                    else { setForm({ ...form, classTypeId: e.target.value }); }
+                  }}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
                   required
                   disabled={isLoadingClassTypes}
                 >
-                  <option value="">{isLoadingClassTypes ? 'Loading class types...' : 'Select class type'}</option>
-                  {Array.isArray(classTypesData) && classTypesData.length > 0 && classTypesData.map((ct: any) => (
-                    <option key={ct.id} value={ct.id}>
-                      {ct.name} ({ct.durationMinutes} min)
-                    </option>
+                  <option value="">{isLoadingClassTypes ? 'Loading...' : 'Select class type'}</option>
+                  {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
+                    <option key={ct.id} value={ct.id}>{ct.name} ({ct.durationMinutes} min)</option>
                   ))}
+                  <option value="__new__">+ Create new class type...</option>
                 </select>
               </div>
               <div>
@@ -824,9 +952,7 @@ export default function DefaultScheduleManager() {
                   <option value="">{isLoadingCoaches ? 'Loading coaches...' : 'Select coach'}</option>
                   {Array.isArray(coachesData) && coachesData.length > 0 ? (
                     coachesData.map((coach: any) => (
-                      <option key={coach.id} value={coach.id}>
-                        {coach.firstName} {coach.lastName}
-                      </option>
+                      <option key={coach.id} value={coach.id}>{coach.firstName} {coach.lastName}</option>
                     ))
                   ) : (
                     !isLoadingCoaches && <option value="" disabled>No coaches available</option>
@@ -852,39 +978,19 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time (HH:MM) *</label>
-                <input
-                  type="time"
-                  value={form.startTime}
-                  onChange={(e) => setForm({ ...form, startTime: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time *</label>
+                <input type="time" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800" required />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Capacity *</label>
-                <input
-                  type="number"
-                  value={form.capacity}
-                  onChange={(e) => setForm({ ...form, capacity: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                  min="1"
-                  required
-                />
+                <input type="number" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800" min="1" required />
               </div>
             </div>
             <div className="flex gap-2 mt-6 justify-end">
-              <button
-                onClick={closeCreateModal}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreate}
-                disabled={processing}
-                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
-              >
+              <button onClick={closeCreateModal} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Cancel</button>
+              <button onClick={handleCreate} disabled={processing} className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50">
                 {processing ? 'Creating...' : 'Create Schedule'}
               </button>
             </div>
@@ -921,17 +1027,19 @@ export default function DefaultScheduleManager() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Class Type *</label>
                 <select
                   value={form.classTypeId}
-                  onChange={(e) => setForm({ ...form, classTypeId: e.target.value })}
+                  onChange={(e) => {
+                    if (e.target.value === '__new__') { openNewClassTypeModal('form'); }
+                    else { setForm({ ...form, classTypeId: e.target.value }); }
+                  }}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
                   required
                   disabled={isLoadingClassTypes}
                 >
-                  <option value="">{isLoadingClassTypes ? 'Loading class types...' : 'Select class type'}</option>
-                  {Array.isArray(classTypesData) && classTypesData.length > 0 && classTypesData.map((ct: any) => (
-                    <option key={ct.id} value={ct.id}>
-                      {ct.name} ({ct.durationMinutes} min)
-                    </option>
+                  <option value="">{isLoadingClassTypes ? 'Loading...' : 'Select class type'}</option>
+                  {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
+                    <option key={ct.id} value={ct.id}>{ct.name} ({ct.durationMinutes} min)</option>
                   ))}
+                  <option value="__new__">+ Create new class type...</option>
                 </select>
               </div>
               <div>
@@ -946,9 +1054,7 @@ export default function DefaultScheduleManager() {
                   <option value="">{isLoadingCoaches ? 'Loading coaches...' : 'Select coach'}</option>
                   {Array.isArray(coachesData) && coachesData.length > 0 ? (
                     coachesData.map((coach: any) => (
-                      <option key={coach.id} value={coach.id}>
-                        {coach.firstName} {coach.lastName}
-                      </option>
+                      <option key={coach.id} value={coach.id}>{coach.firstName} {coach.lastName}</option>
                     ))
                   ) : (
                     !isLoadingCoaches && <option value="" disabled>No coaches available</option>
@@ -1238,6 +1344,7 @@ export default function DefaultScheduleManager() {
                             <select
                               value={cell?.classTypeId || ''}
                               onChange={(e) => {
+                                if (e.target.value === '__new__') { openNewClassTypeModal(null); return; }
                                 const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
                                 updateGridCell(timeIndex, dayOfWeek, e.target.value, selectedClassType?.name || '');
                               }}
@@ -1248,6 +1355,7 @@ export default function DefaultScheduleManager() {
                               {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
                                 <option key={ct.id} value={ct.id}>{ct.name}</option>
                               ))}
+                              <option value="__new__">+ New type...</option>
                             </select>
                           </td>
                         );
@@ -1340,6 +1448,117 @@ export default function DefaultScheduleManager() {
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {bulkProcessing ? 'Processing...' : conflictAction === 'cancel' ? 'Cancelled' : 'Proceed'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pending Move Confirmation Modal */}
+      {pendingMove && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h2 className="text-lg font-bold text-gray-900 mb-1">Move Schedule</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              Moving <span className="font-semibold text-gray-800">{pendingMove.classType}</span> from{' '}
+              <span className="font-medium">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][pendingMove.fromDay]} {formatTimeDisplay(pendingMove.fromTime)}</span>{' '}
+              to{' '}
+              <span className="font-medium text-[#FF7A00]">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][pendingMove.toDay]} {formatTimeDisplay(pendingMove.toTime)}</span>
+            </p>
+
+            <div className="mb-5">
+              <p className="text-sm font-medium text-gray-700 mb-2">Apply this change to:</p>
+              <div className="space-y-2">
+                <label className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
+                  style={{ borderColor: !moveApplyCurrentMonth ? '#FF7A00' : '#e5e7eb', background: !moveApplyCurrentMonth ? '#fff7f0' : '' }}>
+                  <input type="radio" checked={!moveApplyCurrentMonth} onChange={() => setMoveApplyCurrentMonth(false)} className="mt-0.5 text-[#FF7A00]" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-800">Future months only</div>
+                    <div className="text-xs text-gray-500">This month&apos;s classes stay as-is</div>
+                  </div>
+                </label>
+                <label className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
+                  style={{ borderColor: moveApplyCurrentMonth ? '#FF7A00' : '#e5e7eb', background: moveApplyCurrentMonth ? '#fff7f0' : '' }}>
+                  <input type="radio" checked={moveApplyCurrentMonth} onChange={() => setMoveApplyCurrentMonth(true)} className="mt-0.5 text-[#FF7A00]" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-800">This month + future months</div>
+                    <div className="text-xs text-amber-600">Classes without bookings will be regenerated</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => { setPendingMove(null); setMoveApplyCurrentMonth(false); }}
+                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => executeMoveSchedule(moveApplyCurrentMonth)}
+                disabled={movingSchedule}
+                className="px-4 py-2 text-sm bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] disabled:opacity-50 font-medium"
+              >
+                {movingSchedule ? 'Moving...' : 'Confirm Move'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* New Class Type Modal */}
+      {showNewClassTypeModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h2 className="text-lg font-bold text-gray-900 mb-1">New Class Type</h2>
+            <p className="text-sm text-gray-500 mb-4">This will be available in all schedule dropdowns immediately.</p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <input
+                  type="text"
+                  value={newClassTypeForm.name}
+                  onChange={(e) => setNewClassTypeForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="e.g. Kids Boxing"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 text-sm"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes) *</label>
+                <input
+                  type="number"
+                  value={newClassTypeForm.durationMinutes}
+                  onChange={(e) => setNewClassTypeForm(f => ({ ...f, durationMinutes: e.target.value }))}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 text-sm"
+                  min="1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description <span className="text-gray-400 font-normal">(optional)</span></label>
+                <input
+                  type="text"
+                  value={newClassTypeForm.description}
+                  onChange={(e) => setNewClassTypeForm(f => ({ ...f, description: e.target.value }))}
+                  placeholder="Short description..."
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 text-sm"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-5 justify-end">
+              <button
+                onClick={() => { setShowNewClassTypeModal(false); setNewClassTypeTarget(null); }}
+                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateClassType}
+                disabled={creatingClassType || !newClassTypeForm.name.trim()}
+                className="px-4 py-2 text-sm bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] disabled:opacity-50 font-medium"
+              >
+                {creatingClassType ? 'Creating...' : 'Create & Select'}
               </button>
             </div>
           </div>
