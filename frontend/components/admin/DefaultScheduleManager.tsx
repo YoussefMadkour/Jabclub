@@ -61,10 +61,14 @@ export default function DefaultScheduleManager() {
     locationId: '',
     coachId: '',
     capacity: '20',
-    isTemporary: false,
+    scheduleScope: 'ongoing' as 'ongoing' | 'month-only' | 'window',
+    windowName: '',
     overrideStartDate: '',
     overrideEndDate: ''
   });
+
+  // Main grid — pending empty time slot rows
+  const [pendingGridTimeslots, setPendingGridTimeslots] = useState<{id: string; time: string}[]>([]);
   const [timeSlots, setTimeSlots] = useState<string[]>(['19:00', '20:00']); // Default to 7:00 PM and 8:00 PM in 24-hour format
   const [scheduleGrid, setScheduleGrid] = useState<Record<string, GridCell>>({});
   const [showConflictPreview, setShowConflictPreview] = useState(false);
@@ -324,6 +328,41 @@ export default function DefaultScheduleManager() {
     setShowNewClassTypeModal(true);
   };
 
+  // Main grid — pending time slot helpers
+  const addPendingGridTimeslot = () => {
+    setPendingGridTimeslots(prev => [...prev, { id: Date.now().toString(), time: '19:00' }]);
+  };
+  const removePendingGridTimeslot = (id: string) => {
+    setPendingGridTimeslots(prev => prev.filter(p => p.id !== id));
+  };
+  const updatePendingGridTimeslot = (id: string, time: string) => {
+    setPendingGridTimeslots(prev => prev.map(p => p.id === id ? { ...p, time } : p));
+  };
+
+  // Ramadan 2026 preset (approx. Feb 28 – Mar 29, 2026)
+  const applyRamadanPreset = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    // Rough Ramadan estimate for current/next year (Hijri calendar offset ~11 days/year)
+    // 2026: ~Feb 28 – Mar 29; 2027: ~Feb 17 – Mar 18
+    const ramadanStart = year <= 2026 ? `${year}-02-28` : `${year}-02-17`;
+    const ramadanEnd = year <= 2026 ? `${year}-03-29` : `${year}-03-18`;
+    setBulkForm(f => ({ ...f, scheduleScope: 'window', windowName: 'Ramadan', overrideStartDate: ramadanStart, overrideEndDate: ramadanEnd }));
+  };
+
+  const applyThisMonthPreset = () => {
+    const now = new Date();
+    const y = now.getFullYear(), m = now.getMonth();
+    const start = `${y}-${String(m + 1).padStart(2, '0')}-01`;
+    const lastDay = new Date(y, m + 1, 0).getDate();
+    const end = `${y}-${String(m + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+    setBulkForm(f => ({ ...f, scheduleScope: 'window', overrideStartDate: start, overrideEndDate: end }));
+  };
+
+  const currentMonthLabel = () => {
+    return new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  };
+
   // Bulk import functions
   const addTimeSlot = () => {
     setTimeSlots([...timeSlots, '19:00']); // Default to 7:00 PM
@@ -480,15 +519,13 @@ export default function DefaultScheduleManager() {
       return;
     }
 
-    // Validate temporary schedule dates
-    if (bulkForm.isTemporary) {
+    // Validate window schedule dates
+    if (bulkForm.scheduleScope === 'window') {
       if (!bulkForm.overrideStartDate || !bulkForm.overrideEndDate) {
-        alert('Please provide start and end dates for temporary schedule');
+        alert('Please provide start and end dates for the schedule window');
         return;
       }
-      const startDate = new Date(bulkForm.overrideStartDate);
-      const endDate = new Date(bulkForm.overrideEndDate);
-      if (startDate >= endDate) {
+      if (new Date(bulkForm.overrideStartDate) >= new Date(bulkForm.overrideEndDate)) {
         alert('Start date must be before end date');
         return;
       }
@@ -520,9 +557,17 @@ export default function DefaultScheduleManager() {
       const response = await apiClient.post('/admin/schedules/bulk-import-smart', {
         schedules: schedulesToCreate,
         conflictAction: action,
-        isTemporary: bulkForm.isTemporary,
-        overrideStartDate: bulkForm.isTemporary ? bulkForm.overrideStartDate : undefined,
-        overrideEndDate: bulkForm.isTemporary ? bulkForm.overrideEndDate : undefined
+        isTemporary: bulkForm.scheduleScope !== 'ongoing',
+        overrideStartDate: bulkForm.scheduleScope !== 'ongoing' ? (
+          bulkForm.scheduleScope === 'month-only'
+            ? (() => { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-01`; })()
+            : bulkForm.overrideStartDate
+        ) : undefined,
+        overrideEndDate: bulkForm.scheduleScope !== 'ongoing' ? (
+          bulkForm.scheduleScope === 'month-only'
+            ? (() => { const n = new Date(); const d = new Date(n.getFullYear(), n.getMonth()+1, 0); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })()
+            : bulkForm.overrideEndDate
+        ) : undefined
       });
 
       const results = response.data.data.results;
@@ -532,7 +577,7 @@ export default function DefaultScheduleManager() {
 
       setShowBulkImportModal(false);
       setShowConflictPreview(false);
-      setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
+      setBulkForm({ locationId: '', coachId: '', capacity: '20', scheduleScope: 'ongoing', windowName: '', overrideStartDate: '', overrideEndDate: '' });
       setTimeSlots(['19:00', '20:00']);
       setScheduleGrid({});
       setConflictPreview(null);
@@ -593,7 +638,7 @@ export default function DefaultScheduleManager() {
             </button>
             <button
               onClick={() => {
-                setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
+                setBulkForm({ locationId: '', coachId: '', capacity: '20', scheduleScope: 'ongoing', windowName: '', overrideStartDate: '', overrideEndDate: '' });
                 setTimeSlots(['19:00', '20:00']);
                 setScheduleGrid({});
                 setShowBulkImportModal(true);
@@ -858,6 +903,50 @@ export default function DefaultScheduleManager() {
                             })}
                           </tr>
                         ))}
+                        {/* Pending (new) time slot rows */}
+                        {pendingGridTimeslots.map(pending => (
+                          <tr key={pending.id} className="border-t border-dashed border-orange-200">
+                            <td className="py-2 pr-3 align-top pt-3">
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="time"
+                                  value={pending.time}
+                                  onChange={(e) => updatePendingGridTimeslot(pending.id, e.target.value)}
+                                  className="text-xs border border-orange-300 rounded px-1.5 py-0.5 text-gray-700 w-[72px]"
+                                />
+                                <button
+                                  onClick={() => removePendingGridTimeslot(pending.id)}
+                                  className="text-gray-300 hover:text-red-500 text-lg leading-none"
+                                  title="Remove this time slot row"
+                                >×</button>
+                              </div>
+                            </td>
+                            {activeDays.map(day => (
+                              <td key={day} className="px-1 py-1 align-top min-w-[110px]">
+                                <button
+                                  onClick={() => {
+                                    setForm({ classTypeId: '', coachId: '', locationId: location.locationId.toString(), dayOfWeek: day.toString(), startTime: pending.time, capacity: '20' });
+                                    setSelectedSchedule(null);
+                                    setShowCreateModal(true);
+                                  }}
+                                  className="w-full h-16 rounded-lg border-2 border-dashed border-[#FF7A00] text-[#FF7A00] flex items-center justify-center text-2xl hover:bg-orange-50 transition-colors"
+                                  title={`Add schedule at ${formatTimeDisplay(pending.time)}`}
+                                >+</button>
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                        {/* Add time slot row */}
+                        <tr>
+                          <td colSpan={activeDays.length + 1} className="pt-2 pb-1">
+                            <button
+                              onClick={addPendingGridTimeslot}
+                              className="flex items-center gap-1 text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
+                            >
+                              <span className="text-lg leading-none">+</span> Add time slot
+                            </button>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -1219,49 +1308,84 @@ export default function DefaultScheduleManager() {
                 </div>
               </div>
               
-              {/* Temporary Schedule Toggle */}
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="isTemporary"
-                  checked={bulkForm.isTemporary}
-                  onChange={(e) => setBulkForm({ ...bulkForm, isTemporary: e.target.checked })}
-                  className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
-                />
-                <label htmlFor="isTemporary" className="text-sm font-medium text-gray-700 cursor-pointer">
-                  This is a temporary schedule (e.g., Ramadan)
-                </label>
+              {/* Schedule Duration */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Schedule Duration</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { value: 'ongoing', icon: '🔁', title: 'Ongoing', sub: 'Repeats every month' },
+                    { value: 'month-only', icon: '📆', title: 'This month only', sub: currentMonthLabel() },
+                    { value: 'window', icon: '🗓️', title: 'Custom window', sub: 'Ramadan, Summer…' },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setBulkForm(f => ({ ...f, scheduleScope: opt.value as typeof f.scheduleScope }))}
+                      className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 text-center transition-all ${
+                        bulkForm.scheduleScope === opt.value
+                          ? 'border-[#FF7A00] bg-orange-50 text-[#FF7A00]'
+                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      <span className="text-xl">{opt.icon}</span>
+                      <span className="text-xs font-semibold">{opt.title}</span>
+                      <span className="text-[10px] text-gray-400 leading-tight">{opt.sub}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Temporary Schedule Date Range */}
-              {bulkForm.isTemporary && (
-                <div className="grid grid-cols-2 gap-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
+              {/* Window date range */}
+              {bulkForm.scheduleScope === 'window' && (
+                <div className="p-3 bg-orange-50 rounded-lg border border-orange-200 space-y-3">
+                  {/* Name + quick presets */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date *</label>
-                    <input
-                      type="date"
-                      value={bulkForm.overrideStartDate}
-                      onChange={(e) => setBulkForm({ ...bulkForm, overrideStartDate: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                      required={bulkForm.isTemporary}
-                    />
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Period name (optional)</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={bulkForm.windowName}
+                        onChange={(e) => setBulkForm(f => ({ ...f, windowName: e.target.value }))}
+                        placeholder="e.g. Ramadan, Summer…"
+                        className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white text-gray-800"
+                      />
+                    </div>
+                    <div className="flex gap-2 mt-2 flex-wrap">
+                      <span className="text-xs text-gray-500 self-center">Quick presets:</span>
+                      <button type="button" onClick={applyRamadanPreset}
+                        className="px-2 py-1 text-xs bg-white border border-orange-300 text-orange-700 rounded-full hover:bg-orange-50 font-medium">
+                        🌙 Ramadan 2026
+                      </button>
+                      <button type="button" onClick={() => setBulkForm(f => ({ ...f, windowName: 'Summer', overrideStartDate: `${new Date().getFullYear()}-06-01`, overrideEndDate: `${new Date().getFullYear()}-08-31` }))}
+                        className="px-2 py-1 text-xs bg-white border border-blue-200 text-blue-700 rounded-full hover:bg-blue-50 font-medium">
+                        ☀️ Summer
+                      </button>
+                      <button type="button" onClick={applyThisMonthPreset}
+                        className="px-2 py-1 text-xs bg-white border border-gray-300 text-gray-600 rounded-full hover:bg-gray-50 font-medium">
+                        📆 This month
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date *</label>
-                    <input
-                      type="date"
-                      value={bulkForm.overrideEndDate}
-                      onChange={(e) => setBulkForm({ ...bulkForm, overrideEndDate: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800"
-                      required={bulkForm.isTemporary}
-                      min={bulkForm.overrideStartDate}
-                    />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Start date *</label>
+                      <input type="date" value={bulkForm.overrideStartDate}
+                        onChange={(e) => setBulkForm(f => ({ ...f, overrideStartDate: e.target.value }))}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white text-gray-800" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">End date *</label>
+                      <input type="date" value={bulkForm.overrideEndDate}
+                        onChange={(e) => setBulkForm(f => ({ ...f, overrideEndDate: e.target.value }))}
+                        min={bulkForm.overrideStartDate}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white text-gray-800" />
+                    </div>
                   </div>
-                  <div className="col-span-2">
-                    <p className="text-xs text-gray-600">
-                      This temporary schedule will replace the base schedule during the specified date range.
+                  {bulkForm.overrideStartDate && bulkForm.overrideEndDate && (
+                    <p className="text-xs text-orange-700">
+                      Classes will be generated <strong>only</strong> between these dates, replacing the base schedule for this period.
                     </p>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
@@ -1371,7 +1495,7 @@ export default function DefaultScheduleManager() {
               <button
                 onClick={() => {
                   setShowBulkImportModal(false);
-                  setBulkForm({ locationId: '', coachId: '', capacity: '20', isTemporary: false, overrideStartDate: '', overrideEndDate: '' });
+                  setBulkForm({ locationId: '', coachId: '', capacity: '20', scheduleScope: 'ongoing', windowName: '', overrideStartDate: '', overrideEndDate: '' });
                   setTimeSlots(['19:00', '20:00']);
                   setScheduleGrid({});
                   setShowConflictPreview(false);
