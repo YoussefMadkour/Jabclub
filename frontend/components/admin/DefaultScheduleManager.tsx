@@ -76,6 +76,7 @@ export default function DefaultScheduleManager() {
   const [processing, setProcessing] = useState(false);
   const [bulkProcessing, setBulkProcessing] = useState(false);
   const [loadingExistingSchedules, setLoadingExistingSchedules] = useState(false);
+  const [updatingCell, setUpdatingCell] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery<DefaultSchedulesResponse>({
     queryKey: ['admin-default-schedules'],
@@ -281,8 +282,11 @@ export default function DefaultScheduleManager() {
     const key = `${timeIndex}-${dayOfWeek}`;
     const existingCell = scheduleGrid[key];
     
-    // Don't allow editing existing schedules directly (they're read-only)
-    if (existingCell?.isExisting) {
+    // For existing schedules, call update API
+    if (existingCell?.isExisting && existingCell.scheduleId) {
+      if (!classTypeId) return; // Use delete button for removal
+      if (classTypeId === existingCell.classTypeId) return; // No change
+      handleUpdateExistingSchedule(key, parseInt(classTypeId), classTypeName);
       return;
     }
     
@@ -292,6 +296,48 @@ export default function DefaultScheduleManager() {
       const newGrid = { ...scheduleGrid };
       delete newGrid[key];
       setScheduleGrid(newGrid);
+    }
+  };
+
+  const handleUpdateExistingSchedule = async (key: string, classTypeId: number, classTypeName: string) => {
+    const cell = scheduleGrid[key];
+    if (!cell?.scheduleId) return;
+    try {
+      setUpdatingCell(key);
+      await apiClient.put(`/admin/schedules/${cell.scheduleId}`, {
+        classTypeId,
+        applyToCurrentMonth: false
+      });
+      setScheduleGrid(prev => ({
+        ...prev,
+        [key]: { ...cell, classTypeId: classTypeId.toString(), classTypeName }
+      }));
+      queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Failed to update schedule');
+    } finally {
+      setUpdatingCell(null);
+    }
+  };
+
+  const handleDeleteExistingSchedule = async (key: string) => {
+    const cell = scheduleGrid[key];
+    if (!cell?.scheduleId) return;
+    if (!confirm(`Delete this schedule (${cell.classTypeName})? No new classes will be generated from it.`)) return;
+    try {
+      setUpdatingCell(key);
+      await apiClient.delete(`/admin/schedules/${cell.scheduleId}`);
+      const newGrid = { ...scheduleGrid };
+      delete newGrid[key];
+      setScheduleGrid(newGrid);
+      queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+      fetchExistingSchedules();
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Failed to delete schedule');
+    } finally {
+      setUpdatingCell(null);
     }
   };
 
@@ -1250,46 +1296,60 @@ export default function DefaultScheduleManager() {
                         const key = `${timeIndex}-${dayOfWeek}`;
                         const cell = scheduleGrid[key];
                         const isExisting = cell?.isExisting;
+                        const isUpdating = updatingCell === key;
                         return (
                           <td 
                             key={dayOfWeek} 
-                            className={`px-2 py-2 border border-gray-300 ${isExisting ? 'bg-gray-100' : ''}`}
+                            className={`px-2 py-2 border border-gray-300 ${isExisting ? 'bg-gray-50' : ''}`}
                           >
-                            {isExisting ? (
-                              <div className="text-xs">
-                                <div className="text-gray-500 italic mb-1">Existing:</div>
-                                <div className="font-medium text-gray-700">{cell.classTypeName}</div>
-                                <div className="text-xs text-gray-400 mt-1">Read-only</div>
-                              </div>
-                            ) : (
-                              <>
-                                <select
-                                  value={cell?.classTypeId || ''}
-                                  onChange={(e) => {
-                                    const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
-                                    updateGridCell(
-                                      timeIndex,
-                                      dayOfWeek,
-                                      e.target.value,
-                                      selectedClassType?.name || ''
-                                    );
-                                  }}
-                                  className="w-full text-xs border border-gray-300 rounded px-2 py-1 bg-white text-gray-800"
-                                  disabled={loadingExistingSchedules}
+                            <div className="flex items-start gap-1">
+                              <select
+                                value={cell?.classTypeId || ''}
+                                onChange={(e) => {
+                                  const selectedClassType = classTypesData?.find((ct: any) => ct.id.toString() === e.target.value);
+                                  updateGridCell(
+                                    timeIndex,
+                                    dayOfWeek,
+                                    e.target.value,
+                                    selectedClassType?.name || ''
+                                  );
+                                }}
+                                className={`flex-1 min-w-0 text-xs border rounded px-2 py-1 ${isExisting ? 'border-amber-300 bg-amber-50/50 text-gray-800' : 'border-gray-300 bg-white text-gray-800'}`}
+                                disabled={loadingExistingSchedules || isUpdating}
+                              >
+                                <option value="">-</option>
+                                {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
+                                  <option key={ct.id} value={ct.id}>
+                                    {ct.name}
+                                  </option>
+                                ))}
+                              </select>
+                              {isExisting && cell?.scheduleId && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteExistingSchedule(key)}
+                                  disabled={isUpdating}
+                                  className="p-1 text-red-600 hover:bg-red-50 rounded disabled:opacity-50"
+                                  title="Delete schedule"
                                 >
-                                  <option value="">-</option>
-                                  {Array.isArray(classTypesData) && classTypesData.map((ct: any) => (
-                                    <option key={ct.id} value={ct.id}>
-                                      {ct.name}
-                                    </option>
-                                  ))}
-                                </select>
-                                {cell?.classTypeName && (
-                                  <div className="mt-1 text-xs text-gray-600 truncate">
-                                    {cell.classTypeName}
-                                  </div>
-                                )}
-                              </>
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              )}
+                            </div>
+                            {cell?.classTypeName && !isExisting && (
+                              <div className="mt-1 text-xs text-gray-600 truncate">
+                                {cell.classTypeName}
+                              </div>
+                            )}
+                            {isExisting && (
+                              <div className="mt-1 text-xs text-amber-600">Existing</div>
+                            )}
+                            {isUpdating && (
+                              <div className="mt-1 text-xs text-gray-500 flex items-center gap-1">
+                                <span className="animate-spin">⏳</span> Updating...
+                              </div>
                             )}
                           </td>
                         );
