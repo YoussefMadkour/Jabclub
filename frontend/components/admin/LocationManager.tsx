@@ -33,6 +33,7 @@ export default function LocationManager() {
   });
   
   const [processing, setProcessing] = useState(false);
+  const [activatingId, setActivatingId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchLocations();
@@ -137,6 +138,18 @@ export default function LocationManager() {
       console.error('Error deleting location:', err);
     } finally {
       setProcessing(false);
+    }
+  };
+
+  const handleActivate = async (location: Location) => {
+    try {
+      setActivatingId(location.id);
+      await apiClient.put(`/admin/locations/${location.id}`, { isActive: true });
+      fetchLocations();
+    } catch (err: any) {
+      alert(err.response?.data?.error?.message || 'Failed to activate location');
+    } finally {
+      setActivatingId(null);
     }
   };
 
@@ -273,13 +286,22 @@ export default function LocationManager() {
                 >
                   Edit
                 </button>
-                <button
-                  onClick={() => openDeleteModal(location)}
-                  disabled={!location.isActive}
-                  className="flex-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Deactivate
-                </button>
+                {location.isActive ? (
+                  <button
+                    onClick={() => openDeleteModal(location)}
+                    className="flex-1 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Deactivate
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleActivate(location)}
+                    disabled={activatingId === location.id}
+                    className="flex-1 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-colors text-sm font-medium disabled:opacity-50"
+                  >
+                    {activatingId === location.id ? 'Activating...' : 'Activate'}
+                  </button>
+                )}
               </div>
             </div>
           ))}

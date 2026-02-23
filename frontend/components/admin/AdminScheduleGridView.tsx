@@ -44,7 +44,7 @@ export default function AdminScheduleGridView() {
     const fetchLocations = async () => {
       try {
         const response = await apiClient.get('/admin/locations');
-        const locationsData = response.data.data.locations || [];
+        const locationsData = (response.data.data.locations || []).filter((l: any) => l.isActive);
         setLocations(locationsData);
         if (locationsData.length > 0 && !selectedLocationId) {
           setSelectedLocationId(locationsData[0].id);
