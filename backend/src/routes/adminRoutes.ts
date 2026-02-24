@@ -57,7 +57,8 @@ import {
   checkMonthlyReview,
   updateSchedule,
   deleteSchedule,
-  generateClassesFromSchedules
+  generateClassesFromSchedules,
+  cleanupOrphanClassInstances
 } from '../controllers/adminController';
 import { authenticate, authorize } from '../middleware/auth';
 
@@ -211,6 +212,8 @@ router.put('/schedules/:id', updateSchedule);
 router.delete('/schedules/:id', deleteSchedule);
 // POST /api/admin/schedules/generate - Manually generate classes from schedules
 router.post('/schedules/generate', generateClassesFromSchedules);
+// POST /api/admin/schedules/cleanup-orphans - Delete unbooked instances that no longer match active schedules
+router.post('/schedules/cleanup-orphans', cleanupOrphanClassInstances);
 
 // PUT /api/admin/members/:memberId/package-prices/:packageId - Set/update member-specific price
 router.put('/members/:memberId/package-prices/:packageId', setMemberPackagePrice);

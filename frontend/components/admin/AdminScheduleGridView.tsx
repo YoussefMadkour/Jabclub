@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiClient from '@/lib/axios';
 import { format, startOfWeek, addDays, addWeeks, subWeeks } from 'date-fns';
 import Link from 'next/link';
@@ -38,6 +38,9 @@ export default function AdminScheduleGridView() {
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const [currentWeek, setCurrentWeek] = useState(new Date());
   const [locations, setLocations] = useState<Location[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   // Fetch locations
   useEffect(() => {
@@ -64,12 +67,16 @@ export default function AdminScheduleGridView() {
       
       const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 }); // Start on Saturday
       const weekEnd = addDays(weekStart, 6);
+
+      // Use UTC date strings so the backend (UTC) boundaries align correctly
+      const toUTC = (d: Date) =>
+        `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
       
       const response = await apiClient.get('/admin/classes', {
         params: {
           location: selectedLocationId.toString(),
-          startDate: format(weekStart, 'yyyy-MM-dd'),
-          endDate: format(weekEnd, 'yyyy-MM-dd')
+          startDate: toUTC(weekStart),
+          endDate: toUTC(weekEnd)
         }
       });
       
@@ -81,17 +88,26 @@ export default function AdminScheduleGridView() {
 
   const classes = classesData?.classes || [];
 
-  // Get week start (Saturday)
+  // Get week start (Saturday) — work in UTC to match server-stored ISO dates
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-  // Helper: 24-hour "HH:MM" from a Date
-  const toHHMM = (date: Date): string =>
-    `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  // UTC date string for a Date object (avoids local-timezone day shift)
+  const toUTCDateStr = (d: Date): string => {
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+  };
 
-  // Helper: 24-hour "HH:MM" from end time Date
-  const toHHMMEnd = (date: Date): string =>
-    `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  // Extract "HH:MM" from an ISO datetime string using UTC values (avoids local timezone shift)
+  const isoToHHMM = (iso: string): string => {
+    // ISO format: "2026-02-22T21:30:00.000Z" — take the time part directly from UTC
+    const t = iso.includes('T') ? iso.split('T')[1].substring(0, 5) : iso.substring(0, 5);
+    return t;
+  };
+
+  // Extract "YYYY-MM-DD" from ISO string using UTC date
+  const isoToDateStr = (iso: string): string => {
+    return iso.includes('T') ? iso.split('T')[0] : iso;
+  };
 
   // Helper function to convert 24-hour time string to 12-hour AM/PM format
   const formatTime12Hour = (time24: string): string => {
@@ -102,33 +118,45 @@ export default function AdminScheduleGridView() {
     return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
   };
 
-  // Derive time slots dynamically from actual classes this week
+  // Derive time slots dynamically from actual classes this week (using UTC times)
   const timeSlots = (() => {
     const seen = new Map<string, { start: string; end: string }>();
     classes.forEach((c: ClassInstance) => {
-      const startDate = new Date(c.startTime);
-      const endDate = new Date(c.endTime);
-      const startKey = toHHMM(startDate);
+      const startKey = isoToHHMM(c.startTime);
       if (!seen.has(startKey)) {
-        seen.set(startKey, { start: startKey, end: toHHMMEnd(endDate) });
+        seen.set(startKey, { start: startKey, end: isoToHHMM(c.endTime) });
       }
     });
     return Array.from(seen.values()).sort((a, b) => a.start.localeCompare(b.start));
   })();
 
-  // Helper function to get class for a specific day and time slot
+  // Helper function to get class for a specific day and time slot (using UTC date + time)
   const getClassForSlot = (day: Date, timeSlot: { start: string; end: string }) => {
-    const dayStr = format(day, 'yyyy-MM-dd');
-    const [hours, minutes] = timeSlot.start.split(':').map(Number);
-    
+    const dayStr = toUTCDateStr(day);
     return classes.find((c: ClassInstance) => {
-      const classDate = new Date(c.startTime);
-      const classDayStr = format(classDate, 'yyyy-MM-dd');
-      return classDayStr === dayStr &&
-             classDate.getHours() === hours &&
-             classDate.getMinutes() === minutes;
+      return isoToDateStr(c.startTime) === dayStr && isoToHHMM(c.startTime) === timeSlot.start;
     });
   };
+
+  const handleSyncClasses = useCallback(async () => {
+    if (!confirm('This will:\n1. Delete unbooked class instances that no longer match any active schedule\n2. Regenerate missing classes from current schedules\n\nClasses with bookings are safe and will NOT be deleted. Continue?')) return;
+    setSyncing(true);
+    setSyncMessage(null);
+    try {
+      const cleanupRes = await apiClient.post('/admin/schedules/cleanup-orphans', {
+        locationId: selectedLocationId,
+        monthsAhead: 3
+      });
+      const genRes = await apiClient.post('/admin/schedules/generate', { monthsAhead: 3 });
+      const deleted = cleanupRes.data?.data?.deleted ?? 0;
+      setSyncMessage(`✓ Synced: removed ${deleted} outdated class${deleted !== 1 ? 'es' : ''}, regenerated from current schedule.`);
+      queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
+    } catch (err: any) {
+      setSyncMessage('✗ Sync failed: ' + (err.response?.data?.error?.message || err.message));
+    } finally {
+      setSyncing(false);
+    }
+  }, [selectedLocationId, queryClient]);
 
   const handlePreviousWeek = () => {
     setCurrentWeek(subWeeks(currentWeek, 1));
@@ -170,6 +198,19 @@ export default function AdminScheduleGridView() {
               </option>
             ))}
           </select>
+
+          {/* Sync button */}
+          <button
+            onClick={handleSyncClasses}
+            disabled={syncing}
+            className="flex items-center gap-1.5 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white px-3 py-2 rounded text-xs sm:text-sm transition-colors"
+            title="Remove outdated classes and regenerate from current schedule"
+          >
+            <svg className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            {syncing ? 'Syncing…' : 'Sync Classes'}
+          </button>
           
           {/* Week Navigation */}
           <div className="flex items-center gap-2">
@@ -229,6 +270,12 @@ export default function AdminScheduleGridView() {
       </div>
 
       {/* Schedule Grid */}
+      {syncMessage && (
+        <div className={`mb-3 px-4 py-2 rounded text-sm ${syncMessage.startsWith('✓') ? 'bg-green-900/50 text-green-300' : 'bg-red-900/50 text-red-300'}`}>
+          {syncMessage}
+        </div>
+      )}
+
       <div className="bg-gray-800 rounded-lg overflow-hidden">
         {timeSlots.length === 0 && !isLoading && (
           <div className="py-16 text-center text-gray-500 text-sm">
@@ -268,8 +315,9 @@ export default function AdminScheduleGridView() {
                   {/* Day Columns */}
                   {daysOfWeek.map((day) => {
                     const classInstance = getClassForSlot(day, timeSlot);
-                    const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
-                    const isPast = new Date(day) < new Date() && !isToday;
+                    const todayUTC = toUTCDateStr(new Date());
+                    const isToday = toUTCDateStr(day) === todayUTC;
+                    const isPast = day < new Date() && !isToday;
                     
                     return (
                       <td

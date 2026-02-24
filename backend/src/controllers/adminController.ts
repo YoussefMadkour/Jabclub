@@ -7110,3 +7110,77 @@ export const generateClassesFromSchedules = async (req: AuthRequest, res: Respon
     });
   }
 };
+
+/**
+ * POST /api/admin/schedules/cleanup-orphans
+ * Delete unbooked class instances whose time no longer matches any active default schedule
+ * for the same location. Optionally scoped to a specific locationId.
+ */
+export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { locationId, monthsAhead = 3 } = req.body;
+
+    // Build date range: start of current month → end of (now + monthsAhead)
+    const now = new Date();
+    const rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const rangeEnd = new Date(now.getFullYear(), now.getMonth() + Number(monthsAhead) + 1, 0, 23, 59, 59, 999);
+
+    // Fetch active default schedules
+    const scheduleWhere: any = { isActive: true, isOverride: false };
+    if (locationId) scheduleWhere.locationId = parseInt(locationId);
+
+    const activeSchedules = await prisma.classSchedule.findMany({
+      where: scheduleWhere,
+      select: { locationId: true, dayOfWeek: true, startTime: true }
+    });
+
+    // Build a set of valid (locationId, dayOfWeek, HH:MM) keys
+    const validKeys = new Set(
+      activeSchedules.map(s => `${s.locationId}|${s.dayOfWeek}|${s.startTime}`)
+    );
+
+    // Fetch future unbooked instances in range
+    const instanceWhere: any = {
+      startTime: { gte: rangeStart, lte: rangeEnd },
+      isCancelled: false,
+      bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } }
+    };
+    if (locationId) instanceWhere.locationId = parseInt(locationId);
+
+    const candidates = await prisma.classInstance.findMany({
+      where: instanceWhere,
+      select: { id: true, locationId: true, startTime: true }
+    });
+
+    // Identify orphans: instances whose (locationId, dayOfWeek, HH:MM) don't match any active schedule
+    const orphanIds: number[] = [];
+    for (const inst of candidates) {
+      const d = inst.startTime;
+      const dow = d.getUTCDay(); // 0=Sun … 6=Sat
+      const hhmm = `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+      const key = `${inst.locationId}|${dow}|${hhmm}`;
+      if (!validKeys.has(key)) {
+        orphanIds.push(inst.id);
+      }
+    }
+
+    if (orphanIds.length === 0) {
+      res.json({ success: true, message: 'No orphan class instances found.', data: { deleted: 0 } });
+      return;
+    }
+
+    await prisma.classInstance.deleteMany({ where: { id: { in: orphanIds } } });
+
+    res.json({
+      success: true,
+      message: `Deleted ${orphanIds.length} orphan class instance(s) that no longer match any active schedule.`,
+      data: { deleted: orphanIds.length }
+    });
+  } catch (error) {
+    console.error('Cleanup orphan instances error:', error);
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'An error occurred while cleaning up orphan class instances' }
+    });
+  }
+};
