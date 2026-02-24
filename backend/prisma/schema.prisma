@@ -79,6 +79,7 @@ model Child {
   parent   User      @relation(fields: [parentId], references: [id], onDelete: Cascade)
   bookings Booking[]
 
+  @@index([parentId])
   @@map("children")
 }
 
@@ -148,6 +149,9 @@ model Payment {
   location Location?      @relation(fields: [locationId], references: [id])
   reviewer User?          @relation("PaymentReviewer", fields: [reviewedBy], references: [id])
 
+  @@index([userId])
+  @@index([packageId])
+  @@index([locationId])
   @@index([status])
   @@map("payments")
 }
@@ -206,7 +210,11 @@ model ClassInstance {
   bookings  Booking[]
 
   @@index([startTime])
+  @@index([locationId])
+  @@index([coachId])
+  @@index([classTypeId])
   @@index([scheduleId])
+  @@index([locationId, startTime])
   @@map("class_instances")
 }
 
@@ -304,6 +312,9 @@ model CreditTransaction {
   memberPackage MemberPackage @relation(fields: [memberPackageId], references: [id])
   booking       Booking?      @relation(fields: [bookingId], references: [id])
 
+  @@index([userId])
+  @@index([memberPackageId])
+  @@index([bookingId])
   @@map("credit_transactions")
 }
 

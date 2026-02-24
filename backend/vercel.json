@@ -8,9 +8,21 @@
       "config": {
         "maxDuration": 30
       }
+    },
+    {
+      "src": "api/cron/generate-classes.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/cron/keep-warm.ts",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/api/cron/(.*)",
+      "dest": "/api/cron/$1.ts"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.ts"
@@ -32,6 +44,10 @@
     {
       "path": "/api/cron/generate-classes",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/keep-warm",
+      "schedule": "*/5 * * * *"
     }
   ]
 }

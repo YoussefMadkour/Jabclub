@@ -36,75 +36,17 @@ const getCookieDomain = (): string | undefined => {
 let sessionStore: connectPgSimple.PGStore | undefined;
 if (isVercelServerless) {
   try {
-    console.log('🔧 Creating PostgreSQL session store...');
-    console.log('🔧 DATABASE_URL:', process.env.DATABASE_URL ? 'present' : 'missing');
-    
     sessionStore = new PgSession({
       conString: process.env.DATABASE_URL,
-      tableName: 'user_sessions', // Custom table name
-      createTableIfMissing: true, // Auto-create session table
+      tableName: 'user_sessions',
+      createTableIfMissing: true,
       pruneSessionInterval: false, // Disable automatic pruning in serverless
-      schemaName: 'public', // Explicitly set schema
+      schemaName: 'public',
     });
-    
-    // Add error handlers for the session store
-    sessionStore.on('connect', () => {
-      console.log('✅ PostgreSQL session store connected');
-    });
-    
+
     sessionStore.on('error', (error: Error) => {
-      console.error('❌ PostgreSQL session store error:', error);
+      console.error('Session store error:', error);
     });
-    
-    // CRITICAL: Wrap get method BEFORE passing to express-session
-    // This ensures express-session uses our wrapped version
-    const originalGet = sessionStore.get.bind(sessionStore);
-    const wrappedGet = function(sessionId: string, callback: (err: any, session?: any) => void) {
-      console.log('🔍 Loading session from PostgreSQL:', {
-        sessionId,
-        timestamp: new Date().toISOString(),
-      });
-      originalGet(sessionId, (err, session) => {
-        if (err) {
-          console.error('❌ Error loading session:', err);
-          return callback(err);
-        }
-        if (session) {
-          console.log('✅ Session loaded from PostgreSQL:', {
-            sessionId,
-            userId: session.userId,
-            role: session.role,
-            cookie: session.cookie,
-          });
-        } else {
-          console.warn('⚠️ Session not found in PostgreSQL:', sessionId);
-        }
-        callback(null, session);
-      });
-    };
-    sessionStore.get = wrappedGet;
-    
-    // Log when sessions are saved
-    const originalSet = sessionStore.set.bind(sessionStore);
-    sessionStore.set = function(sessionId: string, session: any, callback?: (err?: any) => void) {
-      console.log('💾 Saving session to PostgreSQL:', {
-        sessionId,
-        userId: session.userId,
-        role: session.role,
-      });
-      originalSet(sessionId, session, callback);
-    };
-    
-    // Also wrap destroy and touch methods for completeness
-    const originalDestroy = sessionStore.destroy?.bind(sessionStore);
-    if (originalDestroy) {
-      sessionStore.destroy = function(sessionId: string, callback?: (err?: any) => void) {
-        console.log('🗑️ Destroying session:', sessionId);
-        originalDestroy(sessionId, callback);
-      };
-    }
-    
-    console.log('✅ PostgreSQL session store created successfully');
   } catch (error) {
     console.error('❌ Failed to create PostgreSQL session store:', error);
     // Fallback to MemoryStore if PostgreSQL store fails
@@ -112,32 +54,6 @@ if (isVercelServerless) {
   }
 }
 
-// Add middleware to parse cookies BEFORE session middleware
-// This ensures cookies are available for express-session to read
-app.use((req, res, next) => {
-  // Log incoming cookies for debugging
-  const cookieHeader = req.headers.cookie;
-  if (cookieHeader) {
-    const sessionCookie = cookieHeader.split(';').find(c => c.trim().startsWith('jabclub.sid='));
-    if (sessionCookie) {
-      const rawCookieValue = sessionCookie.split('=')[1]?.trim();
-      // express-session signs cookies as s:<sessionId>.<signature>
-      // If cookie starts with 's:', it's signed
-      const isSigned = rawCookieValue?.startsWith('s:');
-      const sessionId = isSigned ? rawCookieValue.split('.')[0]?.substring(2) : rawCookieValue;
-      console.log('🍪 Cookie found in request:', {
-        cookieHeader: cookieHeader.substring(0, 100) + '...',
-        sessionCookie: sessionCookie,
-        rawValue: rawCookieValue,
-        isSigned: isSigned,
-        sessionId: sessionId,
-        url: req.url,
-        method: req.method,
-      });
-    }
-  }
-  next();
-});
 
 // Session configuration
 const sessionConfig: session.SessionOptions = {
@@ -163,73 +79,11 @@ app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Add middleware to log session info and fix session loading - MUST be after session middleware
-app.use((req, res, next) => {
-  // Log session info on every request (always log in production for debugging)
-  const cookieHeader = req.headers.cookie;
-  const sessionCookie = cookieHeader?.split(';').find(c => c.trim().startsWith('jabclub.sid='));
-  const rawCookieValue = sessionCookie?.split('=')[1]?.trim();
-  
-  // Parse signed cookie: express-session uses format s:<sessionId>.<signature>
-  const isSigned = rawCookieValue?.startsWith('s:');
-  const sessionCookieValue = isSigned ? rawCookieValue?.split('.')[0]?.substring(2) : rawCookieValue;
-  
-  // Check if session store is actually being used
-  const storeType = req.sessionStore?.constructor?.name || 'unknown';
-  
-  console.log('📋 Request session info:', {
-    sessionID: req.sessionID,
-    cookieSessionID: sessionCookieValue,
-    sessionIDsMatch: req.sessionID === sessionCookieValue,
-    hasSession: !!req.session,
-    userId: req.session?.userId,
-    role: req.session?.role,
-    cookieHeader: cookieHeader ? 'present' : 'missing',
-    sessionCookie: sessionCookie ? sessionCookie.substring(0, 50) + '...' : 'not found',
-    isSigned: isSigned,
-    url: req.url,
-    method: req.method,
-    sessionKeys: req.session ? Object.keys(req.session) : [],
-    storeType: storeType,
-    hasStore: !!req.sessionStore,
-  });
-  
-  next();
-});
 
 // Trust Vercel's proxy for secure cookies and correct req.protocol
 // This is CRITICAL for cookies to work properly in Vercel
 app.set('trust proxy', 1);
 
-// Add middleware to log response headers (for debugging cookie issues)
-app.use((req, res, next) => {
-  const originalSend = res.send;
-  const originalJson = res.json;
-  
-  const logHeaders = () => {
-    const setCookie = res.getHeader('Set-Cookie');
-    if (setCookie && req.url.includes('/auth/')) {
-      console.log('🍪 Response Set-Cookie header:', {
-        url: req.url,
-        method: req.method,
-        statusCode: res.statusCode,
-        setCookie: Array.isArray(setCookie) ? setCookie : [setCookie]
-      });
-    }
-  };
-  
-  res.send = function(body) {
-    logHeaders();
-    return originalSend.call(this, body);
-  };
-  
-  res.json = function(body) {
-    logHeaders();
-    return originalJson.call(this, body);
-  };
-  
-  next();
-});
 
 // Middleware - CORS configuration
 const allowedOrigins = [

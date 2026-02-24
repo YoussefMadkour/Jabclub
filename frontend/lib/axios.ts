@@ -43,56 +43,19 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  timeout: 30000, // 30 second timeout
+  timeout: 15000, // 15 second timeout
 });
 
-// Debug: Log the base URL being used
-if (typeof window !== 'undefined') {
-  console.log('🔗 API Base URL:', apiClient.defaults.baseURL);
-  console.log('🔗 NEXT_PUBLIC_API_URL env:', process.env.NEXT_PUBLIC_API_URL);
-}
-
-// Request interceptor for logging
+// Request interceptor
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    // Debug logging
-    console.log('🚀 API Request:', {
-      method: config.method?.toUpperCase(),
-      url: config.url,
-      baseURL: config.baseURL,
-      fullURL: `${config.baseURL}${config.url}`,
-      withCredentials: config.withCredentials,
-    });
-    
-    return config;
-  },
-  (error) => {
-    console.error('Request interceptor error:', error);
-    return Promise.reject(error);
-  }
+  (config: InternalAxiosRequestConfig) => config,
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => {
-    // Debug logging
-    console.log('✅ API Response:', {
-      status: response.status,
-      method: response.config.method?.toUpperCase(),
-      url: response.config.url,
-      data: response.data,
-    });
-    return response;
-  },
+  (response) => response,
   async (error: AxiosError<ApiErrorResponse>) => {
-    // Debug logging
-    console.log('❌ API Error:', {
-      message: error.message,
-      code: error.code,
-      status: error.response?.status,
-      url: error.config?.url,
-      data: error.response?.data,
-    });
     
     // Handle network errors
     if (!error.response) {
