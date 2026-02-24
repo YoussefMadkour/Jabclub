@@ -1,20 +1,15 @@
 import { Redis } from '@upstash/redis';
 
-// Vercel KV (marketplace) injects KV_REST_API_URL / KV_REST_API_TOKEN.
-// We also support the generic UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN
-// names as a fallback for local dev or manual setup.
-const redisUrl =
-  process.env.KV_REST_API_URL ||
-  process.env.UPSTASH_REDIS_REST_URL;
-
-const redisToken =
-  process.env.KV_REST_API_TOKEN ||
-  process.env.UPSTASH_REDIS_REST_TOKEN;
+// Upstash Redis via Vercel marketplace injects KV_REST_API_URL + KV_REST_API_TOKEN.
+// Falls back to UPSTASH_REDIS_REST_* for local dev / manual setup.
+const redisUrl   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.KV_REST_API_TOKEN  || process.env.UPSTASH_REDIS_REST_TOKEN;
 
 let redis: Redis | null = null;
 
 if (redisUrl && redisToken) {
   redis = new Redis({ url: redisUrl, token: redisToken });
+  console.log('✅ Redis cache connected:', redisUrl.split('@').pop()); // log host only, not token
 }
 
 export default redis;
