@@ -1,14 +1,20 @@
 import { Redis } from '@upstash/redis';
 
-// Upstash Redis client — HTTP-based, works in serverless (Vercel) without persistent connections.
-// Falls back gracefully to null if env vars are not set (local dev without Redis).
+// Vercel KV (marketplace) injects KV_REST_API_URL / KV_REST_API_TOKEN.
+// We also support the generic UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN
+// names as a fallback for local dev or manual setup.
+const redisUrl =
+  process.env.KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL;
+
+const redisToken =
+  process.env.KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN;
+
 let redis: Redis | null = null;
 
-if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-  redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN,
-  });
+if (redisUrl && redisToken) {
+  redis = new Redis({ url: redisUrl, token: redisToken });
 }
 
 export default redis;
