@@ -85,6 +85,14 @@ export default function AdminScheduleGridView() {
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
+  // Helper: 24-hour "HH:MM" from a Date
+  const toHHMM = (date: Date): string =>
+    `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+  // Helper: 24-hour "HH:MM" from end time Date
+  const toHHMMEnd = (date: Date): string =>
+    `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
   // Helper function to convert 24-hour time string to 12-hour AM/PM format
   const formatTime12Hour = (time24: string): string => {
     if (!time24 || !time24.includes(':')) return time24;
@@ -94,15 +102,19 @@ export default function AdminScheduleGridView() {
     return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
   };
 
-  // Define time slots
-  const timeSlots = [
-    { start: '09:30', end: '10:30', label: '9:30 AM - 10:30 AM', mobileLabel: '9:30 AM' },
-    { start: '18:00', end: '19:00', label: '6:00 PM - 7:00 PM', mobileLabel: '6:00 PM' },
-    { start: '19:00', end: '20:00', label: '7:00 PM - 8:00 PM', mobileLabel: '7:00 PM' },
-    { start: '20:00', end: '21:00', label: '8:00 PM - 9:00 PM', mobileLabel: '8:00 PM' },
-    { start: '20:30', end: '21:30', label: '8:30 PM - 9:30 PM', mobileLabel: '8:30 PM' },
-    { start: '21:00', end: '22:00', label: '9:00 PM - 10:00 PM', mobileLabel: '9:00 PM' }
-  ];
+  // Derive time slots dynamically from actual classes this week
+  const timeSlots = (() => {
+    const seen = new Map<string, { start: string; end: string }>();
+    classes.forEach((c: ClassInstance) => {
+      const startDate = new Date(c.startTime);
+      const endDate = new Date(c.endTime);
+      const startKey = toHHMM(startDate);
+      if (!seen.has(startKey)) {
+        seen.set(startKey, { start: startKey, end: toHHMMEnd(endDate) });
+      }
+    });
+    return Array.from(seen.values()).sort((a, b) => a.start.localeCompare(b.start));
+  })();
 
   // Helper function to get class for a specific day and time slot
   const getClassForSlot = (day: Date, timeSlot: { start: string; end: string }) => {
@@ -112,12 +124,9 @@ export default function AdminScheduleGridView() {
     return classes.find((c: ClassInstance) => {
       const classDate = new Date(c.startTime);
       const classDayStr = format(classDate, 'yyyy-MM-dd');
-      const classHours = classDate.getHours();
-      const classMinutes = classDate.getMinutes();
-      
-      return classDayStr === dayStr && 
-             classHours === hours && 
-             classMinutes === minutes;
+      return classDayStr === dayStr &&
+             classDate.getHours() === hours &&
+             classDate.getMinutes() === minutes;
     });
   };
 
@@ -221,6 +230,11 @@ export default function AdminScheduleGridView() {
 
       {/* Schedule Grid */}
       <div className="bg-gray-800 rounded-lg overflow-hidden">
+        {timeSlots.length === 0 && !isLoading && (
+          <div className="py-16 text-center text-gray-500 text-sm">
+            No classes scheduled for this week at this location.
+          </div>
+        )}
         <div className="overflow-x-auto -mx-3 sm:mx-0">
           <table className="w-full border-collapse min-w-[600px]">
             {/* Header Row */}
@@ -247,8 +261,8 @@ export default function AdminScheduleGridView() {
                 <tr key={`${timeSlot.start}-${timeSlot.end}`} className="border-b border-gray-700">
                   {/* Time Column */}
                   <td className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs py-2 sm:py-4 px-3 sm:px-4 border-r border-gray-700 whitespace-nowrap sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
-                    <div className="hidden sm:block">{timeSlot.label}</div>
-                    <div className="sm:hidden font-medium">{timeSlot.mobileLabel || formatTime12Hour(timeSlot.start)}</div>
+                    <div className="hidden sm:block">{formatTime12Hour(timeSlot.start)} - {formatTime12Hour(timeSlot.end)}</div>
+                    <div className="sm:hidden font-medium">{formatTime12Hour(timeSlot.start)}</div>
                   </td>
                   
                   {/* Day Columns */}
