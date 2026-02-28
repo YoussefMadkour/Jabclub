@@ -44,10 +44,6 @@
     {
       "path": "/api/cron/generate-classes",
       "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/cron/keep-warm",
-      "schedule": "*/5 * * * *"
     }
   ]
 }
