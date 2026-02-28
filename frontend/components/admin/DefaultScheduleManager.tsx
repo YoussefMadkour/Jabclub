@@ -208,6 +208,8 @@ export default function DefaultScheduleManager() {
       closeCreateModal();
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
     } catch (err: any) {
       alert(err.response?.data?.error?.message || 'Failed to create schedule');
     } finally {
@@ -218,7 +220,7 @@ export default function DefaultScheduleManager() {
   const handleUpdate = async () => {
     if (!selectedSchedule) return;
 
-    if (!form.classTypeId || !form.coachId || form.dayOfWeek === '' || !form.startTime || !form.capacity) {
+    if (!form.classTypeId || !form.coachId || !form.locationId || form.dayOfWeek === '' || !form.startTime || !form.capacity) {
       alert('Please fill in all required fields');
       return;
     }
@@ -240,6 +242,8 @@ export default function DefaultScheduleManager() {
       closeEditModal();
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
     } catch (err: any) {
       alert(err.response?.data?.error?.message || 'Failed to update schedule');
     } finally {
@@ -268,6 +272,8 @@ export default function DefaultScheduleManager() {
       alert(successMessage);
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
     } catch (err: any) {
       alert(err.response?.data?.error?.message || `Failed to ${action} schedule`);
     }
@@ -287,6 +293,8 @@ export default function DefaultScheduleManager() {
       setMoveApplyCurrentMonth(false);
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
     } catch (err: any) {
       alert(err.response?.data?.error?.message || 'Failed to move schedule');
     } finally {
@@ -583,6 +591,8 @@ export default function DefaultScheduleManager() {
       setConflictPreview(null);
       queryClient.invalidateQueries({ queryKey: ['admin-default-schedules'] });
       queryClient.invalidateQueries({ queryKey: ['admin-schedules'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
     } catch (err: any) {
       alert(err.response?.data?.error?.message || 'Failed to import schedules');
     } finally {

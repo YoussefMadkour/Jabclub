@@ -43,27 +43,22 @@ export default function ScheduleGridView() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fetch locations
+  // Fetch active locations from the dedicated endpoint (not from classes)
+  const { data: locationsData } = useQuery({
+    queryKey: ['member-locations'],
+    queryFn: async () => {
+      const response = await apiClient.get('/admin/locations');
+      return (response.data.data.locations || []).filter((l: any) => l.isActive) as Location[];
+    },
+    staleTime: 5 * 60 * 1000, // 5 min
+  });
+
   useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        const response = await apiClient.get('/classes/schedule');
-        const allClasses = response.data.data.classes;
-        const uniqueLocations = Array.from(
-          new Map(
-            allClasses.map((c: ClassInstance) => [c.location.id, c.location])
-          ).values()
-        ) as Location[];
-        setLocations(uniqueLocations);
-        if (uniqueLocations.length > 0 && !selectedLocationId) {
-          setSelectedLocationId(uniqueLocations[0].id);
-        }
-      } catch (err) {
-        console.error('Error fetching locations:', err);
-      }
-    };
-    fetchLocations();
-  }, []);
+    if (locationsData && locationsData.length > 0 && !selectedLocationId) {
+      setSelectedLocationId(locationsData[0].id);
+    }
+    if (locationsData) setLocations(locationsData);
+  }, [locationsData]);
 
   // Fetch classes for the selected week and location
   const { data: classesData, isLoading } = useQuery({
