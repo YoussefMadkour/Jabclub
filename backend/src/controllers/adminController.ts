@@ -6962,31 +6962,11 @@ export const updateSchedule = async (req: AuthRequest, res: Response): Promise<v
       }
     });
 
-    // If schedule was updated, regenerate classes based on applyToCurrentMonth flag
+    // Respond immediately — regeneration runs in the background so the request doesn't time out
     const now = new Date();
     const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    
-    // Determine the cutoff date based on applyToCurrentMonth
     const cutoffDate = applyToCurrentMonth ? startOfCurrentMonth : startOfNextMonth;
-    
-    // Delete instances that were generated from this schedule
-    // Only delete instances that haven't started yet and have no bookings
-    await prisma.classInstance.deleteMany({
-      where: {
-        scheduleId: scheduleId,
-        startTime: {
-          gte: cutoffDate
-        },
-        bookings: {
-          none: {} // Only delete if no bookings exist
-        }
-      }
-    });
-
-    // Regenerate classes for future months (2 months ahead)
-    const { generateClassesFromSchedules } = require('../services/scheduleService');
-    await generateClassesFromSchedules(2);
 
     const message = applyToCurrentMonth
       ? 'Schedule updated successfully. Changes have been applied to this month and future months. Classes with existing bookings were not modified.'
@@ -6997,6 +6977,23 @@ export const updateSchedule = async (req: AuthRequest, res: Response): Promise<v
       data: {
         schedule: updatedSchedule,
         message: message
+      }
+    });
+
+    // Background: delete stale instances and regenerate — runs AFTER response is sent
+    setImmediate(async () => {
+      try {
+        await prisma.classInstance.deleteMany({
+          where: {
+            scheduleId: scheduleId,
+            startTime: { gte: cutoffDate },
+            bookings: { none: {} }
+          }
+        });
+        const { generateClassesFromSchedules } = require('../services/scheduleService');
+        await generateClassesFromSchedules(2);
+      } catch (bgErr) {
+        console.error('Background schedule regeneration error:', bgErr);
       }
     });
   } catch (error) {
