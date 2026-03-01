@@ -7198,8 +7198,16 @@ export const forceResyncClasses = async (req: AuthRequest, res: Response): Promi
     const { locationId } = req.body;
     const now = new Date();
 
+    // Delete from start of current week (Saturday) so old wrong-time instances
+    // from earlier in this week are also removed, not just future ones
+    const dayOfWeek = now.getDay(); // 0=Sun … 6=Sat
+    const daysFromSaturday = dayOfWeek === 6 ? 0 : (dayOfWeek + 1);
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - daysFromSaturday);
+    weekStart.setHours(0, 0, 0, 0);
+
     const whereClause: any = {
-      startTime: { gte: now },
+      startTime: { gte: weekStart },
       bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } }
     };
     if (locationId) whereClause.locationId = parseInt(locationId);

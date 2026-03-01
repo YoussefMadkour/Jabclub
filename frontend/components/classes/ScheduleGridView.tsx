@@ -81,7 +81,8 @@ export default function ScheduleGridView() {
 
       return { classes: response.data.data.classes || [] };
     },
-    enabled: !!selectedLocationId
+    enabled: !!selectedLocationId,
+    staleTime: 0, // always refetch on mount so synced data is immediately visible
   });
 
   const classes = classesData?.classes || [];
@@ -109,21 +110,18 @@ export default function ScheduleGridView() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
-  // Derive time slots dynamically from actual classes (sorted, deduplicated)
+  // Derive time slots dynamically from actual classes (deduplicated, sorted by local time)
   const timeSlots = (() => {
-    const seen = new Set<string>();
-    const slots: { start: string; end: string; label: string; mobileLabel: string }[] = [];
-    [...classes]
-      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
-      .forEach((c: ClassInstance) => {
-        const start = isoToHHMM(c.startTime);
+    const seen = new Map<string, { start: string; end: string; label: string; mobileLabel: string }>();
+    classes.forEach((c: ClassInstance) => {
+      const start = isoToHHMM(c.startTime);
+      if (!seen.has(start)) {
         const end = isoToHHMM(c.endTime);
-        if (!seen.has(start)) {
-          seen.add(start);
-          slots.push({ start, end, label: `${formatTime12Hour(start)} - ${formatTime12Hour(end)}`, mobileLabel: formatTime12Hour(start) });
-        }
-      });
-    return slots;
+        seen.set(start, { start, end, label: `${formatTime12Hour(start)} - ${formatTime12Hour(end)}`, mobileLabel: formatTime12Hour(start) });
+      }
+    });
+    // Sort by local HH:MM string so 4:30 PM (16:30) appears before 8:00 PM (20:00) regardless of UTC epoch order
+    return Array.from(seen.values()).sort((a, b) => a.start.localeCompare(b.start));
   })();
 
   // Get class for a specific day and time slot — both use local time

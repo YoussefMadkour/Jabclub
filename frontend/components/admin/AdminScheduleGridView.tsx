@@ -83,7 +83,8 @@ export default function AdminScheduleGridView() {
       const allClasses = response.data.data.classes || [];
       return { classes: allClasses };
     },
-    enabled: !!selectedLocationId
+    enabled: !!selectedLocationId,
+    staleTime: 0, // always refetch on mount so synced data is immediately visible
   });
 
   const classes = classesData?.classes || [];
