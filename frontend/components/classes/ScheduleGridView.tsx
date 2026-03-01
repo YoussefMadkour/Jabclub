@@ -43,14 +43,14 @@ export default function ScheduleGridView() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fetch active locations from the dedicated endpoint (not from classes)
+  // Fetch active locations from the member endpoint (admin/locations requires admin role)
   const { data: locationsData } = useQuery({
     queryKey: ['member-locations'],
     queryFn: async () => {
-      const response = await apiClient.get('/admin/locations');
-      return (response.data.data.locations || []).filter((l: any) => l.isActive) as Location[];
+      const response = await apiClient.get('/members/locations');
+      return (response.data.data?.locations || response.data.data || []) as Location[];
     },
-    staleTime: 5 * 60 * 1000, // 5 min
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
@@ -89,9 +89,13 @@ export default function ScheduleGridView() {
 
   const classes = classesData?.classes || [];
 
-  // Get week start (Saturday)
+  // Get week start (Saturday) — use UTC noon to avoid DST boundary issues
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+  const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
+    const d = addDays(weekStart, i);
+    // Normalize to UTC midnight so isoToDateStr comparisons are consistent
+    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  });
 
   // Helper function to convert 24-hour time string to 12-hour AM/PM format
   const formatTime12Hour = (time24: string): string => {
@@ -102,31 +106,41 @@ export default function ScheduleGridView() {
     return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
   };
 
-  // Define time slots (9:30 AM and 6 PM to 10 PM)
-  const timeSlots = [
-    { start: '09:30', end: '10:30', label: '9:30 AM - 10:30 AM', mobileLabel: '9:30 AM' },
-    { start: '18:00', end: '19:00', label: '6:00 PM - 7:00 PM', mobileLabel: '6:00 PM' },
-    { start: '19:00', end: '20:00', label: '7:00 PM - 8:00 PM', mobileLabel: '7:00 PM' },
-    { start: '20:00', end: '21:00', label: '8:00 PM - 9:00 PM', mobileLabel: '8:00 PM' },
-    { start: '20:30', end: '21:30', label: '8:30 PM - 9:30 PM', mobileLabel: '8:30 PM' },
-    { start: '21:00', end: '22:00', label: '9:00 PM - 10:00 PM', mobileLabel: '9:00 PM' }
-  ];
+  // Parse HH:MM from an ISO string using UTC (avoids local timezone shift)
+  const isoToHHMM = (iso: string): string => {
+    const d = new Date(iso);
+    return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+  };
 
-  // Helper function to get class for a specific day and time slot
-  const getClassForSlot = (day: Date, timeSlot: { start: string; end: string }) => {
-    const dayStr = format(day, 'yyyy-MM-dd');
-    const [hours, minutes] = timeSlot.start.split(':').map(Number);
-    
-    return classes.find((c: ClassInstance) => {
-      const classDate = new Date(c.startTime);
-      const classDayStr = format(classDate, 'yyyy-MM-dd');
-      const classHours = classDate.getHours();
-      const classMinutes = classDate.getMinutes();
-      
-      return classDayStr === dayStr && 
-             classHours === hours && 
-             classMinutes === minutes;
-    });
+  // Parse YYYY-MM-DD from an ISO string using UTC
+  const isoToDateStr = (iso: string): string => {
+    const d = new Date(iso);
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+  };
+
+  // Derive time slots dynamically from actual classes (sorted, deduplicated)
+  const timeSlots = (() => {
+    const seen = new Set<string>();
+    const slots: { start: string; end: string; label: string; mobileLabel: string }[] = [];
+    [...classes]
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+      .forEach((c: ClassInstance) => {
+        const start = isoToHHMM(c.startTime);
+        const end = isoToHHMM(c.endTime);
+        if (!seen.has(start)) {
+          seen.add(start);
+          slots.push({ start, end, label: `${formatTime12Hour(start)} - ${formatTime12Hour(end)}`, mobileLabel: formatTime12Hour(start) });
+        }
+      });
+    return slots;
+  })();
+
+  // Get class for a specific day and time slot using UTC-safe matching
+  const getClassForSlot = (day: Date, timeSlot: { start: string }) => {
+    const dayStr = `${day.getUTCFullYear()}-${String(day.getUTCMonth() + 1).padStart(2, '0')}-${String(day.getUTCDate()).padStart(2, '0')}`;
+    return classes.find((c: ClassInstance) =>
+      isoToDateStr(c.startTime) === dayStr && isoToHHMM(c.startTime) === timeSlot.start
+    );
   };
 
   const handlePreviousWeek = () => {
