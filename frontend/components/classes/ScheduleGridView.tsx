@@ -35,16 +35,28 @@ interface Location {
   name: string;
 }
 
+const LOCATION_STORAGE_KEY = 'jabclub_selected_location';
+
 export default function ScheduleGridView() {
-  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
+  // Initialise from localStorage so location is selected immediately on mount
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(() => {
+    try {
+      const saved = localStorage.getItem(LOCATION_STORAGE_KEY);
+      return saved ? parseInt(saved) : null;
+    } catch { return null; }
+  });
   const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [locations, setLocations] = useState<Location[]>([]);
   const [selectedClass, setSelectedClass] = useState<ClassInstance | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fetch active locations from the member endpoint (admin/locations requires admin role)
-  const { data: locationsData } = useQuery({
+  const handleSelectLocation = (id: number) => {
+    setSelectedLocationId(id);
+    try { localStorage.setItem(LOCATION_STORAGE_KEY, String(id)); } catch {}
+  };
+
+  // Fetch active locations from the member endpoint
+  const { data: locations = [], isLoading: locationsLoading } = useQuery({
     queryKey: ['member-locations'],
     queryFn: async () => {
       const response = await apiClient.get('/members/locations');
@@ -53,12 +65,12 @@ export default function ScheduleGridView() {
     staleTime: 5 * 60 * 1000,
   });
 
+  // Auto-select first location once loaded if nothing saved in localStorage
   useEffect(() => {
-    if (locationsData && locationsData.length > 0 && !selectedLocationId) {
-      setSelectedLocationId(locationsData[0].id);
+    if (locations.length > 0 && !selectedLocationId) {
+      handleSelectLocation(locations[0].id);
     }
-    if (locationsData) setLocations(locationsData);
-  }, [locationsData]);
+  }, [locations]);
 
   // Week boundaries — computed once, used by query key, query fn, and grid render
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
@@ -157,10 +169,12 @@ export default function ScheduleGridView() {
     setSelectedClass(null);
   };
 
-  if (isLoading) {
+  // Show spinner while locations OR classes are loading (prevents empty-grid flash)
+  if (locationsLoading || (isLoading && !!selectedLocationId)) {
     return (
-      <div className="flex justify-center items-center py-12">
+      <div className="bg-gray-900 min-h-screen flex flex-col items-center justify-center gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <p className="text-gray-400 text-sm">Loading schedule…</p>
       </div>
     );
   }
@@ -176,7 +190,7 @@ export default function ScheduleGridView() {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
           <select
             value={selectedLocationId || ''}
-            onChange={(e) => setSelectedLocationId(Number(e.target.value))}
+            onChange={(e) => handleSelectLocation(Number(e.target.value))}
             className="bg-gray-800 text-white border border-gray-700 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base flex-1 sm:flex-none"
           >
             {locations.map((loc) => (
