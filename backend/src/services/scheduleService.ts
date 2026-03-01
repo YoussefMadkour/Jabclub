@@ -1,5 +1,19 @@
 import prisma from '../config/database';
 
+// Egypt is always UTC+2 (no DST). Schedule times are entered in Egypt local time,
+// so we subtract 2 hours when building UTC Date objects for storage.
+const EGYPT_UTC_OFFSET_HOURS = 2;
+
+/**
+ * Build a UTC Date for a given local date + HH:MM time entered in Egypt time.
+ * e.g. date=2026-03-01, hours=20, minutes=0 → 2026-03-01T18:00:00.000Z
+ */
+function egyptTimeToUTC(date: Date, hours: number, minutes: number): Date {
+  const utc = new Date(date);
+  utc.setUTCHours(hours - EGYPT_UTC_OFFSET_HOURS, minutes, 0, 0);
+  return utc;
+}
+
 /**
  * Generate class instances from active recurring schedules.
  * Optimised: fetches all existing instances in ONE query upfront instead of
@@ -55,8 +69,8 @@ export async function generateClassesFromSchedules(monthsAhead: number = 2): Pro
 
       while (currentDate <= endDate) {
         if (currentDate.getDay() === schedule.dayOfWeek) {
-          const startTime = new Date(currentDate);
-          startTime.setHours(hours, minutes, 0, 0);
+          // Convert Egypt local time to UTC for storage
+          const startTime = egyptTimeToUTC(currentDate, hours, minutes);
 
           const dateKey = `${startTime.getUTCFullYear()}-${String(startTime.getUTCMonth()+1).padStart(2,'0')}-${String(startTime.getUTCDate()).padStart(2,'0')}T${String(startTime.getUTCHours()).padStart(2,'0')}:${String(startTime.getUTCMinutes()).padStart(2,'0')}`;
 
@@ -102,8 +116,7 @@ export async function generateClassesFromSchedules(monthsAhead: number = 2): Pro
 
       while (currentDate <= effectiveEnd) {
         if (currentDate.getDay() === schedule.dayOfWeek) {
-          const startTime = new Date(currentDate);
-          startTime.setHours(hours, minutes, 0, 0);
+          const startTime = egyptTimeToUTC(currentDate, hours, minutes);
 
           const dateKey = `${startTime.getUTCFullYear()}-${String(startTime.getUTCMonth()+1).padStart(2,'0')}-${String(startTime.getUTCDate()).padStart(2,'0')}T${String(startTime.getUTCHours()).padStart(2,'0')}:${String(startTime.getUTCMinutes()).padStart(2,'0')}`;
           const locKey = `${schedule.locationId}|${dateKey}`;

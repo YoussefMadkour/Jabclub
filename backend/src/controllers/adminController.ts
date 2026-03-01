@@ -7149,12 +7149,14 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
       select: { id: true, locationId: true, startTime: true }
     });
 
-    // Identify orphans: instances whose (locationId, dayOfWeek, HH:MM) don't match any active schedule
+    // Identify orphans: instances whose (locationId, dayOfWeek, HH:MM) don't match any active schedule.
+    // Stored times are UTC; schedule times are Egypt local (UTC+2). Convert UTC→Egypt for comparison.
+    const EGYPT_OFFSET_MS = 2 * 60 * 60 * 1000;
     const orphanIds: number[] = [];
     for (const inst of candidates) {
-      const d = inst.startTime;
-      const dow = d.getUTCDay(); // 0=Sun … 6=Sat
-      const hhmm = `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+      const egyptTime = new Date(inst.startTime.getTime() + EGYPT_OFFSET_MS);
+      const dow = egyptTime.getUTCDay();
+      const hhmm = `${String(egyptTime.getUTCHours()).padStart(2, '0')}:${String(egyptTime.getUTCMinutes()).padStart(2, '0')}`;
       const key = `${inst.locationId}|${dow}|${hhmm}`;
       if (!validKeys.has(key)) {
         orphanIds.push(inst.id);
