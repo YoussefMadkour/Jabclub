@@ -9,6 +9,32 @@ import { uploadToBlob } from '../services/blobService';
 import { generateFileName } from '../middleware/upload';
 
 /**
+ * GET /api/members/credits
+ * Lightweight endpoint — returns only the user's available credit total.
+ * Used by BookingModal to avoid loading the full dashboard payload.
+ */
+export const getCredits = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } });
+      return;
+    }
+
+    const activePackages = await prisma.memberPackage.findMany({
+      where: { userId, isExpired: false, expiryDate: { gte: new Date() } },
+      select: { sessionsRemaining: true }
+    });
+
+    const total = activePackages.reduce((sum, p) => sum + p.sessionsRemaining, 0);
+    res.json({ success: true, data: { total } });
+  } catch (error) {
+    console.error('Credits fetch error:', error);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'Failed to fetch credits' } });
+  }
+};
+
+/**
  * GET /api/members/locations
  * Fetch all active locations available for package purchase
  */

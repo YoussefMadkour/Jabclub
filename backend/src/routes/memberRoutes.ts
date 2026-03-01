@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getDashboard, getPackages, getActiveLocations, purchasePackage, createBooking, cancelBooking, getChildren, createChild, updateChild, deleteChild, getPaymentHistory } from '../controllers/memberController';
+import { getDashboard, getPackages, getActiveLocations, getCredits, purchasePackage, createBooking, cancelBooking, getChildren, createChild, updateChild, deleteChild, getPaymentHistory } from '../controllers/memberController';
 import { authenticate, authorize } from '../middleware/auth';
 import { uploadPaymentScreenshot } from '../middleware/upload';
 
@@ -11,6 +11,9 @@ router.use(authorize('member'));
 
 // GET /api/members/dashboard - Get member dashboard data
 router.get('/dashboard', getDashboard);
+
+// GET /api/members/credits - Get user's available credit total (lightweight)
+router.get('/credits', getCredits);
 
 // GET /api/members/locations - Get all active locations
 router.get('/locations', getActiveLocations);

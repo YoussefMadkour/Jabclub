@@ -60,42 +60,31 @@ export default function ScheduleGridView() {
     if (locationsData) setLocations(locationsData);
   }, [locationsData]);
 
+  // Week boundaries — computed once, used by query key, query fn, and grid render
+  const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
+  const weekEnd = addDays(weekStart, 6);
+  const daysOfWeek = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
   // Fetch classes for the selected week and location
   const { data: classesData, isLoading } = useQuery({
-    queryKey: ['schedule-grid', selectedLocationId, currentWeek],
+    queryKey: ['schedule-grid', selectedLocationId, format(weekStart, 'yyyy-MM-dd')],
     queryFn: async () => {
       if (!selectedLocationId) return { classes: [] };
-      
-      const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 }); // Start on Saturday
-      const weekEnd = addDays(weekStart, 6);
-      
+
       const response = await apiClient.get('/classes/schedule', {
         params: {
-          location: selectedLocationId.toString()
+          location: selectedLocationId.toString(),
+          startDate: format(weekStart, "yyyy-MM-dd'T'00:00:00"),
+          endDate: format(weekEnd, "yyyy-MM-dd'T'23:59:59"),
         }
       });
-      
-      // Filter classes for the selected week
-      const allClasses = response.data.data.classes || [];
-      const filteredClasses = allClasses.filter((c: ClassInstance) => {
-        const classDate = new Date(c.startTime);
-        return classDate >= weekStart && classDate <= weekEnd;
-      });
-      
-      return { classes: filteredClasses };
+
+      return { classes: response.data.data.classes || [] };
     },
     enabled: !!selectedLocationId
   });
 
   const classes = classesData?.classes || [];
-
-  // Get week start (Saturday) — use UTC noon to avoid DST boundary issues
-  const weekStart = startOfWeek(currentWeek, { weekStartsOn: 6 });
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
-    const d = addDays(weekStart, i);
-    // Normalize to UTC midnight so isoToDateStr comparisons are consistent
-    return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  });
 
   // Helper function to convert 24-hour time string to 12-hour AM/PM format
   const formatTime12Hour = (time24: string): string => {
@@ -106,16 +95,18 @@ export default function ScheduleGridView() {
     return `${displayHours}:${String(minutes).padStart(2, '0')} ${period}`;
   };
 
-  // Parse HH:MM from an ISO string using UTC (avoids local timezone shift)
+  // Parse HH:MM from an ISO string using LOCAL time
+  // The backend stores times in UTC but Egypt is UTC+2, so 20:00 UTC = 22:00 local.
+  // We display local time in the grid headers, so matching must also use local time.
   const isoToHHMM = (iso: string): string => {
     const d = new Date(iso);
-    return `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   };
 
-  // Parse YYYY-MM-DD from an ISO string using UTC
+  // Parse YYYY-MM-DD from an ISO string using LOCAL time
   const isoToDateStr = (iso: string): string => {
     const d = new Date(iso);
-    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
   // Derive time slots dynamically from actual classes (sorted, deduplicated)
@@ -135,9 +126,9 @@ export default function ScheduleGridView() {
     return slots;
   })();
 
-  // Get class for a specific day and time slot using UTC-safe matching
+  // Get class for a specific day and time slot — both use local time
   const getClassForSlot = (day: Date, timeSlot: { start: string }) => {
-    const dayStr = `${day.getUTCFullYear()}-${String(day.getUTCMonth() + 1).padStart(2, '0')}-${String(day.getUTCDate()).padStart(2, '0')}`;
+    const dayStr = format(day, 'yyyy-MM-dd');
     return classes.find((c: ClassInstance) =>
       isoToDateStr(c.startTime) === dayStr && isoToHHMM(c.startTime) === timeSlot.start
     );

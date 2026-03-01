@@ -10,12 +10,18 @@ export const getSchedule = async (req: AuthRequest, res: Response): Promise<void
   try {
     const { location, date, coach } = req.query;
 
+    const { startDate, endDate } = req.query;
+
+    // Default window: today → 14 days ahead (2 weeks visible at a time)
+    const windowStart = startDate ? new Date(startDate as string) : new Date();
+    const windowEnd = endDate
+      ? new Date(endDate as string)
+      : new Date(windowStart.getTime() + 14 * 24 * 60 * 60 * 1000);
+
     // Build where clause based on filters
     const whereClause: any = {
       isCancelled: false,
-      startTime: {
-        gte: new Date() // Filter out past classes
-      }
+      startTime: { gte: windowStart, lte: windowEnd }
     };
 
     // Filter by location
@@ -23,16 +29,12 @@ export const getSchedule = async (req: AuthRequest, res: Response): Promise<void
       whereClause.locationId = parseInt(location as string);
     }
 
-    // Filter by date (classes on specific date)
+    // Filter by date (classes on specific date — overrides window)
     if (date) {
       const selectedDate = new Date(date as string);
-      const startOfDay = new Date(selectedDate.setHours(0, 0, 0, 0));
-      const endOfDay = new Date(selectedDate.setHours(23, 59, 59, 999));
-      
-      whereClause.startTime = {
-        gte: startOfDay,
-        lte: endOfDay
-      };
+      const startOfDay = new Date(selectedDate); startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay   = new Date(selectedDate); endOfDay.setHours(23, 59, 59, 999);
+      whereClause.startTime = { gte: startOfDay, lte: endOfDay };
     }
 
     // Filter by coach
