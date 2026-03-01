@@ -7117,9 +7117,9 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
   try {
     const { locationId, monthsAhead = 3 } = req.body;
 
-    // Build date range: start of current month → end of (now + monthsAhead)
     const now = new Date();
-    const rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    // Delete from start of today so we don't wipe past classes
+    const rangeStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
     const rangeEnd = new Date(now.getFullYear(), now.getMonth() + Number(monthsAhead) + 1, 0, 23, 59, 59, 999);
 
     // Fetch active default schedules
@@ -7131,15 +7131,21 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
       select: { locationId: true, dayOfWeek: true, startTime: true }
     });
 
-    // Build a set of valid (locationId, dayOfWeek, HH:MM) keys
+    // Build valid keys: schedule times are Egypt local (UTC+2), convert to UTC for comparison.
+    // e.g. "20:00" Egypt = "18:00" UTC stored in DB
+    const EGYPT_OFFSET_HOURS = 2;
     const validKeys = new Set(
-      activeSchedules.map(s => `${s.locationId}|${s.dayOfWeek}|${s.startTime}`)
+      activeSchedules.map(s => {
+        const [h, m] = s.startTime.split(':').map(Number);
+        const utcH = (h - EGYPT_OFFSET_HOURS + 24) % 24;
+        const utcHHMM = `${String(utcH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        return `${s.locationId}|${s.dayOfWeek}|${utcHHMM}`;
+      })
     );
 
-    // Fetch future unbooked instances in range
+    // Fetch all unbooked future instances in range
     const instanceWhere: any = {
       startTime: { gte: rangeStart, lte: rangeEnd },
-      isCancelled: false,
       bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } }
     };
     if (locationId) instanceWhere.locationId = parseInt(locationId);
@@ -7149,14 +7155,12 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
       select: { id: true, locationId: true, startTime: true }
     });
 
-    // Identify orphans: instances whose (locationId, dayOfWeek, HH:MM) don't match any active schedule.
-    // Stored times are UTC; schedule times are Egypt local (UTC+2). Convert UTC→Egypt for comparison.
-    const EGYPT_OFFSET_MS = 2 * 60 * 60 * 1000;
+    // Match using UTC time directly (as stored in DB)
     const orphanIds: number[] = [];
     for (const inst of candidates) {
-      const egyptTime = new Date(inst.startTime.getTime() + EGYPT_OFFSET_MS);
-      const dow = egyptTime.getUTCDay();
-      const hhmm = `${String(egyptTime.getUTCHours()).padStart(2, '0')}:${String(egyptTime.getUTCMinutes()).padStart(2, '0')}`;
+      const d = inst.startTime;
+      const dow = d.getUTCDay();
+      const hhmm = `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
       const key = `${inst.locationId}|${dow}|${hhmm}`;
       if (!validKeys.has(key)) {
         orphanIds.push(inst.id);
