@@ -143,18 +143,17 @@ export default function AdminScheduleGridView() {
   };
 
   const handleSyncClasses = useCallback(async () => {
-    if (!confirm('This will:\n1. Delete unbooked class instances that no longer match any active schedule\n2. Regenerate missing classes from current schedules\n\nClasses with bookings are safe and will NOT be deleted. Continue?')) return;
+    if (!confirm('This will delete ALL unbooked future classes and regenerate them from the current default schedule.\n\nClasses with existing bookings will NOT be deleted.\n\nContinue?')) return;
     setSyncing(true);
     setSyncMessage(null);
     try {
-      const cleanupRes = await apiClient.post('/admin/schedules/cleanup-orphans', {
-        locationId: selectedLocationId,
-        monthsAhead: 3
+      const res = await apiClient.post('/admin/schedules/force-resync', {
+        locationId: selectedLocationId
       });
-      const genRes = await apiClient.post('/admin/schedules/generate', { monthsAhead: 3 });
-      const deleted = cleanupRes.data?.data?.deleted ?? 0;
+      const deleted = res.data?.data?.deleted ?? 0;
       setSyncMessage(`✓ Synced: removed ${deleted} outdated class${deleted !== 1 ? 'es' : ''}, regenerated from current schedule.`);
       queryClient.invalidateQueries({ queryKey: ['admin-schedule-grid'] });
+      queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
     } catch (err: any) {
       setSyncMessage('✗ Sync failed: ' + (err.response?.data?.error?.message || err.message));
     } finally {

@@ -58,7 +58,8 @@ import {
   updateSchedule,
   deleteSchedule,
   generateClassesFromSchedules,
-  cleanupOrphanClassInstances
+  cleanupOrphanClassInstances,
+  forceResyncClasses
 } from '../controllers/adminController';
 import { authenticate, authorize } from '../middleware/auth';
 
@@ -214,6 +215,8 @@ router.delete('/schedules/:id', deleteSchedule);
 router.post('/schedules/generate', generateClassesFromSchedules);
 // POST /api/admin/schedules/cleanup-orphans - Delete unbooked instances that no longer match active schedules
 router.post('/schedules/cleanup-orphans', cleanupOrphanClassInstances);
+// POST /api/admin/schedules/force-resync - Delete ALL unbooked future instances and regenerate
+router.post('/schedules/force-resync', forceResyncClasses);
 
 // PUT /api/admin/members/:memberId/package-prices/:packageId - Set/update member-specific price
 router.put('/members/:memberId/package-prices/:packageId', setMemberPackagePrice);

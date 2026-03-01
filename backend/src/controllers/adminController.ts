@@ -7187,3 +7187,38 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
     });
   }
 };
+
+/**
+ * POST /api/admin/schedules/force-resync
+ * Nuclear option: delete ALL unbooked future instances for a location, then regenerate.
+ * Used when the orphan-detection logic fails due to time storage inconsistencies.
+ */
+export const forceResyncClasses = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { locationId } = req.body;
+    const now = new Date();
+
+    const whereClause: any = {
+      startTime: { gte: now },
+      bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } }
+    };
+    if (locationId) whereClause.locationId = parseInt(locationId);
+
+    const { count: deleted } = await prisma.classInstance.deleteMany({ where: whereClause });
+
+    const { generateClassesFromSchedules } = require('../services/scheduleService');
+    await generateClassesFromSchedules(3);
+
+    res.json({
+      success: true,
+      message: `Force resynced: deleted ${deleted} unbooked future instances and regenerated from current schedules.`,
+      data: { deleted }
+    });
+  } catch (error) {
+    console.error('Force resync error:', error);
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'Force resync failed' }
+    });
+  }
+};
