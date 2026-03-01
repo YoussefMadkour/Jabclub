@@ -7214,8 +7214,9 @@ export const forceResyncClasses = async (req: AuthRequest, res: Response): Promi
 
     const { count: deleted } = await prisma.classInstance.deleteMany({ where: whereClause });
 
+    // Regenerate from the same weekStart so past days this week also get instances
     const { generateClassesFromSchedules } = require('../services/scheduleService');
-    await generateClassesFromSchedules(3);
+    await generateClassesFromSchedules(3, weekStart);
 
     res.json({
       success: true,

@@ -311,8 +311,10 @@ export default function ScheduleGridView() {
                           classInstance
                             ? isBooked
                               ? 'bg-green-600 text-white'
-                              : classInstance.isFull || isPast
-                              ? 'bg-gray-600 text-gray-400'
+                              : isPast
+                              ? 'bg-orange-900/50 text-orange-200/60'
+                              : classInstance.isFull
+                              ? 'bg-orange-400/40 text-orange-100'
                               : 'bg-orange-500 text-white hover:bg-orange-600 cursor-pointer active:scale-95'
                             : isToday
                             ? 'bg-gray-700 text-gray-500'
@@ -341,11 +343,11 @@ export default function ScheduleGridView() {
                                 BOOK
                               </button>
                             )}
-                            {classInstance.isFull && !isBooked && (
-                              <span className="text-[9px] sm:text-xs text-gray-300">FULL</span>
+                            {classInstance.isFull && !isPast && !isBooked && (
+                              <span className="text-[9px] sm:text-xs opacity-80">FULL</span>
                             )}
-                            {isPast && (
-                              <span className="text-[9px] sm:text-xs text-gray-400">PAST</span>
+                            {isPast && !isBooked && (
+                              <span className="text-[9px] sm:text-xs opacity-60 tracking-wide">PAST</span>
                             )}
                           </div>
                         ) : format(day, 'EEEE') === 'Friday' ? (

@@ -19,14 +19,16 @@ function egyptTimeToUTC(date: Date, hours: number, minutes: number): Date {
  * Optimised: fetches all existing instances in ONE query upfront instead of
  * one findFirst per candidate date (eliminates the N+1 that caused timeouts).
  */
-export async function generateClassesFromSchedules(monthsAhead: number = 2): Promise<void> {
+export async function generateClassesFromSchedules(monthsAhead: number = 2, fromDate?: Date): Promise<void> {
   try {
     const schedules = await prisma.classSchedule.findMany({
       where: { isActive: true },
       include: { classType: true, location: true, coach: true, baseSchedule: true }
     });
 
-    const today = new Date();
+    // fromDate lets callers start from earlier than today (e.g. start of current week)
+    // so past days in the current week also get class instances
+    const today = fromDate ?? new Date();
     const endDate = new Date(today);
     endDate.setMonth(endDate.getMonth() + monthsAhead);
 
