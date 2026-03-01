@@ -73,13 +73,16 @@ export default function BookingModal({
   const fetchUserData = async () => {
     setLoadingData(true);
     try {
-      // Fetch credits and children in parallel — credits uses lightweight endpoint
+      // Fetch credits and children in parallel
+      // /members/credits is a lightweight endpoint; falls back to /members/dashboard
       const [creditsResponse, childrenResponse] = await Promise.all([
-        axios.get('/members/credits'),
+        axios.get('/members/credits').catch(() => axios.get('/members/dashboard')),
         axios.get('/members/children'),
       ]);
+      // Handle both /members/credits and /members/dashboard response shapes
       if (creditsResponse.data.success) {
-        setCredits(creditsResponse.data.data.total);
+        const total = creditsResponse.data.data?.total ?? creditsResponse.data.data?.credits?.total;
+        if (total !== undefined) setCredits(total);
       }
       if (childrenResponse.data.success) {
         setChildren(childrenResponse.data.data || []);
