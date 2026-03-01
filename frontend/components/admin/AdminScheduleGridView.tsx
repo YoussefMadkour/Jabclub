@@ -97,16 +97,16 @@ export default function AdminScheduleGridView() {
     return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
   };
 
-  // Extract "HH:MM" from an ISO datetime string using UTC values (avoids local timezone shift)
+  // Extract "HH:MM" from an ISO datetime string converted to Egypt local time (UTC+2)
   const isoToHHMM = (iso: string): string => {
-    // ISO format: "2026-02-22T21:30:00.000Z" — take the time part directly from UTC
-    const t = iso.includes('T') ? iso.split('T')[1].substring(0, 5) : iso.substring(0, 5);
-    return t;
+    const d = new Date(iso);
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   };
 
-  // Extract "YYYY-MM-DD" from ISO string using UTC date
+  // Extract "YYYY-MM-DD" from ISO string using LOCAL date (Egypt time)
   const isoToDateStr = (iso: string): string => {
-    return iso.includes('T') ? iso.split('T')[0] : iso;
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
   // Helper function to convert 24-hour time string to 12-hour AM/PM format
@@ -130,9 +130,13 @@ export default function AdminScheduleGridView() {
     return Array.from(seen.values()).sort((a, b) => a.start.localeCompare(b.start));
   })();
 
-  // Helper function to get class for a specific day and time slot (using UTC date + time)
+  // Local date string for a Date object (used for column headers and matching)
+  const toLocalDateStr = (d: Date): string =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  // Helper function to get class for a specific day and time slot (local time)
   const getClassForSlot = (day: Date, timeSlot: { start: string; end: string }) => {
-    const dayStr = toUTCDateStr(day);
+    const dayStr = toLocalDateStr(day);
     return classes.find((c: ClassInstance) => {
       return isoToDateStr(c.startTime) === dayStr && isoToHHMM(c.startTime) === timeSlot.start;
     });
@@ -315,8 +319,7 @@ export default function AdminScheduleGridView() {
                   {/* Day Columns */}
                   {daysOfWeek.map((day) => {
                     const classInstance = getClassForSlot(day, timeSlot);
-                    const todayUTC = toUTCDateStr(new Date());
-                    const isToday = toUTCDateStr(day) === todayUTC;
+                    const isToday = toLocalDateStr(day) === toLocalDateStr(new Date());
                     const isPast = day < new Date() && !isToday;
                     
                     return (
