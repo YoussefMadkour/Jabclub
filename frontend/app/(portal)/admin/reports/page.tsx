@@ -16,17 +16,17 @@ export default function ReportsPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header with Tabs */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">Reports</h1>
-        
+        <h1 className="text-3xl font-bold text-white mb-6">Reports</h1>
+
         {/* Tab Navigation */}
-        <div className="border-b border-gray-200">
+        <div className="border-b border-[#26262B]">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('attendance')}
               className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'attendance'
-                  ? 'border-[#000000] text-[#000000]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-white/30'
               }`}
             >
               <span className="flex items-center gap-2">
@@ -40,8 +40,8 @@ export default function ReportsPage() {
               onClick={() => setActiveTab('revenue')}
               className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === 'revenue'
-                  ? 'border-[#000000] text-[#000000]'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-white/30'
               }`}
             >
               <span className="flex items-center gap-2">

@@ -129,7 +129,7 @@ export default function PaymentReview() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -150,12 +150,12 @@ export default function PaymentReview() {
 
   if (payments.length === 0) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+      <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
         <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p className="text-gray-600 text-lg">No pending payments to review</p>
-        <p className="text-gray-500 text-sm mt-2">All payments have been processed</p>
+        <p className="text-gray-400 text-lg">No pending payments to review</p>
+        <p className="text-gray-400 text-sm mt-2">All payments have been processed</p>
       </div>
     );
   }
@@ -164,12 +164,12 @@ export default function PaymentReview() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Payment Review</h2>
-          <p className="text-gray-600 mt-1">{payments.length} pending payment{payments.length !== 1 ? 's' : ''}</p>
+          <h2 className="text-2xl font-bold text-white">Payment Review</h2>
+          <p className="text-gray-400 mt-1">{payments.length} pending payment{payments.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={fetchPendingPayments}
-          className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+          className="px-4 py-2 text-sm bg-[#1f1f23] hover:bg-[#26262B] text-gray-300 rounded-lg transition-colors"
         >
           Refresh
         </button>
@@ -179,14 +179,14 @@ export default function PaymentReview() {
         {payments.map((payment) => (
           <div
             key={payment.id}
-            className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+            className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 hover:shadow-lg transition-shadow"
           >
             {/* Member Info */}
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">{payment.member.name}</h3>
-              <p className="text-sm text-gray-600">{payment.member.email}</p>
+              <h3 className="text-lg font-semibold text-white">{payment.member.name}</h3>
+              <p className="text-sm text-gray-400">{payment.member.email}</p>
               {payment.member.phone && (
-                <p className="text-sm text-gray-600">{payment.member.phone}</p>
+                <p className="text-sm text-gray-400">{payment.member.phone}</p>
               )}
             </div>
 
@@ -194,19 +194,19 @@ export default function PaymentReview() {
             <div className="bg-orange-50 rounded-lg p-4 mb-4">
               <div className="flex justify-between items-start mb-2">
                 <div>
-                  <p className="font-semibold text-gray-900">{payment.package.name}</p>
-                  <p className="text-sm text-gray-600">{payment.package.sessionCount} sessions</p>
-                  <p className="text-sm text-gray-600">Valid for {payment.package.expiryDays} days</p>
+                  <p className="font-semibold text-white">{payment.package.name}</p>
+                  <p className="text-sm text-gray-400">{payment.package.sessionCount} sessions</p>
+                  <p className="text-sm text-gray-400">Valid for {payment.package.expiryDays} days</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-[#000000]">EGP {typeof payment.amount === 'string' ? parseFloat(payment.amount).toFixed(2) : payment.amount.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-white">EGP {typeof payment.amount === 'string' ? parseFloat(payment.amount).toFixed(2) : payment.amount.toFixed(2)}</p>
                 </div>
               </div>
             </div>
 
             {/* Submission Date */}
             <div className="mb-4">
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-400">
                 Submitted: {formatDate(payment.submittedAt)}
               </p>
             </div>
@@ -215,13 +215,13 @@ export default function PaymentReview() {
             <div className="mb-4">
               <button
                 onClick={() => openImageModal(payment)}
-                className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-[#000000] hover:bg-gray-50 transition-all"
+                className="w-full border-2 border-dashed border-[#26262B] rounded-lg p-4 hover:border-white hover:bg-white/5 transition-all"
               >
                 <div className="flex items-center justify-center space-x-2">
                   <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-sm text-gray-600">Click to view payment screenshot</span>
+                  <span className="text-sm text-gray-400">Click to view payment screenshot</span>
                 </div>
               </button>
             </div>
@@ -262,18 +262,18 @@ export default function PaymentReview() {
       {/* Image Modal */}
       {showImageModal && selectedPayment && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+          <div className="bg-[#16161a] rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto border border-[#26262B]">
+            <div className="sticky top-0 bg-[#16161a] border-b border-[#26262B] p-4 flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Payment Screenshot</h3>
-                <p className="text-sm text-gray-600">{selectedPayment.member.name} - {selectedPayment.package.name}</p>
+                <h3 className="text-lg font-semibold text-white">Payment Screenshot</h3>
+                <p className="text-sm text-gray-400">{selectedPayment.member.name} - {selectedPayment.package.name}</p>
               </div>
               <button
                 onClick={() => {
                   setShowImageModal(false);
                   setSelectedPayment(null);
                 }}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-400"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -306,7 +306,7 @@ export default function PaymentReview() {
                       </svg>
                       <p class="text-red-600 font-semibold">Failed to load image</p>
                       <p class="text-sm text-red-500 mt-2 break-all">URL: ${imageUrl}</p>
-                      <p class="text-xs text-gray-500 mt-2">Please check if the file exists on the server</p>
+                      <p class="text-xs text-gray-400 mt-2">Please check if the file exists on the server</p>
                     `;
                     parent.appendChild(errorDiv);
                   }
@@ -320,16 +320,16 @@ export default function PaymentReview() {
       {/* Reject Modal */}
       {showRejectModal && selectedPayment && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Reject Payment</h3>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Reject Payment</h3>
+            <p className="text-sm text-gray-400 mb-4">
               Please provide a reason for rejecting this payment from {selectedPayment.member.name}.
             </p>
             <textarea
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="Enter rejection reason..."
-              className="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              className="w-full border border-[#26262B] rounded-lg p-3 mb-4 focus:ring-2 focus:ring-red-500 focus:border-transparent"
               rows={4}
             />
             <div className="flex space-x-3">
@@ -339,7 +339,7 @@ export default function PaymentReview() {
                   setSelectedPayment(null);
                   setRejectionReason('');
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>

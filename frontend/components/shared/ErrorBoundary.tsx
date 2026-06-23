@@ -55,8 +55,8 @@ class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 sm:p-8">
+        <div className="min-h-screen flex items-center justify-center bg-[#121214] px-4">
+          <div className="max-w-md w-full bg-[#16161a] border border-[#26262B] rounded-lg shadow-lg p-6 sm:p-8">
             <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100">
               <svg 
                 className="w-8 h-8 text-red-600" 
@@ -73,21 +73,21 @@ class ErrorBoundary extends Component<Props, State> {
               </svg>
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+            <h2 className="text-2xl font-bold text-white text-center mb-2">
               Oops! Something went wrong
             </h2>
 
-            <p className="text-gray-600 text-center mb-6">
+            <p className="text-gray-400 text-center mb-6">
               We're sorry for the inconvenience. An unexpected error occurred.
             </p>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="mb-6 p-4 bg-gray-100 rounded-lg overflow-auto max-h-48">
+              <div className="mb-6 p-4 bg-[#1f1f23] rounded-lg overflow-auto max-h-48">
                 <p className="text-xs font-mono text-red-600 mb-2">
                   {this.state.error.toString()}
                 </p>
                 {this.state.errorInfo && (
-                  <pre className="text-xs font-mono text-gray-700 whitespace-pre-wrap">
+                  <pre className="text-xs font-mono text-gray-300 whitespace-pre-wrap">
                     {this.state.errorInfo.componentStack}
                   </pre>
                 )}

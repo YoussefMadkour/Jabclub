@@ -411,7 +411,7 @@ export default function ClassScheduleManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -435,13 +435,13 @@ export default function ClassScheduleManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Class Schedule Management</h2>
-          <p className="text-gray-600 mt-1">{filteredClasses.length} class{filteredClasses.length !== 1 ? 'es' : ''}</p>
+          <h2 className="text-2xl font-bold text-white">Class Schedule Management</h2>
+          <p className="text-gray-400 mt-1">{filteredClasses.length} class{filteredClasses.length !== 1 ? 'es' : ''}</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-[#000000] hover:bg-[#1F1F1F] text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-white hover:bg-gray-200 text-black rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -450,7 +450,7 @@ export default function ClassScheduleManager() {
           </button>
           <button
             onClick={fetchClasses}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#1f1f23] hover:bg-white/10 text-gray-300 rounded-lg transition-colors"
           >
             Refresh
           </button>
@@ -458,10 +458,10 @@ export default function ClassScheduleManager() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white shadow rounded-lg p-6 mb-6">
+      <div className="bg-[#16161a] border border-[#26262B] shadow rounded-lg p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Location</label>
             <select
               value={locationFilter}
               onChange={(e) => setLocationFilter(e.target.value)}
@@ -477,7 +477,7 @@ export default function ClassScheduleManager() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Coach</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Coach</label>
             <select
               value={coachFilter}
               onChange={(e) => setCoachFilter(e.target.value)}
@@ -493,7 +493,7 @@ export default function ClassScheduleManager() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Class Type</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Class Type</label>
             <select
               value={classTypeFilter}
               onChange={(e) => setClassTypeFilter(e.target.value)}
@@ -509,7 +509,7 @@ export default function ClassScheduleManager() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Day</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Day</label>
             <select
               value={dayFilter}
               onChange={(e) => setDayFilter(e.target.value)}
@@ -527,7 +527,7 @@ export default function ClassScheduleManager() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Month</label>
             <select
               value={monthFilter}
               onChange={(e) => setMonthFilter(e.target.value)}
@@ -550,7 +550,7 @@ export default function ClassScheduleManager() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Date Range</label>
             <div className="flex gap-2">
               <input
                 type="date"
@@ -579,7 +579,7 @@ export default function ClassScheduleManager() {
               setStartDateFilter('');
               setEndDateFilter('');
             }}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#26262B] hover:bg-white/10 text-gray-300 rounded-lg transition-colors"
           >
             Clear Filters
           </button>
@@ -588,49 +588,49 @@ export default function ClassScheduleManager() {
 
       {/* Classes List */}
       {filteredClasses.length === 0 ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <p className="text-gray-600 text-lg">No classes found</p>
-          <p className="text-gray-500 text-sm mt-2">Create your first class to get started</p>
+          <p className="text-gray-400 text-lg">No classes found</p>
+          <p className="text-gray-400 text-sm mt-2">Create your first class to get started</p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[#121214] border-b border-[#26262B]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coach</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Class Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date & Time</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Coach</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Location</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Capacity</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {filteredClasses.map((classInstance) => (
-                  <tr key={classInstance.id} className="hover:bg-gray-50">
+                  <tr key={classInstance.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{classInstance.classType.name}</div>
-                      <div className="text-sm text-gray-500">{classInstance.classType.duration} min</div>
+                      <div className="text-sm font-medium text-white">{classInstance.classType.name}</div>
+                      <div className="text-sm text-gray-400">{classInstance.classType.duration} min</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formatDate(classInstance.startTime)}</div>
+                      <div className="text-sm text-white">{formatDate(classInstance.startTime)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{classInstance.coach.name}</div>
+                      <div className="text-sm text-white">{classInstance.coach.name}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{classInstance.location.name}</div>
+                      <div className="text-sm text-white">{classInstance.location.name}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-white">
                         {classInstance.bookingCount} / {classInstance.capacity}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-400">
                         {classInstance.availableSpots} available
                       </div>
                     </td>
@@ -685,7 +685,7 @@ export default function ClassScheduleManager() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Class Type *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Class Type *</label>
                 <select
                   value={form.classTypeId}
                   onChange={(e) => setForm({ ...form, classTypeId: e.target.value })}
@@ -701,7 +701,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Coach *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Coach *</label>
                 <select
                   value={form.coachId}
                   onChange={(e) => setForm({ ...form, coachId: e.target.value })}
@@ -717,7 +717,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Location *</label>
                 <select
                   value={form.locationId}
                   onChange={(e) => setForm({ ...form, locationId: e.target.value })}
@@ -733,7 +733,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Start Time *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Start Time *</label>
                 <input
                   type="datetime-local"
                   value={form.startTime}
@@ -743,7 +743,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Capacity *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Capacity *</label>
                 <input
                   type="number"
                   min="1"
@@ -790,7 +790,7 @@ export default function ClassScheduleManager() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Frequency *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Frequency *</label>
                 <select
                   value={recurringForm.frequency}
                   onChange={(e) => setRecurringForm({ ...recurringForm, frequency: e.target.value })}
@@ -804,7 +804,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Occurrences</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Number of Occurrences</label>
                 <input
                   type="number"
                   min="1"
@@ -819,7 +819,7 @@ export default function ClassScheduleManager() {
               <div className="text-center text-sm text-gray-500">OR</div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">End Date</label>
                 <input
                   type="date"
                   value={recurringForm.endDate}
@@ -865,7 +865,7 @@ export default function ClassScheduleManager() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Class Type *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Class Type *</label>
                 <select
                   value={form.classTypeId}
                   onChange={(e) => setForm({ ...form, classTypeId: e.target.value })}
@@ -881,7 +881,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Coach *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Coach *</label>
                 <select
                   value={form.coachId}
                   onChange={(e) => setForm({ ...form, coachId: e.target.value })}
@@ -897,7 +897,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Location *</label>
                 <select
                   value={form.locationId}
                   onChange={(e) => setForm({ ...form, locationId: e.target.value })}
@@ -913,7 +913,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Start Time *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Start Time *</label>
                 <input
                   type="datetime-local"
                   value={form.startTime}
@@ -923,7 +923,7 @@ export default function ClassScheduleManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Capacity *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Capacity *</label>
                 <input
                   type="number"
                   min="1"

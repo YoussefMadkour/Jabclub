@@ -136,8 +136,8 @@ export default function MembersList() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading members...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-400">Loading members...</p>
         </div>
       </div>
     );
@@ -156,20 +156,20 @@ export default function MembersList() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] rounded-lg shadow-md p-6 border border-[#26262B]">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Members</h1>
-            <p className="text-gray-600 mt-1">Manage and view all members</p>
+            <h1 className="text-3xl font-bold text-white">Members</h1>
+            <p className="text-gray-400 mt-1">Manage and view all members</p>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] rounded-lg shadow-md p-6 border border-[#26262B]">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Search
             </label>
             <input
@@ -177,17 +177,17 @@ export default function MembersList() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by name, email, or phone..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Status
             </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Members</option>
               <option value="active">Active</option>
@@ -195,13 +195,13 @@ export default function MembersList() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Sort By
             </label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="createdAt">Date Joined</option>
               <option value="name">Name</option>
@@ -212,23 +212,23 @@ export default function MembersList() {
       </div>
 
       {/* Members Table */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
+      <div className="bg-[#16161a] rounded-lg shadow-md overflow-hidden border border-[#26262B]">
+        <div className="px-6 py-4 border-b border-[#26262B]">
+          <h2 className="text-lg font-semibold text-white">
             All Members ({data?.total || 0})
           </h2>
         </div>
         {members.length === 0 ? (
           <div className="p-8 text-center">
-            <p className="text-gray-600">No members found.</p>
+            <p className="text-gray-400">No members found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[#26262B]">
+              <thead className="bg-[#121214]">
                 <tr>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-white/10"
                     onClick={() => handleSort('name')}
                   >
                     <div className="flex items-center space-x-1">
@@ -238,20 +238,20 @@ export default function MembersList() {
                       )}
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Contact
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Active Package
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Statistics
                   </th>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-white/10"
                     onClick={() => handleSort('createdAt')}
                   >
                     <div className="flex items-center space-x-1">
@@ -261,32 +261,28 @@ export default function MembersList() {
                       )}
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {members.map((member) => (
-                  <tr key={member.id} className="hover:bg-gray-50">
+                  <tr key={member.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-white">
                         {member.name}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{member.email}</div>
+                      <div className="text-sm text-white">{member.email}</div>
                       {member.phone && (
-                        <div className="text-sm text-gray-500">{member.phone}</div>
+                        <div className="text-sm text-gray-400">{member.phone}</div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          member.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
+                        className={`px-2 py-1 text-xs rounded-full ${ member.isActive ? 'bg-green-100 text-green-800' : 'bg-[#1f1f23] text-gray-100' }`}
                       >
                         {member.isActive ? 'Active' : 'Inactive'}
                       </span>
@@ -294,42 +290,42 @@ export default function MembersList() {
                     <td className="px-6 py-4">
                       {member.activePackage ? (
                         <div>
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-white">
                             {member.activePackage.name}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-400">
                             {member.activePackage.remainingSessions} sessions left
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-gray-400">
                             Expires: {format(new Date(member.activePackage.expiryDate), 'MMM d, yyyy')}
                           </div>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-500">No active package</span>
+                        <span className="text-sm text-gray-400">No active package</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-white">
                         <div>📦 {member.stats.totalPackages} packages</div>
                         <div>💰 {member.stats.totalPayments} payments</div>
                         <div>📅 {member.stats.totalBookings} bookings</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                       {format(new Date(member.createdAt), 'MMM d, yyyy')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditModal(member)}
-                          className="text-[#000000] hover:text-gray-600"
+                          className="text-white hover:text-gray-400"
                         >
                           Edit
                         </button>
                         <span className="text-gray-300">|</span>
                         <Link
                           href={`/admin/members/${member.id}`}
-                          className="text-[#000000] hover:text-gray-600"
+                          className="text-white hover:text-gray-400"
                         >
                           View Details →
                         </Link>
@@ -345,19 +341,19 @@ export default function MembersList() {
         {/* Pagination controls */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between mt-4 px-2">
-            <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+            <span className="text-sm text-gray-400">Page {page} of {totalPages}</span>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                className="px-3 py-1.5 text-sm rounded-md border border-[#26262B] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10"
               >
                 Previous
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                className="px-3 py-1.5 text-sm rounded-md border border-[#26262B] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10"
               >
                 Next
               </button>
@@ -369,56 +365,56 @@ export default function MembersList() {
       {/* Edit Modal */}
       {showEditModal && selectedMember && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 text-gray-700">Edit Member</h2>
+          <div className="bg-[#16161a] rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto border border-[#26262B]">
+            <h2 className="text-xl font-bold mb-4 text-gray-300">Edit Member</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Email *</label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-[#26262B] rounded-lg px-3 py-2"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password (leave blank to keep current)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Password (leave blank to keep current)</label>
                 <input
                   type="password"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-[#26262B] rounded-lg px-3 py-2"
                   placeholder="Leave blank to keep current password"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">First Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">First Name *</label>
                 <input
                   type="text"
                   value={form.firstName}
                   onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-[#26262B] rounded-lg px-3 py-2"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Last Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Last Name *</label>
                 <input
                   type="text"
                   value={form.lastName}
                   onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-[#26262B] rounded-lg px-3 py-2"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Phone</label>
                 <input
                   type="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-[#26262B] rounded-lg px-3 py-2"
                 />
               </div>
             </div>
@@ -428,14 +424,14 @@ export default function MembersList() {
                   setShowEditModal(false);
                   resetForm();
                 }}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] disabled:opacity-50"
+                className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update'}
               </button>

@@ -186,7 +186,7 @@ export default function LocationManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -210,13 +210,13 @@ export default function LocationManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Location Management</h2>
-          <p className="text-gray-600 mt-1">{locations.length} location{locations.length !== 1 ? 's' : ''}</p>
+          <h2 className="text-2xl font-bold text-white">Location Management</h2>
+          <p className="text-gray-400 mt-1">{locations.length} location{locations.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-[#000000] hover:bg-[#1F1F1F] text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-white hover:bg-gray-200 text-black rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -225,7 +225,7 @@ export default function LocationManager() {
           </button>
           <button
             onClick={fetchLocations}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#1f1f23] hover:bg-[#26262B] text-gray-300 rounded-lg transition-colors"
           >
             Refresh
           </button>
@@ -234,29 +234,25 @@ export default function LocationManager() {
 
       {/* Locations Grid */}
       {locations.length === 0 ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
-          <p className="text-gray-600 text-lg">No locations found</p>
-          <p className="text-gray-500 text-sm mt-2">Create your first location to get started</p>
+          <p className="text-gray-400 text-lg">No locations found</p>
+          <p className="text-gray-400 text-sm mt-2">Create your first location to get started</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {locations.map((location) => (
             <div
               key={location.id}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+              className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">{location.name}</h3>
-                  <span className={`inline-block mt-2 px-2 py-1 text-xs font-semibold rounded-full ${
-                    location.isActive 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
-                  }`}>
+                  <h3 className="text-lg font-semibold text-white">{location.name}</h3>
+                  <span className={`inline-block mt-2 px-2 py-1 text-xs font-semibold rounded-full ${ location.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }`}>
                     {location.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>
@@ -268,21 +264,21 @@ export default function LocationManager() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <p className="text-sm text-gray-600">{location.address}</p>
+                  <p className="text-sm text-gray-400">{location.address}</p>
                 </div>
 
                 <div className="flex items-center">
                   <svg className="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
-                  <p className="text-sm text-gray-600">Capacity: {location.capacity}</p>
+                  <p className="text-sm text-gray-400">Capacity: {location.capacity}</p>
                 </div>
               </div>
 
-              <div className="flex space-x-2 pt-4 border-t border-gray-200">
+              <div className="flex space-x-2 pt-4 border-t border-[#26262B]">
                 <button
                   onClick={() => openEditModal(location)}
-                  className="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg transition-colors text-sm font-medium"
+                  className="flex-1 px-3 py-2 bg-[#1f1f23] hover:bg-[#26262B] text-gray-100 rounded-lg transition-colors text-sm font-medium"
                 >
                   Edit
                 </button>
@@ -311,41 +307,41 @@ export default function LocationManager() {
       {/* Create Location Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Location</h3>
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Create New Location</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Location Name *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g., Downtown Gym"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Address *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Address *</label>
                 <textarea
                   value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
                   placeholder="Full address"
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Capacity *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Capacity *</label>
                 <input
                   type="number"
                   min="1"
                   value={form.capacity}
                   onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                   placeholder="Maximum capacity"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -356,14 +352,14 @@ export default function LocationManager() {
                   setShowCreateModal(false);
                   resetForm();
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Location'}
               </button>
@@ -375,41 +371,41 @@ export default function LocationManager() {
       {/* Edit Location Modal */}
       {showEditModal && selectedLocation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Location</h3>
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Edit Location</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Location Name *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g., Downtown Gym"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Address *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Address *</label>
                 <textarea
                   value={form.address}
                   onChange={(e) => setForm({ ...form, address: e.target.value })}
                   placeholder="Full address"
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Capacity *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Capacity *</label>
                 <input
                   type="number"
                   min="1"
                   value={form.capacity}
                   onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                   placeholder="Maximum capacity"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
@@ -419,9 +415,9 @@ export default function LocationManager() {
                   id="isActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="h-4 w-4 text-[#000000] focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-white focus:ring-blue-500 border-[#26262B] rounded"
                 />
-                <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="isActive" className="ml-2 block text-sm text-gray-300">
                   Active
                 </label>
               </div>
@@ -434,14 +430,14 @@ export default function LocationManager() {
                   setSelectedLocation(null);
                   resetForm();
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Location'}
               </button>
@@ -453,12 +449,12 @@ export default function LocationManager() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedLocation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Deactivate Location</h3>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Deactivate Location</h3>
+            <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to deactivate this location? This will:
             </p>
-            <ul className="text-sm text-gray-600 mb-4 list-disc list-inside space-y-1">
+            <ul className="text-sm text-gray-400 mb-4 list-disc list-inside space-y-1">
               <li>Cancel all future classes scheduled at this location</li>
               <li>Automatically refund credits to members who had bookings</li>
               <li>Deactivate all class schedules for this location</li>
@@ -468,11 +464,11 @@ export default function LocationManager() {
               ⚠️ This action cannot be undone.
             </p>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-[#121214] rounded-lg p-4 mb-4">
               <div className="text-sm">
-                <p className="font-medium text-gray-900">{selectedLocation.name}</p>
-                <p className="text-gray-600">{selectedLocation.address}</p>
-                <p className="text-gray-600">Capacity: {selectedLocation.capacity}</p>
+                <p className="font-medium text-white">{selectedLocation.name}</p>
+                <p className="text-gray-400">{selectedLocation.address}</p>
+                <p className="text-gray-400">Capacity: {selectedLocation.capacity}</p>
               </div>
             </div>
 
@@ -482,7 +478,7 @@ export default function LocationManager() {
                   setShowDeleteModal(false);
                   setSelectedLocation(null);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>

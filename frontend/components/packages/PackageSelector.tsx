@@ -82,7 +82,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -105,16 +105,16 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
 
   if (locations.length === 0) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-        <p className="text-gray-600">No locations available at the moment.</p>
+      <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
+        <p className="text-gray-400">No locations available at the moment.</p>
       </div>
     );
   }
 
   if (!selectedLocationId) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-        <p className="text-gray-600">Please select a location to view packages.</p>
+      <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
+        <p className="text-gray-400">Please select a location to view packages.</p>
       </div>
     );
   }
@@ -125,14 +125,14 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
     return (
       <div className="space-y-4">
         {/* Location Selector */}
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-4">
+          <label className="block text-sm font-medium text-gray-300 mb-2">
             Select Location
           </label>
           <select
             value={selectedLocationId}
             onChange={(e) => setSelectedLocationId(parseInt(e.target.value))}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {locations.map((loc) => (
               <option key={loc.id} value={loc.id}>
@@ -142,8 +142,8 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
           </select>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-          <p className="text-gray-600">No packages available for {selectedLocation?.name} at the moment.</p>
+        <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
+          <p className="text-gray-400">No packages available for {selectedLocation?.name} at the moment.</p>
         </div>
       </div>
     );
@@ -152,19 +152,19 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
   return (
     <div className="space-y-4">
       <div>
-      <h2 className="text-2xl font-bold text-gray-900">Choose a Session Package</h2>
-        <p className="text-gray-600">Select a location and package to purchase session credits</p>
+      <h2 className="text-2xl font-bold text-white">Choose a Session Package</h2>
+        <p className="text-gray-400">Select a location and package to purchase session credits</p>
       </div>
 
       {/* Location Selector */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-4">
+        <label className="block text-sm font-medium text-gray-300 mb-2">
           Select Location
         </label>
         <select
           value={selectedLocationId}
           onChange={(e) => setSelectedLocationId(parseInt(e.target.value))}
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
           {locations.map((loc) => (
             <option key={loc.id} value={loc.id}>
@@ -173,7 +173,7 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
           ))}
         </select>
         {selectedLocation && (
-          <p className="text-xs text-gray-500 mt-1">{selectedLocation.address}</p>
+          <p className="text-xs text-gray-400 mt-1">{selectedLocation.address}</p>
         )}
       </div>
       
@@ -212,10 +212,10 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
           return (
           <div
             key={pkg.id}
-              className={`bg-white border-2 rounded-lg p-6 hover:shadow-lg transition-all duration-200 ${
-                isMemberPrice 
-                  ? 'border-purple-300 hover:border-purple-500' 
-                  : 'border-gray-200 hover:border-[#000000]'
+              className={`bg-[#16161a] border-2 rounded-lg p-6 hover:shadow-lg transition-all duration-200 ${
+                isMemberPrice
+                  ? 'border-purple-300 hover:border-purple-500'
+                  : 'border-[#26262B] hover:border-white'
               }`}
           >
             <div className="text-center">
@@ -226,19 +226,19 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
                     </span>
                   </div>
                 )}
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-              
+              <h3 className="text-xl font-bold text-white mb-2">{pkg.name}</h3>
+
               <div className="my-4">
-                  <div className={`text-4xl font-bold ${isMemberPrice ? 'text-purple-600' : 'text-[#000000]'}`}>
+                  <div className={`text-4xl font-bold ${isMemberPrice ? 'text-purple-600' : 'text-white'}`}>
                     EGP {totalAmount.toFixed(2)}
                   </div>
                   {includeVat && (
-                    <div className="text-sm text-gray-500 mt-1">
+                    <div className="text-sm text-gray-400 mt-1">
                       (Subtotal: EGP {subtotal.toFixed(2)} + VAT: EGP {vatAmount.toFixed(2)})
                     </div>
                   )}
                   {hasCustomPrice && (
-                    <div className="text-sm text-gray-500 mt-1 line-through">
+                    <div className="text-sm text-gray-400 mt-1 line-through">
                       EGP {typeof pkg.defaultPrice === 'string' ? parseFloat(pkg.defaultPrice).toFixed(2) : pkg.defaultPrice.toFixed(2)}
                 </div>
                   )}
@@ -250,28 +250,28 @@ export default function PackageSelector({ onSelectPackage }: PackageSelectorProp
               </div>
 
               <div className="space-y-2 mb-6">
-                <div className="flex items-center justify-center text-gray-700">
+                <div className="flex items-center justify-center text-gray-300">
                   <svg className="w-5 h-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span className="font-semibold">{pkg.sessionCount} Sessions</span>
                 </div>
-                
-                <div className="flex items-center justify-center text-gray-700">
-                  <svg className="w-5 h-5 mr-2 text-[#000000]" fill="currentColor" viewBox="0 0 20 20">
+
+                <div className="flex items-center justify-center text-gray-300">
+                  <svg className="w-5 h-5 mr-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                   </svg>
                   <span>Valid for {pkg.expiryDays} days</span>
                 </div>
 
-                <div className="text-sm text-gray-500 mt-2">
+                <div className="text-sm text-gray-400 mt-2">
                     EGP {(displayPrice / pkg.sessionCount).toFixed(2)} per session
                   </div>
                 </div>
 
               <button
                   onClick={() => onSelectPackage(pkg.id, pkg.name, displayPrice, selectedLocationId!)}
-                className="w-full bg-[#000000] hover:bg-[#1F1F1F] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 touch-target"
+                className="w-full bg-white hover:bg-gray-200 text-black font-semibold py-3 px-6 rounded-lg transition-colors duration-200 touch-target"
               >
                 Select Package
               </button>

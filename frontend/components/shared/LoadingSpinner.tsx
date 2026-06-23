@@ -23,7 +23,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   const colorClasses = {
     primary: 'text-red-600',
     white: 'text-white',
-    gray: 'text-gray-600'
+    gray: 'text-gray-400'
   };
 
   const spinner = (
@@ -58,7 +58,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-[#16161a] border border-[#26262B] bg-opacity-90 flex items-center justify-center z-50">
         {spinner}
       </div>
     );

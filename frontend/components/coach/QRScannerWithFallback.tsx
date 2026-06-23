@@ -79,7 +79,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
       const code = jsQR(imageData.data, imageData.width, imageData.height);
 
       if (code) {
-        handleQRCodeScanned(JSON.stringify(code.data));
+        handleQRCodeScanned(code.data);
       }
     } catch (error) {
       console.error('Error capturing frame:', error);
@@ -195,13 +195,13 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-lg p-6">
       {/* Header */}
       <div className="text-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+        <h3 className="text-lg font-semibold text-white mb-2">
           Scan Member QR Code
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-400">
           Use camera or upload a QR code image
         </p>
       </div>
@@ -262,7 +262,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
               <p className="text-lg font-medium">Upload QR Code</p>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-4 px-6 py-2 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors font-medium"
+                className="mt-4 px-6 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-medium"
               >
                 Choose Image
               </button>
@@ -289,7 +289,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
       <div className="mt-4 text-center">
         <button
           onClick={toggleScannerMode}
-          className="text-[#000000] hover:text-gray-600 text-sm font-medium transition-colors"
+          className="text-white hover:text-gray-400 text-sm font-medium transition-colors"
           disabled={disabled || processing}
         >
           {useCamera ? 'Use File Upload Instead' : 'Use Camera Instead'}
@@ -298,20 +298,20 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
 
       {/* Instructions */}
       <div className="mt-4 space-y-2">
-        <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#000000] font-semibold text-xs">
+        <div className="flex items-start gap-3 text-sm text-gray-300">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-white font-semibold text-xs">
             1
           </div>
           <p>{useCamera ? 'Position QR code within green frame' : 'Upload a clear image of the QR code'}</p>
         </div>
-        <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#000000] font-semibold text-xs">
+        <div className="flex items-start gap-3 text-sm text-gray-300">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-white font-semibold text-xs">
             2
           </div>
           <p>{useCamera ? 'Hold steady until QR code is recognized' : 'Ensure the QR code is clearly visible'}</p>
         </div>
-        <div className="flex items-start gap-3 text-sm text-gray-700">
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-[#000000] font-semibold text-xs">
+        <div className="flex items-start gap-3 text-sm text-gray-300">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-white font-semibold text-xs">
             3
           </div>
           <p>Wait for confirmation before scanning next</p>

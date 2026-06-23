@@ -74,7 +74,7 @@ export default function PaymentsPage() {
       <div className="flex justify-center items-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading payment history...</p>
+          <p className="mt-4 text-gray-400">Loading payment history...</p>
         </div>
       </div>
     );
@@ -99,12 +99,12 @@ export default function PaymentsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Payment History</h1>
-          <p className="text-gray-600 mt-1">{payments.length} payment{payments.length !== 1 ? 's' : ''}</p>
+          <h1 className="text-2xl font-bold text-white">Payment History</h1>
+          <p className="text-gray-400 mt-1">{payments.length} payment{payments.length !== 1 ? 's' : ''}</p>
         </div>
         <button
           onClick={fetchPayments}
-          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+          className="px-4 py-2 bg-[#1f1f23] hover:bg-white/10 text-gray-300 rounded-lg transition-colors"
         >
           Refresh
         </button>
@@ -112,61 +112,61 @@ export default function PaymentsPage() {
 
       {/* Payments List */}
       {payments.length === 0 ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <p className="text-gray-600 text-lg">No payment history found</p>
-          <p className="text-gray-500 text-sm mt-2">Your payment history will appear here once you make a purchase</p>
+          <p className="text-gray-400 text-lg">No payment history found</p>
+          <p className="text-gray-400 text-sm mt-2">Your payment history will appear here once you make a purchase</p>
         </div>
       ) : (
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+        <div className="bg-[#16161a] border border-[#26262B] shadow overflow-hidden sm:rounded-lg">
+          <table className="min-w-full divide-y divide-[#26262B]">
+            <thead className="bg-[#121214]">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Package
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Amount
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Submitted
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
               {payments.map((payment) => (
                 <tr key={payment.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">{payment.package.name}</div>
-                      <div className="text-sm text-gray-500">{payment.package.sessionCount} sessions</div>
+                      <div className="text-sm font-medium text-white">{payment.package.name}</div>
+                      <div className="text-sm text-gray-400">{payment.package.sessionCount} sessions</div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-white">
                       EGP {typeof payment.amount === 'string' ? parseFloat(payment.amount).toFixed(2) : payment.amount.toFixed(2)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-white">
                       {format(new Date(payment.submittedAt), 'MMM dd, yyyy')}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-400">
                       {format(new Date(payment.submittedAt), 'h:mm a')}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {getStatusBadge(payment.status)}
                     {payment.reviewedAt && (
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-gray-400 mt-1">
                         Reviewed: {format(new Date(payment.reviewedAt), 'MMM dd, yyyy')}
                       </div>
                     )}

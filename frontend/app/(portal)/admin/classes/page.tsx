@@ -34,7 +34,7 @@ export default function AdminClassesPage() {
       {viewMode === 'grid' ? (
         <AdminScheduleGridView />
       ) : (
-        <div className="bg-gray-50">
+        <div className="bg-[#121214]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <ClassScheduleManager />
           </div>
@@ -43,13 +43,13 @@ export default function AdminClassesPage() {
       
       {/* View Toggle Button - Floating */}
       <div className="fixed bottom-6 right-6 z-50">
-        <div className="bg-white rounded-lg shadow-lg p-2 flex gap-2">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-lg p-2 flex gap-2">
           <button
             onClick={() => setViewMode('grid')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors touch-target ${
               viewMode === 'grid'
-                ? 'bg-black text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ? 'bg-white text-black'
+                : 'bg-[#26262B] text-gray-300 hover:bg-white/10'
             }`}
           >
             Grid
@@ -58,8 +58,8 @@ export default function AdminClassesPage() {
             onClick={() => setViewMode('list')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors touch-target ${
               viewMode === 'list'
-                ? 'bg-black text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ? 'bg-white text-black'
+                : 'bg-[#26262B] text-gray-300 hover:bg-white/10'
             }`}
           >
             List

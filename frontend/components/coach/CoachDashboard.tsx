@@ -43,8 +43,8 @@ export default function CoachDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading classes...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-400">Loading classes...</p>
         </div>
       </div>
     );
@@ -63,21 +63,21 @@ export default function CoachDashboard() {
   return (
     <div className="space-y-6">
       {/* Header with Filter */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Coach Dashboard</h1>
-            <p className="text-gray-600 mt-1">Manage your classes and attendance</p>
+            <h1 className="text-3xl font-bold text-white">Coach Dashboard</h1>
+            <p className="text-gray-400 mt-1">Manage your classes and attendance</p>
           </div>
-          
+
           {/* Filter Buttons */}
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('today')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'today'
-                  ? 'bg-[#000000] text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-white text-black'
+                  : 'bg-[#26262B] text-gray-300 hover:bg-white/10'
               }`}
             >
               Today
@@ -86,8 +86,8 @@ export default function CoachDashboard() {
               onClick={() => setFilter('week')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'week'
-                  ? 'bg-[#000000] text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-white text-black'
+                  : 'bg-[#26262B] text-gray-300 hover:bg-white/10'
               }`}
             >
               This Week
@@ -96,8 +96,8 @@ export default function CoachDashboard() {
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'all'
-                  ? 'bg-[#000000] text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-white text-black'
+                  : 'bg-[#26262B] text-gray-300 hover:bg-white/10'
               }`}
             >
               All Upcoming
@@ -107,12 +107,12 @@ export default function CoachDashboard() {
       </div>
 
       {/* All Classes List */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-white">
             {filter === 'today' ? "Today's Schedule" : filter === 'week' ? 'This Week' : 'All Upcoming Classes'}
           </h2>
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-400">
             {classes.length} {classes.length === 1 ? 'class' : 'classes'}
           </span>
         </div>
@@ -126,16 +126,16 @@ export default function CoachDashboard() {
               return (
                 <div 
                   key={classInstance.id} 
-                  className={`border rounded-lg p-4 hover:border-gray-400 transition-colors ${
-                    isToday ? 'border-orange-300 bg-orange-50' : 'border-gray-200'
+                  className={`border rounded-lg p-4 hover:border-white/30 transition-colors ${
+                    isToday ? 'border-orange-300 bg-orange-50' : 'border-[#26262B]'
                   }`}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{classInstance.classType}</h3>
+                        <h3 className="text-lg font-semibold text-white">{classInstance.classType}</h3>
                         {isToday && (
-                          <span className="px-2 py-1 bg-[#000000] text-white text-xs rounded-full font-medium">
+                          <span className="px-2 py-1 bg-white text-black text-xs rounded-full font-medium">
                             Today
                           </span>
                         )}
@@ -146,7 +146,7 @@ export default function CoachDashboard() {
                         )}
                       </div>
                       
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-600">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-400">
                         <p className="flex items-center gap-2">
                           <span className="font-medium">📅</span>
                           {format(classDate, 'EEEE, MMM dd, yyyy')}
@@ -168,12 +168,12 @@ export default function CoachDashboard() {
                     
                     <div className="flex flex-col gap-2 lg:items-end">
                       <div className="text-center lg:text-right">
-                        <p className="text-2xl font-bold text-gray-900">{classInstance.bookingCount}</p>
-                        <p className="text-xs text-gray-600">attendees</p>
+                        <p className="text-2xl font-bold text-white">{classInstance.bookingCount}</p>
+                        <p className="text-xs text-gray-400">attendees</p>
                       </div>
                       <Link
                         href={`/coach/roster/${classInstance.id}`}
-                        className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors text-center"
+                        className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors text-center"
                       >
                         View Class
                       </Link>
@@ -184,9 +184,9 @@ export default function CoachDashboard() {
             })}
           </div>
         ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-600 text-lg">No classes scheduled</p>
-            <p className="text-gray-500 text-sm mt-2">
+          <div className="text-center py-12 bg-[#121214] rounded-lg">
+            <p className="text-gray-400 text-lg">No classes scheduled</p>
+            <p className="text-gray-400 text-sm mt-2">
               {filter === 'today' && 'You have no classes today'}
               {filter === 'week' && 'You have no classes this week'}
               {filter === 'all' && 'You have no upcoming classes'}
@@ -197,33 +197,33 @@ export default function CoachDashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Classes</p>
-              <p className="text-3xl font-bold text-gray-900">{classes.length}</p>
+              <p className="text-sm text-gray-400 mb-1">Total Classes</p>
+              <p className="text-3xl font-bold text-white">{classes.length}</p>
             </div>
             <div className="text-4xl">📚</div>
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-md p-6">
+
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Attendees</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-sm text-gray-400 mb-1">Total Attendees</p>
+              <p className="text-3xl font-bold text-white">
                 {classes.reduce((sum, c) => sum + c.bookingCount, 0)}
               </p>
             </div>
             <div className="text-4xl">👥</div>
           </div>
         </div>
-        
-        <div className="bg-white rounded-lg shadow-md p-6">
+
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Available Spots</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-sm text-gray-400 mb-1">Available Spots</p>
+              <p className="text-3xl font-bold text-white">
                 {classes.reduce((sum, c) => sum + c.availableSpots, 0)}
               </p>
             </div>

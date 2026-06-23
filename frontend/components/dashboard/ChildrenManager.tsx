@@ -169,11 +169,11 @@ export default function ChildrenManager() {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading children profiles...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+            <p className="mt-4 text-gray-400">Loading children profiles...</p>
           </div>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function ChildrenManager() {
 
   if (error) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <p className="text-red-800">{error}</p>
           <button
@@ -198,12 +198,12 @@ export default function ChildrenManager() {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Children Profiles</h2>
+          <h2 className="text-2xl font-bold text-white">Children Profiles</h2>
           <button
             onClick={handleAddClick}
-            className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors flex items-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -217,7 +217,7 @@ export default function ChildrenManager() {
             {children.map((child) => (
               <div
                 key={child.id}
-                className="border border-gray-200 rounded-lg p-4 hover:border-gray-400 transition-colors"
+                className="border border-[#26262B] rounded-lg p-4 hover:border-white/30 transition-colors"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex-1">
@@ -226,10 +226,10 @@ export default function ChildrenManager() {
                         <span className="text-xl">👤</span>
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-white">
                           {child.firstName} {child.lastName}
                         </h3>
-                        <p className="text-sm text-gray-600">Age {child.age}</p>
+                        <p className="text-sm text-gray-400">Age {child.age}</p>
                       </div>
                     </div>
                     
@@ -245,7 +245,7 @@ export default function ChildrenManager() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEditClick(child)}
-                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                      className="px-4 py-2 border border-[#26262B] text-gray-300 rounded-md hover:bg-white/5 transition-colors"
                     >
                       Edit
                     </button>
@@ -261,17 +261,17 @@ export default function ChildrenManager() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
+          <div className="text-center py-12 bg-[#121214] rounded-lg">
             <div className="mb-4">
               <span className="text-6xl">👨‍👩‍👧‍👦</span>
             </div>
-            <p className="text-gray-600 mb-4">No children profiles yet</p>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-gray-400 mb-4">No children profiles yet</p>
+            <p className="text-sm text-gray-400 mb-4">
               Add children profiles to book classes for your family members
             </p>
             <button
               onClick={handleAddClick}
-              className="px-6 py-3 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors"
+              className="px-6 py-3 bg-white text-black rounded-md hover:bg-gray-200 transition-colors"
             >
               Add Your First Child
             </button>
@@ -288,8 +288,8 @@ export default function ChildrenManager() {
           ></div>
 
           <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
-              <div className="bg-gradient-to-r from-[#000000] to-[#1F1F1F] px-6 py-4 rounded-t-lg">
+            <div className="relative bg-[#16161a] border border-[#26262B] rounded-lg shadow-xl max-w-md w-full">
+              <div className="bg-[#1f1f23] px-6 py-4 rounded-t-lg">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">Add Child Profile</h2>
                   <button
@@ -307,7 +307,7 @@ export default function ChildrenManager() {
               <div className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       First Name *
                     </label>
                     <input
@@ -321,7 +321,7 @@ export default function ChildrenManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Last Name *
                     </label>
                     <input
@@ -335,7 +335,7 @@ export default function ChildrenManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Age *
                     </label>
                     <input
@@ -360,14 +360,14 @@ export default function ChildrenManager() {
                     <button
                       onClick={() => setIsAddModalOpen(false)}
                       disabled={isSubmitting}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 border border-[#26262B] text-gray-300 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleAddSubmit}
                       disabled={isSubmitting}
-                      className="flex-1 px-4 py-2 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
                     >
                       {isSubmitting ? 'Adding...' : 'Add Child'}
                     </button>
@@ -388,8 +388,8 @@ export default function ChildrenManager() {
           ></div>
 
           <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
-              <div className="bg-gradient-to-r from-[#000000] to-[#1F1F1F] px-6 py-4 rounded-t-lg">
+            <div className="relative bg-[#16161a] border border-[#26262B] rounded-lg shadow-xl max-w-md w-full">
+              <div className="bg-[#1f1f23] px-6 py-4 rounded-t-lg">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">Edit Child Profile</h2>
                   <button
@@ -407,7 +407,7 @@ export default function ChildrenManager() {
               <div className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       First Name *
                     </label>
                     <input
@@ -421,7 +421,7 @@ export default function ChildrenManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Last Name *
                     </label>
                     <input
@@ -435,7 +435,7 @@ export default function ChildrenManager() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
                       Age *
                     </label>
                     <input
@@ -460,14 +460,14 @@ export default function ChildrenManager() {
                     <button
                       onClick={() => setIsEditModalOpen(false)}
                       disabled={isSubmitting}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 border border-[#26262B] text-gray-300 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleEditSubmit}
                       disabled={isSubmitting}
-                      className="flex-1 px-4 py-2 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
                     >
                       {isSubmitting ? 'Saving...' : 'Save Changes'}
                     </button>
@@ -488,7 +488,7 @@ export default function ChildrenManager() {
           ></div>
 
           <div className="flex min-h-full items-center justify-center p-4">
-            <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="relative bg-[#16161a] border border-[#26262B] rounded-lg shadow-xl max-w-md w-full">
               <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-4 rounded-t-lg">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-white">Delete Child Profile</h2>
@@ -511,10 +511,10 @@ export default function ChildrenManager() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 text-center mb-2">
+                  <h3 className="text-lg font-semibold text-white text-center mb-2">
                     Are you sure?
                   </h3>
-                  <p className="text-sm text-gray-600 text-center mb-4">
+                  <p className="text-sm text-gray-400 text-center mb-4">
                     You are about to delete the profile for <strong>{selectedChild.firstName} {selectedChild.lastName}</strong>.
                   </p>
                   
@@ -527,7 +527,7 @@ export default function ChildrenManager() {
                     </div>
                   )}
 
-                  <p className="text-sm text-gray-600 text-center">
+                  <p className="text-sm text-gray-400 text-center">
                     This action cannot be undone.
                   </p>
                 </div>
@@ -542,7 +542,7 @@ export default function ChildrenManager() {
                   <button
                     onClick={() => setIsDeleteModalOpen(false)}
                     disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    className="flex-1 px-4 py-2 border border-[#26262B] text-gray-300 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-50"
                   >
                     Cancel
                   </button>

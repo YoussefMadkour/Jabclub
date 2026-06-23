@@ -163,8 +163,8 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading roster...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-400">Loading roster...</p>
         </div>
       </div>
     );
@@ -191,19 +191,19 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
   return (
     <div className="space-y-6">
       {/* Class Information Header */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-3xl font-bold text-gray-900">{classInfo.classType}</h1>
+              <h1 className="text-3xl font-bold text-white">{classInfo.classType}</h1>
               {isToday && (
-                <span className="px-3 py-1 bg-[#000000] text-white text-sm rounded-full font-medium">
+                <span className="px-3 py-1 bg-white text-black text-sm rounded-full font-medium">
                   Today
                 </span>
               )}
             </div>
-            
-            <div className="space-y-1 text-gray-600">
+
+            <div className="space-y-1 text-gray-400">
               <p className="flex items-center gap-2">
                 <span className="font-medium">📅</span>
                 {format(classDate, 'EEEE, MMMM dd, yyyy')}
@@ -233,9 +233,9 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                   Scan QR Code
                 </button>
               )}
-              <p className="text-4xl font-bold text-gray-900">{summary.total}</p>
-              <p className="text-sm text-gray-600">Total Attendees</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-4xl font-bold text-white">{summary.total}</p>
+              <p className="text-sm text-gray-400">Total Attendees</p>
+              <p className="text-xs text-gray-400 mt-1">
                 Capacity: {classInfo.capacity}
               </p>
             </div>
@@ -274,15 +274,15 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
       {/* QR Scanner Modal */}
       {showQRScanner && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-xl font-semibold text-gray-900">QR Code Check-In Scanner</h2>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-2xl max-w-2xl w-full">
+            <div className="flex items-center justify-between p-4 border-b border-[#26262B]">
+              <h2 className="text-xl font-semibold text-white">QR Code Check-In Scanner</h2>
               <button
                 onClick={() => setShowQRScanner(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 aria-label="Close"
               >
-                <XMarkIcon className="h-6 w-6 text-gray-500" />
+                <XMarkIcon className="h-6 w-6 text-gray-400" />
               </button>
             </div>
             <div className="p-6">
@@ -298,13 +298,13 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
 
       {/* Attendance Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
           <div className="text-center">
-            <p className="text-3xl font-bold text-gray-900">{summary.total}</p>
-            <p className="text-sm text-gray-600 mt-1">Total Bookings</p>
+            <p className="text-3xl font-bold text-white">{summary.total}</p>
+            <p className="text-sm text-gray-400 mt-1">Total Bookings</p>
           </div>
         </div>
-        
+
         <div className="bg-orange-50 border border-orange-200 rounded-lg shadow-md p-4">
           <div className="text-center">
             <p className="text-3xl font-bold text-[#000000]">{summary.confirmed}</p>
@@ -328,26 +328,26 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
       </div>
 
       {/* Roster List */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Class Roster</h2>
-        
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-white mb-4">Class Roster</h2>
+
         {roster.length > 0 ? (
           <div className="space-y-3">
             {roster.map((booking) => (
-              <div 
-                key={booking.bookingId} 
+              <div
+                key={booking.bookingId}
                 className={`border rounded-lg p-4 ${
-                  booking.status === 'attended' 
-                    ? 'border-green-300 bg-green-50' 
+                  booking.status === 'attended'
+                    ? 'border-green-300 bg-green-50'
                     : booking.status === 'no_show'
                     ? 'border-red-300 bg-red-50'
-                    : 'border-gray-200'
+                    : 'border-[#26262B] bg-[#16161a]'
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{booking.memberName}</h3>
+                      <h3 className="text-lg font-semibold text-white">{booking.memberName}</h3>
                       {booking.isChildBooking && (
                         <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-medium">
                           Child: {booking.bookedFor}
@@ -361,17 +361,17 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                       )}
                     </div>
                     
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-gray-400">
                       <p>📧 {booking.memberEmail}</p>
                       <p>🕐 Booked {format(new Date(booking.bookedAt), 'MMM dd, yyyy h:mm a')}</p>
                       {booking.attendanceMarkedAt && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-400">
                           Attendance marked {format(new Date(booking.attendanceMarkedAt), 'MMM dd, yyyy h:mm a')}
                         </p>
                       )}
                       <Link
                         href={`/coach/members/${booking.memberId}`}
-                        className="inline-block mt-2 text-sm text-[#000000] hover:text-gray-600 font-medium"
+                        className="inline-block mt-2 text-sm text-white hover:text-gray-400 font-medium"
                       >
                         View Member Details →
                       </Link>
@@ -396,7 +396,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                       <button
                         onClick={() => handleMarkAttendance(booking.bookingId, 'confirmed')}
                         disabled={markingAttendance === booking.bookingId}
-                        className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 underline disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1 text-sm text-gray-400 hover:text-white underline disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {markingAttendance === booking.bookingId ? 'Undoing...' : 'Undo'}
                       </button>
@@ -423,7 +423,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                     )}
                     
                     {booking.status === 'confirmed' && !isToday && (
-                      <span className="px-4 py-2 bg-gray-200 text-gray-600 rounded-md text-center text-sm">
+                      <span className="px-4 py-2 bg-[#26262B] text-gray-400 rounded-md text-center text-sm">
                         Attendance on class day only
                       </span>
                     )}
@@ -439,7 +439,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                             >
                               Edit Note
                             </button>
-                            <div className="bg-gray-50 rounded-md p-2 text-xs">
+                            <div className="bg-[#121214] rounded-md p-2 text-xs">
                               {booking.note.rating && (
                                 <div className="flex items-center gap-1 mb-1">
                                   <span className="font-medium">Rating:</span>
@@ -447,7 +447,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                                 </div>
                               )}
                               {booking.note.notes && (
-                                <p className="text-gray-700 line-clamp-2">{booking.note.notes}</p>
+                                <p className="text-gray-300 line-clamp-2">{booking.note.notes}</p>
                               )}
                             </div>
                           </div>
@@ -467,9 +467,9 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-600 text-lg">No attendees yet</p>
-            <p className="text-gray-500 text-sm mt-2">Bookings will appear here as members sign up</p>
+          <div className="text-center py-12 bg-[#121214] rounded-lg">
+            <p className="text-gray-400 text-lg">No attendees yet</p>
+            <p className="text-gray-400 text-sm mt-2">Bookings will appear here as members sign up</p>
           </div>
         )}
       </div>
@@ -493,9 +493,9 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
       {/* Note Modal */}
       {noteModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold text-gray-900">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-xl max-w-md w-full">
+            <div className="flex items-center justify-between p-4 border-b border-[#26262B]">
+              <h2 className="text-lg font-semibold text-white">
                 {selectedBookingId && roster.find(b => b.bookingId === selectedBookingId)?.note ? 'Edit Note' : 'Add Note'}
               </h2>
               <button
@@ -505,10 +505,10 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                   setNoteRating(null);
                   setNoteText('');
                 }}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 aria-label="Close"
               >
-                <XMarkIcon className="h-5 w-5 text-gray-500" />
+                <XMarkIcon className="h-5 w-5 text-gray-400" />
               </button>
             </div>
 
@@ -516,8 +516,8 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
               {selectedBookingId && (
                 <>
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Member:</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="text-sm text-gray-400 mb-2">Member:</p>
+                    <p className="font-medium text-white">
                       {roster.find(b => b.bookingId === selectedBookingId)?.memberName}
                       {roster.find(b => b.bookingId === selectedBookingId)?.isChildBooking && 
                         ` (${roster.find(b => b.bookingId === selectedBookingId)?.bookedFor})`
@@ -527,7 +527,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
 
                   {/* Rating */}
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
                       Rating (Optional)
                     </label>
                     <div className="flex gap-2">
@@ -547,13 +547,13 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                       ))}
                     </div>
                     {noteRating && (
-                      <p className="text-xs text-gray-500 mt-1">{noteRating} out of 5 stars</p>
+                      <p className="text-xs text-gray-400 mt-1">{noteRating} out of 5 stars</p>
                     )}
                   </div>
 
                   {/* Notes */}
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
                       Notes (Optional)
                     </label>
                     <textarea
@@ -575,14 +575,14 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                         setNoteText('');
                       }}
                       disabled={savingNote}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+                      className="flex-1 px-4 py-2 border border-[#26262B] text-gray-300 rounded-md hover:bg-white/5 transition-colors disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleSaveNote}
                       disabled={savingNote}
-                      className="flex-1 px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {savingNote ? 'Saving...' : 'Save Note'}
                     </button>

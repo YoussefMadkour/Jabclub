@@ -63,8 +63,8 @@ export default function MemberDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+            <p className="mt-4 text-gray-400">Loading dashboard...</p>
           </div>
       </div>
     );
@@ -87,21 +87,21 @@ export default function MemberDashboard() {
   return (
     <div className="space-y-6">
       {/* Credits Overview */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-900">Session Credits</h2>
+          <h2 className="text-2xl font-bold text-white">Session Credits</h2>
           <button
             onClick={() => router.push('/payments')}
-            className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
+            className="px-3 py-1 text-sm bg-[#1f1f23] hover:bg-white/10 text-gray-300 rounded-md transition-colors"
           >
             View Payment History
           </button>
         </div>
-        
+
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Available Credits</p>
-            <p className="text-4xl font-bold text-[#000000]">{credits.total}</p>
+            <p className="text-sm text-gray-400 mb-1">Available Credits</p>
+            <p className="text-4xl font-bold text-white">{credits.total}</p>
           </div>
           
           {/* Visual indicator */}
@@ -136,17 +136,17 @@ export default function MemberDashboard() {
                 }`}>
                   {nextExpiringPackage.daysUntilExpiry <= 7 ? '⚠️ Expiring Soon' : 'ℹ️ Next Expiry'}
                 </p>
-                <p className="text-sm text-gray-700 mt-1">
+                <p className="text-sm text-gray-300 mt-1">
                   {nextExpiringPackage.packageName} - {nextExpiringPackage.sessionsRemaining} credits remaining
                 </p>
               </div>
               <div className="text-right">
                 <p className={`text-lg font-bold ${
-                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-600' : 'text-[#000000]'
+                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-600' : 'text-white'
                 }`}>
                   {nextExpiringPackage.daysUntilExpiry} days
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs text-gray-400">
                   {format(new Date(nextExpiringPackage.expiryDate), 'MMM dd, yyyy')}
                 </p>
               </div>
@@ -157,42 +157,42 @@ export default function MemberDashboard() {
         {/* Package Details */}
         {credits.packages.length > 0 && (
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Active Packages</h3>
+            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Active Packages</h3>
             {credits.packages.map((pkg: any) => {
               const isExpiringSoon = pkg.daysUntilExpiry <= 7;
-              const progressColor = isExpiringSoon ? 'bg-red-600' : 'bg-[#000000]';
-              
+              const progressColor = isExpiringSoon ? 'bg-red-600' : 'bg-white';
+
               return (
-                <div 
-                  key={pkg.id} 
+                <div
+                  key={pkg.id}
                   className={`border rounded-lg p-4 ${
-                    isExpiringSoon ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                    isExpiringSoon ? 'border-red-300 bg-red-50' : 'border-[#26262B]'
                   }`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <p className="font-medium text-gray-900">{pkg.packageName}</p>
+                        <p className="font-medium text-white">{pkg.packageName}</p>
                         {isExpiringSoon && (
                           <span className="px-2 py-0.5 bg-red-200 text-red-800 text-xs rounded-full font-medium">
                             ⚠️ Expiring Soon
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-400">
                         Purchased {format(new Date(pkg.purchaseDate), 'MMM dd, yyyy')}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-gray-900">
+                      <p className="text-lg font-bold text-white">
                         {pkg.sessionsRemaining}/{pkg.sessionsTotal}
                       </p>
-                      <p className="text-xs text-gray-600">sessions left</p>
+                      <p className="text-xs text-gray-400">sessions left</p>
                     </div>
                   </div>
-                  
+
                   {/* Progress bar */}
-                  <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                  <div className="w-full bg-[#26262B] rounded-full h-2 mb-2">
                     <div
                       className={`${progressColor} h-2 rounded-full transition-all`}
                       style={{ width: `${(pkg.sessionsRemaining / pkg.sessionsTotal) * 100}%` }}
@@ -200,14 +200,14 @@ export default function MemberDashboard() {
                   </div>
                   
                   <div className="flex justify-between text-xs">
-                    <span className={isExpiringSoon ? 'text-red-700 font-medium' : 'text-gray-600'}>
-                      {pkg.daysUntilExpiry === 0 
+                    <span className={isExpiringSoon ? 'text-red-700 font-medium' : 'text-gray-400'}>
+                      {pkg.daysUntilExpiry === 0
                         ? 'Expires today!' 
                         : pkg.daysUntilExpiry === 1 
                         ? 'Expires tomorrow' 
                         : `Expires in ${pkg.daysUntilExpiry} days`}
                     </span>
-                    <span className={isExpiringSoon ? 'text-red-700' : 'text-gray-600'}>
+                    <span className={isExpiringSoon ? 'text-red-700' : 'text-gray-400'}>
                       {format(new Date(pkg.expiryDate), 'MMM dd, yyyy')}
                     </span>
                   </div>
@@ -220,26 +220,26 @@ export default function MemberDashboard() {
         {/* Expired Packages */}
         {expiredPackages && expiredPackages.length > 0 && (
           <div className="space-y-3 mt-6">
-            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Expired Packages</h3>
+            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Expired Packages</h3>
             {expiredPackages.map((pkg: any) => (
-              <div key={pkg.id} className="border border-gray-300 rounded-lg p-4 bg-gray-100 opacity-75">
+              <div key={pkg.id} className="border border-[#26262B] rounded-lg p-4 bg-[#1f1f23] opacity-75">
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-700">{pkg.packageName}</p>
+                      <p className="font-medium text-gray-300">{pkg.packageName}</p>
                       <span className="px-2 py-0.5 bg-gray-400 text-gray-800 text-xs rounded-full font-medium">
                         Expired
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-400">
                       Purchased {format(new Date(pkg.purchaseDate), 'MMM dd, yyyy')}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-gray-600 line-through">
+                    <p className="text-lg font-bold text-gray-400 line-through">
                       {pkg.sessionsRemaining}/{pkg.sessionsTotal}
                     </p>
-                    <p className="text-xs text-gray-500">credits lost</p>
+                    <p className="text-xs text-gray-400">credits lost</p>
                   </div>
                 </div>
                 
@@ -251,9 +251,9 @@ export default function MemberDashboard() {
                   ></div>
                 </div>
                 
-                <div className="flex justify-between text-xs text-gray-600">
+                <div className="flex justify-between text-xs text-gray-400">
                   <span>
-                    Expired {pkg.daysExpired === 0 
+                    Expired {pkg.daysExpired === 0
                       ? 'today' 
                       : pkg.daysExpired === 1 
                       ? 'yesterday' 
@@ -267,11 +267,11 @@ export default function MemberDashboard() {
         )}
 
         {credits.packages.length === 0 && (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-600 mb-2">No active packages</p>
-            <button 
+          <div className="text-center py-8 bg-[#121214] rounded-lg">
+            <p className="text-gray-400 mb-2">No active packages</p>
+            <button
               onClick={() => router.push('/purchase')}
-              className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors touch-target"
+              className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors touch-target"
             >
               Purchase Package
             </button>
@@ -280,8 +280,8 @@ export default function MemberDashboard() {
       </div>
 
       {/* Upcoming Bookings */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Upcoming Classes</h2>
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-white mb-4">Upcoming Classes</h2>
         
         {upcomingBookings.length > 0 ? (
           <div className="space-y-4">
@@ -292,11 +292,11 @@ export default function MemberDashboard() {
               const canCancel = hoursUntilClass >= 1;
 
               return (
-                <div key={booking.id} className="border border-gray-200 rounded-lg p-4 hover:border-gray-400 transition-colors">
+                <div key={booking.id} className="border border-[#26262B] rounded-lg p-4 hover:border-white/30 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{booking.classType}</h3>
+                        <h3 className="text-lg font-semibold text-white">{booking.classType}</h3>
                         {booking.isChildBooking && (
                           <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
                             {booking.bookedFor}
@@ -304,7 +304,7 @@ export default function MemberDashboard() {
                         )}
                       </div>
                       
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-gray-400">
                         <p className="flex items-center gap-2">
                           <span className="font-medium">📅</span>
                           {format(new Date(booking.startTime), 'EEEE, MMMM dd, yyyy')}
@@ -333,7 +333,7 @@ export default function MemberDashboard() {
                     </div>
                     
                     <div className="flex flex-col gap-2 sm:items-end">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-xs text-gray-400">
                         Booked {formatDistanceToNow(new Date(booking.bookedAt || booking.startTime), { addSuffix: true })}
                       </span>
                       
@@ -369,7 +369,7 @@ export default function MemberDashboard() {
                         className={`px-4 py-2 rounded-md transition-colors text-sm touch-target ${
                           canCancel 
                             ? 'bg-red-600 text-white hover:bg-red-700' 
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-gray-300 text-gray-400 cursor-not-allowed'
                         }`}
                         title={!canCancel ? 'Cannot cancel within 1 hour of class start' : 'Cancel this booking'}
                       >
@@ -382,11 +382,11 @@ export default function MemberDashboard() {
             })}
           </div>
         ) : (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-600 mb-2">No upcoming bookings</p>
-            <button 
+          <div className="text-center py-8 bg-[#121214] rounded-lg">
+            <p className="text-gray-400 mb-2">No upcoming bookings</p>
+            <button
               onClick={() => router.push('/classes')}
-              className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors touch-target"
+              className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors touch-target"
             >
               Browse Classes
             </button>
@@ -395,17 +395,17 @@ export default function MemberDashboard() {
       </div>
 
       {/* Past Bookings */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Past Classes</h2>
-        
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-white mb-4">Past Classes</h2>
+
         {pastBookings.length > 0 ? (
           <div className="space-y-3">
             {pastBookings.map((booking) => (
-              <div key={booking.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div key={booking.id} className="border border-[#26262B] rounded-lg p-4 bg-[#121214]">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-medium text-gray-900">{booking.classType}</h3>
+                      <h3 className="font-medium text-white">{booking.classType}</h3>
                       {booking.isChildBooking && (
                         <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
                           {booking.bookedFor}
@@ -413,7 +413,7 @@ export default function MemberDashboard() {
                       )}
                     </div>
                     
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-gray-400">
                       <p>
                         {format(new Date(booking.startTime), 'MMM dd, yyyy')} at {format(new Date(booking.startTime), 'h:mm a')}
                       </p>
@@ -448,8 +448,8 @@ export default function MemberDashboard() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-600">No past bookings</p>
+          <div className="text-center py-8 bg-[#121214] rounded-lg">
+            <p className="text-gray-400">No past bookings</p>
           </div>
         )}
       </div>

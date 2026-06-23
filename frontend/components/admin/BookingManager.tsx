@@ -281,7 +281,7 @@ export default function BookingManager() {
       case 'no_show':
         return 'bg-yellow-100 text-yellow-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#1f1f23] text-gray-100';
     }
   };
 
@@ -291,7 +291,7 @@ export default function BookingManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -315,8 +315,8 @@ export default function BookingManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Booking Management</h2>
-          <p className="text-gray-600 mt-1">{total} booking{total !== 1 ? 's' : ''}</p>
+          <h2 className="text-2xl font-bold text-white">Booking Management</h2>
+          <p className="text-gray-400 mt-1">{total} booking{total !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -324,7 +324,7 @@ export default function BookingManager() {
               setShowCreateModal(true);
               fetchClasses();
             }}
-            className="px-4 py-2 bg-[#000000] hover:bg-[#1F1F1F] text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-white hover:bg-gray-200 text-black rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -343,7 +343,7 @@ export default function BookingManager() {
           </button>
           <button
             onClick={fetchBookings}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#1f1f23] hover:bg-[#26262B] text-gray-300 rounded-lg transition-colors"
           >
             Refresh
           </button>
@@ -351,24 +351,24 @@ export default function BookingManager() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Search</label>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by member, email, or class..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">All Statuses</option>
               <option value="confirmed">Confirmed</option>
@@ -382,56 +382,56 @@ export default function BookingManager() {
 
       {/* Bookings List */}
       {filteredBookings.length === 0 ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <p className="text-gray-600 text-lg">No bookings found</p>
-          <p className="text-gray-500 text-sm mt-2">Try adjusting your filters</p>
+          <p className="text-gray-400 text-lg">No bookings found</p>
+          <p className="text-gray-400 text-sm mt-2">Try adjusting your filters</p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[#121214] border-b border-[#26262B]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Member</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booked For</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Member</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Booked For</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Class</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date & Time</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {filteredBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-50">
+                  <tr key={booking.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{booking.member.name}</div>
-                        <div className="text-sm text-gray-500">{booking.member.email}</div>
+                        <div className="text-sm font-medium text-white">{booking.member.name}</div>
+                        <div className="text-sm text-gray-400">{booking.member.email}</div>
                         <Link
                           href={`/admin/members/${booking.member.id}`}
-                          className="text-xs text-[#000000] hover:text-gray-600 font-medium mt-1 inline-block"
+                          className="text-xs text-white hover:text-gray-400 font-medium mt-1 inline-block"
                         >
                           View Details →
                         </Link>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{booking.bookedFor.name}</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-white">{booking.bookedFor.name}</div>
+                      <div className="text-sm text-gray-400">
                         {booking.bookedFor.type === 'child' ? `Child (${booking.bookedFor.age}y)` : 'Self'}
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{booking.class.type}</div>
-                      <div className="text-sm text-gray-500">{booking.class.location}</div>
-                      <div className="text-sm text-gray-500">Coach: {booking.class.coach}</div>
+                      <div className="text-sm font-medium text-white">{booking.class.type}</div>
+                      <div className="text-sm text-gray-400">{booking.class.location}</div>
+                      <div className="text-sm text-gray-400">Coach: {booking.class.coach}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formatDate(booking.class.startTime)}</div>
-                      <div className="text-sm text-gray-500">{booking.class.duration} min</div>
+                      <div className="text-sm text-white">{formatDate(booking.class.startTime)}</div>
+                      <div className="text-sm text-gray-400">{booking.class.duration} min</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(booking.status)}`}>
@@ -459,19 +459,19 @@ export default function BookingManager() {
       {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-2">
-          <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+          <span className="text-sm text-gray-400">Page {page} of {totalPages}</span>
           <div className="flex gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+              className="px-3 py-1.5 text-sm rounded-md border border-[#26262B] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10"
             >
               Previous
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+              className="px-3 py-1.5 text-sm rounded-md border border-[#26262B] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/10"
             >
               Next
             </button>
@@ -482,12 +482,12 @@ export default function BookingManager() {
       {/* Create Booking Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Manual Booking</h3>
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Create Manual Booking</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">User ID *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">User ID *</label>
                 <input
                   type="number"
                   value={createForm.userId}
@@ -496,16 +496,16 @@ export default function BookingManager() {
                     fetchChildren(e.target.value);
                   }}
                   placeholder="Enter user ID"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Class *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Class *</label>
                 <select
                   value={createForm.classInstanceId}
                   onChange={(e) => setCreateForm({ ...createForm, classInstanceId: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select a class</option>
                   {Array.isArray(classes) && classes.map((cls) => (
@@ -517,13 +517,13 @@ export default function BookingManager() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Child ID (Optional)</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Child ID (Optional)</label>
                 <input
                   type="number"
                   value={createForm.childId}
                   onChange={(e) => setCreateForm({ ...createForm, childId: e.target.value })}
                   placeholder="Leave empty for self booking"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -534,14 +534,14 @@ export default function BookingManager() {
                   setShowCreateModal(false);
                   setCreateForm({ userId: '', classInstanceId: '', childId: '' });
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateBooking}
                 disabled={processing}
-                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Booking'}
               </button>
@@ -553,18 +553,18 @@ export default function BookingManager() {
       {/* Cancel Booking Modal */}
       {showCancelModal && selectedBooking && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Cancel Booking</h3>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Cancel Booking</h3>
+            <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to cancel this booking? The credit will be refunded to the member's account.
             </p>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-[#121214] rounded-lg p-4 mb-4">
               <div className="text-sm">
-                <p className="font-medium text-gray-900">{selectedBooking.member.name}</p>
-                <p className="text-gray-600">Booked for: {selectedBooking.bookedFor.name}</p>
-                <p className="text-gray-600">{selectedBooking.class.type}</p>
-                <p className="text-gray-600">{formatDate(selectedBooking.class.startTime)}</p>
+                <p className="font-medium text-white">{selectedBooking.member.name}</p>
+                <p className="text-gray-400">Booked for: {selectedBooking.bookedFor.name}</p>
+                <p className="text-gray-400">{selectedBooking.class.type}</p>
+                <p className="text-gray-400">{formatDate(selectedBooking.class.startTime)}</p>
               </div>
             </div>
 
@@ -574,7 +574,7 @@ export default function BookingManager() {
                   setShowCancelModal(false);
                   setSelectedBooking(null);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Keep Booking
               </button>
@@ -593,41 +593,41 @@ export default function BookingManager() {
       {/* Issue Refund Modal */}
       {showRefundModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Issue Manual Refund</h3>
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Issue Manual Refund</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">User ID *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">User ID *</label>
                 <input
                   type="number"
                   value={refundForm.userId}
                   onChange={(e) => setRefundForm({ ...refundForm, userId: e.target.value })}
                   placeholder="Enter user ID"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Credits *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Credits *</label>
                 <input
                   type="number"
                   min="1"
                   value={refundForm.credits}
                   onChange={(e) => setRefundForm({ ...refundForm, credits: e.target.value })}
                   placeholder="Number of credits"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Reason</label>
                 <textarea
                   value={refundForm.reason}
                   onChange={(e) => setRefundForm({ ...refundForm, reason: e.target.value })}
                   placeholder="Optional reason for refund"
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -638,7 +638,7 @@ export default function BookingManager() {
                   setShowRefundModal(false);
                   setRefundForm({ userId: '', credits: '1', reason: '' });
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>

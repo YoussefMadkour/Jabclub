@@ -68,8 +68,8 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading roster...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-400">Loading roster...</p>
         </div>
       </div>
     );
@@ -110,7 +110,7 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
       <div>
         <Link
           href="/admin/classes"
-          className="inline-flex items-center gap-2 text-[#000000] hover:text-gray-600 transition-colors"
+          className="inline-flex items-center gap-2 text-white hover:text-gray-400 transition-colors"
         >
           <span>←</span>
           <span>Back to Classes</span>
@@ -118,13 +118,13 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
       </div>
 
       {/* Class Info */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-3xl font-bold text-gray-900">{classInfo.classType}</h1>
+              <h1 className="text-3xl font-bold text-white">{classInfo.classType}</h1>
               {isToday && (
-                <span className="px-3 py-1 bg-[#000000] text-white text-sm rounded-full font-medium">
+                <span className="px-3 py-1 bg-white text-black text-sm rounded-full font-medium">
                   Today
                 </span>
               )}
@@ -134,72 +134,72 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
                 </span>
               )}
             </div>
-            <p className="text-gray-600">Class Roster and Attendance</p>
+            <p className="text-gray-400">Class Roster and Attendance</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
           <div>
-            <p className="text-sm text-gray-600">Date</p>
+            <p className="text-sm text-gray-400">Date</p>
             <p className="text-lg font-medium">{format(classDate, 'EEEE, MMM dd, yyyy')}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Time</p>
+            <p className="text-sm text-gray-400">Time</p>
             <p className="text-lg font-medium">
               {format(new Date(classInfo.startTime), 'h:mm a')} - {format(new Date(classInfo.endTime), 'h:mm a')}
             </p>
-            <p className="text-xs text-gray-500">{classInfo.duration} min</p>
+            <p className="text-xs text-gray-400">{classInfo.duration} min</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Location</p>
+            <p className="text-sm text-gray-400">Location</p>
             <p className="text-lg font-medium">{classInfo.location}</p>
-            <p className="text-xs text-gray-500">{classInfo.locationAddress}</p>
+            <p className="text-xs text-gray-400">{classInfo.locationAddress}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">Coach</p>
+            <p className="text-sm text-gray-400">Coach</p>
             <p className="text-lg font-medium">{classInfo.coach}</p>
-            <p className="text-xs text-gray-500">{classInfo.coachEmail}</p>
+            <p className="text-xs text-gray-400">{classInfo.coachEmail}</p>
           </div>
         </div>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Bookings</p>
-              <p className="text-3xl font-bold text-gray-900">{summary.total}</p>
-              <p className="text-xs text-gray-500 mt-1">Capacity: {classInfo.capacity}</p>
+              <p className="text-sm text-gray-400 mb-1">Total Bookings</p>
+              <p className="text-3xl font-bold text-white">{summary.total}</p>
+              <p className="text-xs text-gray-400 mt-1">Capacity: {classInfo.capacity}</p>
             </div>
             <div className="text-4xl">📋</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Confirmed</p>
-              <p className="text-3xl font-bold text-[#000000]">{summary.confirmed}</p>
+              <p className="text-sm text-gray-400 mb-1">Confirmed</p>
+              <p className="text-3xl font-bold text-white">{summary.confirmed}</p>
             </div>
             <div className="text-4xl">⏳</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Attended</p>
+              <p className="text-sm text-gray-400 mb-1">Attended</p>
               <p className="text-3xl font-bold text-green-600">{summary.attended}</p>
             </div>
             <div className="text-4xl">✅</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 mb-1">No-Show</p>
+              <p className="text-sm text-gray-400 mb-1">No-Show</p>
               <p className="text-3xl font-bold text-red-600">{summary.noShow}</p>
             </div>
             <div className="text-4xl">❌</div>
@@ -208,35 +208,35 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
       </div>
 
       {/* Roster List */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Class Roster</h2>
-        
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-white mb-4">Class Roster</h2>
+
         {roster.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-100">
+            <table className="min-w-full divide-y divide-[#26262B]">
+              <thead className="bg-[#1f1f23]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Member
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Booked For
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Booked At
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Attendance Marked
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {roster.map((booking) => (
                   <tr 
                     key={booking.bookingId} 
@@ -250,14 +250,14 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{booking.memberName}</div>
-                        <div className="text-sm text-gray-500">{booking.memberEmail}</div>
+                        <div className="text-sm font-medium text-white">{booking.memberName}</div>
+                        <div className="text-sm text-gray-400">{booking.memberEmail}</div>
                         {booking.memberPhone && (
-                          <div className="text-sm text-gray-500">{booking.memberPhone}</div>
+                          <div className="text-sm text-gray-400">{booking.memberPhone}</div>
                         )}
                         <Link
                           href={`/admin/members/${booking.memberId}`}
-                          className="text-xs text-[#000000] hover:text-gray-600 font-medium mt-1 inline-block"
+                          className="text-xs text-white hover:text-gray-400 font-medium mt-1 inline-block"
                         >
                           View Member →
                         </Link>
@@ -266,11 +266,11 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
                     <td className="px-6 py-4 whitespace-nowrap">
                       {booking.isChildBooking ? (
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{booking.bookedFor.name}</div>
-                          <div className="text-sm text-gray-500">Child ({booking.bookedFor.age}y)</div>
+                          <div className="text-sm font-medium text-white">{booking.bookedFor.name}</div>
+                          <div className="text-sm text-gray-400">Child ({booking.bookedFor.age}y)</div>
                         </div>
                       ) : (
-                        <div className="text-sm text-gray-900">Self</div>
+                        <div className="text-sm text-white">Self</div>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -278,18 +278,18 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
                         {booking.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                       {format(new Date(booking.bookedAt), 'MMM dd, yyyy h:mm a')}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {booking.attendanceMarkedAt 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                      {booking.attendanceMarkedAt
                         ? format(new Date(booking.attendanceMarkedAt), 'MMM dd, yyyy h:mm a')
                         : 'Not marked'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Link
                         href={`/admin/bookings?classInstanceId=${classInstanceId}`}
-                        className="text-[#000000] hover:text-gray-600"
+                        className="text-white hover:text-gray-400"
                       >
                         View Booking
                       </Link>
@@ -300,9 +300,9 @@ export default function AdminClassRoster({ classInstanceId }: AdminClassRosterPr
             </table>
           </div>
         ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-600 text-lg">No bookings yet</p>
-            <p className="text-gray-500 text-sm mt-2">Bookings will appear here as members sign up</p>
+          <div className="text-center py-12 bg-[#121214] rounded-lg">
+            <p className="text-gray-400 text-lg">No bookings yet</p>
+            <p className="text-gray-400 text-sm mt-2">Bookings will appear here as members sign up</p>
           </div>
         )}
       </div>
