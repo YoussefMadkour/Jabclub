@@ -79,7 +79,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
 
   // Mark attendance mutation
   const markAttendanceMutation = useMutation({
-    mutationFn: async ({ bookingId, status }: { bookingId: number; status: 'attended' | 'no_show' }) => {
+    mutationFn: async ({ bookingId, status }: { bookingId: number; status: 'attended' | 'no_show' | 'confirmed' }) => {
       const response = await apiClient.put(`/coach/attendance/${bookingId}`, { status });
       return response.data;
     },
@@ -95,7 +95,9 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
     }
   });
 
-  const handleMarkAttendance = async (bookingId: number, status: 'attended' | 'no_show') => {
+  const handleMarkAttendance = async (bookingId: number, status: 'attended' | 'no_show' | 'confirmed') => {
+    // Confirm the No-Show action since it affects the member's record.
+    if (status === 'no_show' && !confirm('Mark this participant as a No-Show?')) return;
     setMarkingAttendance(bookingId);
     await markAttendanceMutation.mutateAsync({ bookingId, status });
   };
@@ -388,7 +390,18 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                         ✗ No-Show
                       </span>
                     )}
-                    
+
+                    {/* Undo a mistaken mark (same day only) */}
+                    {(booking.status === 'attended' || booking.status === 'no_show') && isToday && (
+                      <button
+                        onClick={() => handleMarkAttendance(booking.bookingId, 'confirmed')}
+                        disabled={markingAttendance === booking.bookingId}
+                        className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900 underline disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {markingAttendance === booking.bookingId ? 'Undoing...' : 'Undo'}
+                      </button>
+                    )}
+
                     {/* Attendance Buttons (only for confirmed bookings on class day) */}
                     {booking.status === 'confirmed' && isToday && (
                       <div className="flex gap-2">

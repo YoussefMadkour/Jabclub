@@ -206,6 +206,12 @@ export default function BookingManager() {
       return;
     }
 
+    // Extra confirmation for larger grants to avoid fat-finger errors.
+    const creditsNum = parseInt(refundForm.credits);
+    if (creditsNum > 10 && !confirm(`Add ${creditsNum} credits to this member's account? This is a large refund — please confirm.`)) {
+      return;
+    }
+
     try {
       setProcessing(true);
       await apiClient.post('/admin/refund', {
