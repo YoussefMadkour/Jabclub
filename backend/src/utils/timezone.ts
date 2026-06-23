@@ -28,13 +28,15 @@ export function egyptOffsetHours(at: Date): number {
  * accounting for DST. e.g. 18:00 local → 16:00Z in winter, 15:00Z in summer.
  */
 export function egyptTimeToUTC(date: Date, hours: number, minutes: number): Date {
-  // Probe with a naive UTC time to determine the correct DST offset, then apply it.
-  const probe = new Date(date);
-  probe.setUTCHours(hours, minutes, 0, 0);
+  // Use the intended Egypt-local calendar day (Y/M/D) so the result never drifts
+  // to an adjacent UTC day when `date` carries a non-midnight/local-midnight time.
+  const y = date.getFullYear();
+  const mo = date.getMonth();
+  const da = date.getDate();
+  // Probe to resolve the correct DST offset for that day, then apply it.
+  const probe = new Date(Date.UTC(y, mo, da, hours, minutes, 0, 0));
   const offset = egyptOffsetHours(probe);
-  const utc = new Date(date);
-  utc.setUTCHours(hours - offset, minutes, 0, 0);
-  return utc;
+  return new Date(Date.UTC(y, mo, da, hours - offset, minutes, 0, 0));
 }
 
 /**
