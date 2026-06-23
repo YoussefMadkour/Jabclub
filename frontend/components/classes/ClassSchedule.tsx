@@ -153,18 +153,18 @@ export default function ClassSchedule() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Class Schedule</h1>
-        <p className="mt-2 text-gray-600">Browse and book available classes</p>
+        <h1 className="text-3xl font-bold text-white">Class Schedule</h1>
+        <p className="mt-2 text-gray-400">Browse and book available classes</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow p-6">
+        <h2 className="text-lg font-semibold text-white mb-4">Filters</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Location Filter */}
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-1">
               Location
             </label>
             <select
@@ -184,7 +184,7 @@ export default function ClassSchedule() {
 
           {/* Date Filter */}
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="date" className="block text-sm font-medium text-gray-300 mb-1">
               Date
             </label>
             <input
@@ -198,7 +198,7 @@ export default function ClassSchedule() {
 
           {/* Coach Filter */}
           <div>
-            <label htmlFor="coach" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="coach" className="block text-sm font-medium text-gray-300 mb-1">
               Coach
             </label>
             <select
@@ -222,7 +222,7 @@ export default function ClassSchedule() {
           <div className="mt-4">
             <button
               onClick={handleClearFilters}
-              className="text-sm text-[#000000] hover:text-gray-600 font-medium"
+              className="text-sm text-white hover:text-gray-400 font-medium"
             >
               Clear all filters
             </button>
@@ -234,19 +234,19 @@ export default function ClassSchedule() {
       <div>
         {loading ? (
           <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
         ) : error ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-800">{error}</p>
           </div>
         ) : classes.length === 0 ? (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
-            <p className="text-gray-600">No classes found matching your filters.</p>
+          <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
+            <p className="text-gray-400">No classes found matching your filters.</p>
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
-                className="mt-2 text-[#000000] hover:text-gray-600 font-medium"
+                className="mt-2 text-white hover:text-gray-400 font-medium"
               >
                 Clear filters to see all classes
               </button>

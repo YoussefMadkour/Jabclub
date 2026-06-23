@@ -604,8 +604,8 @@ export default function DefaultScheduleManager() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading default schedules...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-400">Loading default schedules...</p>
         </div>
       </div>
     );
@@ -630,19 +630,19 @@ export default function DefaultScheduleManager() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Default Schedule</h1>
-            <p className="text-gray-600 mt-1">
-              Manage recurring schedules that automatically generate classes each month. 
+            <h1 className="text-3xl font-bold text-white">Default Schedule</h1>
+            <p className="text-gray-400 mt-1">
+              Manage recurring schedules that automatically generate classes each month.
               Changes only affect future months, not current or past months.
             </p>
           </div>
           <div className="flex gap-2">
             <button
               onClick={openCreateModal}
-              className="px-4 py-2 bg-[#000000] hover:bg-[#1F1F1F] text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-white hover:bg-gray-200 text-black rounded-lg transition-colors"
             >
               + Add Schedule
             </button>
@@ -659,7 +659,7 @@ export default function DefaultScheduleManager() {
             </button>
             <button
               onClick={() => refetch()}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+              className="px-4 py-2 bg-[#1f1f23] hover:bg-white/10 text-gray-300 rounded-lg transition-colors"
             >
               Refresh
             </button>
@@ -687,29 +687,29 @@ export default function DefaultScheduleManager() {
 
       {/* Schedules — Weekly Grid View */}
       {scheduleLocations.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <p className="text-gray-600 text-lg">No default schedules found</p>
-          <p className="text-gray-500 text-sm mt-2">Click "+ Add Schedule" or "Bulk Import" to get started</p>
+          <p className="text-gray-400 text-lg">No default schedules found</p>
+          <p className="text-gray-400 text-sm mt-2">Click "+ Add Schedule" or "Bulk Import" to get started</p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md overflow-hidden">
           {/* Location Tabs */}
-          <div className="flex overflow-x-auto border-b border-gray-200 bg-gray-50">
+          <div className="flex overflow-x-auto border-b border-[#26262B] bg-[#121214]">
             {scheduleLocations.map((location, idx) => (
               <button
                 key={location.locationId}
                 onClick={() => { setSelectedLocationIdx(idx); setSelectedCoachFilter('all'); }}
                 className={`px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                   selectedLocationIdx === idx
-                    ? 'border-[#000000] text-[#000000] bg-white'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-white text-white bg-[#16161a]'
+                    : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-white/30'
                 }`}
               >
                 {location.locationName}
-                <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-full">
+                <span className="ml-2 text-xs bg-[#26262B] text-gray-400 px-1.5 py-0.5 rounded-full">
                   {location.schedules.filter((s: any) => s.isActive).length}
                 </span>
               </button>
@@ -744,10 +744,10 @@ export default function DefaultScheduleManager() {
                 {/* Coach filter + inactive count */}
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs text-gray-500 font-medium">Filter by coach:</span>
+                    <span className="text-xs text-gray-400 font-medium">Filter by coach:</span>
                     <button
                       onClick={() => setSelectedCoachFilter('all')}
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${selectedCoachFilter === 'all' ? 'bg-[#000000] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${selectedCoachFilter === 'all' ? 'bg-white text-black' : 'bg-[#1f1f23] text-gray-400 hover:bg-white/10'}`}
                     >
                       All
                     </button>
@@ -755,7 +755,7 @@ export default function DefaultScheduleManager() {
                       <button
                         key={id}
                         onClick={() => setSelectedCoachFilter(id.toString())}
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${selectedCoachFilter === id.toString() ? 'bg-[#000000] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${selectedCoachFilter === id.toString() ? 'bg-white text-black' : 'bg-[#1f1f23] text-gray-400 hover:bg-white/10'}`}
                       >
                         {name as string}
                       </button>
@@ -775,7 +775,7 @@ export default function DefaultScheduleManager() {
                         <tr>
                           <th className="w-20 py-2 pr-3 text-left text-xs font-semibold text-gray-400 uppercase">Time</th>
                           {activeDays.map(d => (
-                            <th key={d} className="py-2 px-2 text-center text-xs font-semibold text-gray-500 uppercase">
+                            <th key={d} className="py-2 px-2 text-center text-xs font-semibold text-gray-400 uppercase">
                               {dayLabels[d]}
                             </th>
                           ))}
@@ -783,7 +783,7 @@ export default function DefaultScheduleManager() {
                       </thead>
                       <tbody>
                         {timeSlotSet.map(time => (
-                          <tr key={time} className="border-t border-gray-100">
+                          <tr key={time} className="border-t border-[#26262B]">
                             <td className="py-2 pr-3 text-xs font-medium text-gray-400 whitespace-nowrap align-top pt-3">
                               {formatTimeDisplay(time)}
                             </td>
@@ -820,7 +820,7 @@ export default function DefaultScheduleManager() {
                                   {cellSchedules.length === 0 ? (
                                     <div
                                       className={`w-full h-16 rounded-lg border-2 border-dashed flex items-center justify-center transition-colors
-                                        ${isDragTargetEmpty ? 'border-green-400 bg-green-50 text-green-500 text-2xl' : 'border-gray-200 text-gray-300 hover:border-[#000000] hover:text-[#000000]'}
+                                        ${isDragTargetEmpty ? 'border-green-400 bg-green-50 text-green-500 text-2xl' : 'border-[#26262B] text-gray-400 hover:border-white hover:text-white'}
                                       `}
                                     >
                                       {isDragTargetEmpty ? (
@@ -851,8 +851,8 @@ export default function DefaultScheduleManager() {
                                             e.dataTransfer.setData('text/plain', schedule.id.toString());
                                           }}
                                           onDragEnd={() => { setDraggingScheduleId(null); setDragOverCell(null); }}
-                                          className={`group relative rounded-lg px-3 py-2 text-white text-xs cursor-grab active:cursor-grabbing select-none
-                                            ${schedule.isOverride ? 'bg-black' : 'bg-[#000000]'}
+                                          className={`group relative rounded-lg px-3 py-2 text-black text-xs cursor-grab active:cursor-grabbing select-none
+                                            bg-white
                                             ${draggingScheduleId === schedule.id ? 'opacity-40 ring-2 ring-white' : ''}
                                             ${!schedule.isActive ? 'opacity-50' : ''}
                                           `}
@@ -939,7 +939,7 @@ export default function DefaultScheduleManager() {
                                     setSelectedSchedule(null);
                                     setShowCreateModal(true);
                                   }}
-                                  className="w-full h-16 rounded-lg border-2 border-dashed border-[#000000] text-[#000000] flex items-center justify-center text-2xl hover:bg-gray-50 transition-colors"
+                                  className="w-full h-16 rounded-lg border-2 border-dashed border-white text-white flex items-center justify-center text-2xl hover:bg-white/5 transition-colors"
                                   title={`Add schedule at ${formatTimeDisplay(pending.time)}`}
                                 >+</button>
                               </td>
@@ -951,7 +951,7 @@ export default function DefaultScheduleManager() {
                           <td colSpan={activeDays.length + 1} className="pt-2 pb-1">
                             <button
                               onClick={addPendingGridTimeslot}
-                              className="flex items-center gap-1 text-sm text-[#000000] hover:text-gray-600 font-medium"
+                              className="flex items-center gap-1 text-sm text-white hover:text-gray-400 font-medium"
                             >
                               <span className="text-lg leading-none">+</span> Add time slot
                             </button>
@@ -964,19 +964,19 @@ export default function DefaultScheduleManager() {
 
                 {/* Inactive schedules collapsible */}
                 {inactiveSchedules.length > 0 && (
-                  <details className="mt-6 border-t pt-4">
-                    <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
+                  <details className="mt-6 border-t border-[#26262B] pt-4">
+                    <summary className="cursor-pointer text-sm text-gray-400 hover:text-gray-300">
                       Show {inactiveSchedules.length} inactive schedule{inactiveSchedules.length > 1 ? 's' : ''}
                     </summary>
                     <div className="mt-3 space-y-2">
                       {inactiveSchedules.map((schedule: any) => (
-                        <div key={schedule.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg opacity-60">
+                        <div key={schedule.id} className="flex items-center justify-between p-3 bg-[#121214] rounded-lg opacity-60">
                           <div className="text-sm">
-                            <span className="font-medium text-gray-700">{schedule.classType}</span>
+                            <span className="font-medium text-gray-300">{schedule.classType}</span>
                             <span className="text-gray-400 mx-2">·</span>
-                            <span className="text-gray-500">{schedule.dayName} {formatTimeDisplay(schedule.startTime)}</span>
+                            <span className="text-gray-400">{schedule.dayName} {formatTimeDisplay(schedule.startTime)}</span>
                             <span className="text-gray-400 mx-2">·</span>
-                            <span className="text-gray-500">{schedule.coach}</span>
+                            <span className="text-gray-400">{schedule.coach}</span>
                           </div>
                           <button
                             onClick={() => handleToggleActive(schedule.id, false)}
@@ -998,14 +998,14 @@ export default function DefaultScheduleManager() {
       {/* Create Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 text-gray-700">Create Default Schedule</h2>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 text-gray-300">Create Default Schedule</h2>
+            <p className="text-sm text-gray-400 mb-4">
               This schedule will automatically generate classes each month. You can edit or remove specific classes later.
             </p>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Location *</label>
                 <select
                   value={form.locationId}
                   onChange={(e) => setForm({ ...form, locationId: e.target.value })}
@@ -1021,7 +1021,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Class Type *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Class Type *</label>
                 <select
                   value={form.classTypeId}
                   onChange={(e) => {
@@ -1040,7 +1040,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Coach *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Coach *</label>
                 <select
                   value={form.coachId}
                   onChange={(e) => setForm({ ...form, coachId: e.target.value })}
@@ -1059,7 +1059,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Day of Week *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Day of Week *</label>
                 <select
                   value={form.dayOfWeek}
                   onChange={(e) => setForm({ ...form, dayOfWeek: e.target.value })}
@@ -1077,19 +1077,19 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Start Time *</label>
                 <input type="time" value={form.startTime} onChange={(e) => setForm({ ...form, startTime: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800" required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Capacity *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Capacity *</label>
                 <input type="number" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800" min="1" required />
               </div>
             </div>
             <div className="flex gap-2 mt-6 justify-end">
-              <button onClick={closeCreateModal} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Cancel</button>
-              <button onClick={handleCreate} disabled={processing} className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] disabled:opacity-50">
+              <button onClick={closeCreateModal} className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-white/10">Cancel</button>
+              <button onClick={handleCreate} disabled={processing} className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 disabled:opacity-50">
                 {processing ? 'Creating...' : 'Create Schedule'}
               </button>
             </div>
@@ -1100,14 +1100,14 @@ export default function DefaultScheduleManager() {
       {/* Edit Modal */}
       {showEditModal && selectedSchedule && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 text-gray-700">Edit Default Schedule</h2>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 text-gray-300">Edit Default Schedule</h2>
+            <p className="text-sm text-gray-400 mb-4">
               Choose when to apply these changes.
             </p>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Location *</label>
                 <select
                   value={form.locationId}
                   onChange={(e) => setForm({ ...form, locationId: e.target.value })}
@@ -1123,7 +1123,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Class Type *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Class Type *</label>
                 <select
                   value={form.classTypeId}
                   onChange={(e) => {
@@ -1142,7 +1142,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Coach *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Coach *</label>
                 <select
                   value={form.coachId}
                   onChange={(e) => setForm({ ...form, coachId: e.target.value })}
@@ -1161,7 +1161,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Day of Week *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Day of Week *</label>
                 <select
                   value={form.dayOfWeek}
                   onChange={(e) => setForm({ ...form, dayOfWeek: e.target.value })}
@@ -1179,7 +1179,7 @@ export default function DefaultScheduleManager() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time (HH:MM) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Start Time (HH:MM) *</label>
                 <input
                   type="time"
                   value={form.startTime}
@@ -1189,7 +1189,7 @@ export default function DefaultScheduleManager() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Capacity *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Capacity *</label>
                 <input
                   type="number"
                   value={form.capacity}
@@ -1200,8 +1200,8 @@ export default function DefaultScheduleManager() {
                 />
               </div>
               
-              <div className="pt-2 pb-2 border-t border-gray-200">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Apply Changes To:</label>
+              <div className="pt-2 pb-2 border-t border-[#26262B]">
+                <label className="block text-sm font-medium text-gray-300 mb-3">Apply Changes To:</label>
                 <div className="space-y-2">
                   <label className="flex items-center cursor-pointer">
                     <input
@@ -1211,7 +1211,7 @@ export default function DefaultScheduleManager() {
                       onChange={() => setApplyToCurrentMonth(false)}
                       className="mr-2 h-4 w-4 text-[#000000] focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-300">
                       Future months only (recommended)
                     </span>
                   </label>
@@ -1223,12 +1223,12 @@ export default function DefaultScheduleManager() {
                       onChange={() => setApplyToCurrentMonth(true)}
                       className="mr-2 h-4 w-4 text-[#000000] focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-300">
                       This month and future months
                     </span>
                   </label>
                 </div>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-xs text-gray-400 mt-2">
                   {applyToCurrentMonth 
                     ? 'Warning: This will update existing classes this month. Classes with bookings may be affected.'
                     : 'Current and past months will remain unchanged.'}
@@ -1238,14 +1238,14 @@ export default function DefaultScheduleManager() {
             <div className="flex gap-2 mt-6 justify-end">
               <button
                 onClick={closeEditModal}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-white/10"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] disabled:opacity-50"
+                className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update Schedule'}
               </button>
@@ -1257,9 +1257,9 @@ export default function DefaultScheduleManager() {
       {/* Bulk Import Modal */}
       {showBulkImportModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 text-gray-700">Bulk Import Schedules</h2>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 text-gray-300">Bulk Import Schedules</h2>
+            <p className="text-sm text-gray-400 mb-4">
               Fill in the grid below to create multiple schedules at once. Select a class type for each time slot and day combination.
             </p>
             
@@ -1267,7 +1267,7 @@ export default function DefaultScheduleManager() {
             <div className="space-y-4 mb-6 pb-4 border-b">
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Location *</label>
                   <select
                     value={bulkForm.locationId}
                     onChange={(e) => setBulkForm({ ...bulkForm, locationId: e.target.value })}
@@ -1283,7 +1283,7 @@ export default function DefaultScheduleManager() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Coach *</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Coach *</label>
                   <select
                     value={bulkForm.coachId}
                     onChange={(e) => setBulkForm({ ...bulkForm, coachId: e.target.value })}
@@ -1302,11 +1302,11 @@ export default function DefaultScheduleManager() {
                     )}
                   </select>
                   {Array.isArray(coachesData) && coachesData.length === 0 && (
-                    <p className="mt-1 text-xs text-gray-500">No coaches found. Please create coaches first.</p>
+                    <p className="mt-1 text-xs text-gray-400">No coaches found. Please create coaches first.</p>
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Capacity *</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Capacity *</label>
                   <input
                     type="number"
                     value={bulkForm.capacity}
@@ -1320,7 +1320,7 @@ export default function DefaultScheduleManager() {
               
               {/* Schedule Duration */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Schedule Duration</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Schedule Duration</label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { value: 'ongoing', icon: '🔁', title: 'Ongoing', sub: 'Repeats every month' },
@@ -1334,7 +1334,7 @@ export default function DefaultScheduleManager() {
                       className={`flex flex-col items-center gap-1 p-3 rounded-lg border-2 text-center transition-all ${
                         bulkForm.scheduleScope === opt.value
                           ? 'border-[#000000] bg-orange-50 text-[#000000]'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          : 'border-[#26262B] text-gray-400 hover:border-white/30'
                       }`}
                     >
                       <span className="text-xl">{opt.icon}</span>
@@ -1403,10 +1403,10 @@ export default function DefaultScheduleManager() {
             {/* Time Slots Management */}
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">Time Slots</label>
+                <label className="block text-sm font-medium text-gray-300">Time Slots</label>
                 <button
                   onClick={addTimeSlot}
-                  className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                  className="px-3 py-1 text-sm bg-[#26262B] text-gray-300 rounded hover:bg-white/10"
                 >
                   + Add Time Slot
                 </button>
@@ -1435,31 +1435,31 @@ export default function DefaultScheduleManager() {
 
             {/* Schedule Grid */}
             <div className="overflow-x-auto mb-6">
-              <table className="min-w-full border border-gray-300">
+              <table className="min-w-full border border-[#26262B]">
                 <thead>
-                  <tr className="bg-gray-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                  <tr className="bg-[#121214]">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Time
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Sun
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Mon
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Tue
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Wed
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Thu
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Fri
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase border border-gray-300">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase border border-[#26262B]">
                       Sat
                     </th>
                   </tr>
@@ -1467,14 +1467,14 @@ export default function DefaultScheduleManager() {
                 <tbody>
                   {timeSlots.map((timeSlot, timeIndex) => (
                     <tr key={timeIndex}>
-                      <td className="px-4 py-3 border border-gray-300 font-medium bg-gray-50">
+                      <td className="px-4 py-3 border border-[#26262B] font-medium bg-[#121214] text-gray-300">
                         {timeSlot ? formatTimeDisplay(timeSlot) : `Time ${timeIndex + 1}`}
                       </td>
                       {[0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => {
                         const key = `${timeIndex}-${dayOfWeek}`;
                         const cell = scheduleGrid[key];
                         return (
-                          <td key={dayOfWeek} className="px-2 py-2 border border-gray-300">
+                          <td key={dayOfWeek} className="px-2 py-2 border border-[#26262B]">
                             <select
                               value={cell?.classTypeId || ''}
                               onChange={(e) => {
@@ -1511,7 +1511,7 @@ export default function DefaultScheduleManager() {
                   setShowConflictPreview(false);
                   setConflictPreview(null);
                 }}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-white/10"
               >
                 Cancel
               </button>
@@ -1530,8 +1530,8 @@ export default function DefaultScheduleManager() {
       {/* Conflict Preview Modal */}
       {showConflictPreview && conflictPreview && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-bold mb-4 text-gray-700">Conflict Detection</h2>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-bold mb-4 text-gray-300">Conflict Detection</h2>
             <div className="mb-4 space-y-2">
               <div className="p-3 bg-blue-50 rounded-lg">
                 <div className="text-sm font-medium text-blue-900">New Schedules: {conflictPreview.newSchedules}</div>
@@ -1550,7 +1550,7 @@ export default function DefaultScheduleManager() {
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 How should conflicts be handled?
               </label>
               <select
@@ -1569,7 +1569,7 @@ export default function DefaultScheduleManager() {
                   setShowConflictPreview(false);
                   setConflictPreview(null);
                 }}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-white/10"
               >
                 Cancel
               </button>
@@ -1591,31 +1591,31 @@ export default function DefaultScheduleManager() {
       {/* Pending Move Confirmation Modal */}
       {pendingMove && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h2 className="text-lg font-bold text-gray-900 mb-1">Move Schedule</h2>
-            <p className="text-sm text-gray-500 mb-4">
-              Moving <span className="font-semibold text-gray-800">{pendingMove.classType}</span> from{' '}
+          <div className="bg-[#16161a] border border-[#26262B] rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h2 className="text-lg font-bold text-white mb-1">Move Schedule</h2>
+            <p className="text-sm text-gray-400 mb-4">
+              Moving <span className="font-semibold text-gray-100">{pendingMove.classType}</span> from{' '}
               <span className="font-medium">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][pendingMove.fromDay]} {formatTimeDisplay(pendingMove.fromTime)}</span>{' '}
               to{' '}
-              <span className="font-medium text-[#000000]">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][pendingMove.toDay]} {formatTimeDisplay(pendingMove.toTime)}</span>
+              <span className="font-medium text-white">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][pendingMove.toDay]} {formatTimeDisplay(pendingMove.toTime)}</span>
             </p>
 
             <div className="mb-5">
-              <p className="text-sm font-medium text-gray-700 mb-2">Apply this change to:</p>
+              <p className="text-sm font-medium text-gray-300 mb-2">Apply this change to:</p>
               <div className="space-y-2">
-                <label className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
+                <label className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-white/5 transition-colors"
                   style={{ borderColor: !moveApplyCurrentMonth ? '#000000' : '#e5e7eb', background: !moveApplyCurrentMonth ? '#fff7f0' : '' }}>
                   <input type="radio" checked={!moveApplyCurrentMonth} onChange={() => setMoveApplyCurrentMonth(false)} className="mt-0.5 text-[#000000]" />
                   <div>
-                    <div className="text-sm font-medium text-gray-800">Future months only</div>
-                    <div className="text-xs text-gray-500">This month&apos;s classes stay as-is</div>
+                    <div className="text-sm font-medium text-gray-100">Future months only</div>
+                    <div className="text-xs text-gray-400">This month&apos;s classes stay as-is</div>
                   </div>
                 </label>
-                <label className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
+                <label className="flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-white/5 transition-colors"
                   style={{ borderColor: moveApplyCurrentMonth ? '#000000' : '#e5e7eb', background: moveApplyCurrentMonth ? '#fff7f0' : '' }}>
                   <input type="radio" checked={moveApplyCurrentMonth} onChange={() => setMoveApplyCurrentMonth(true)} className="mt-0.5 text-[#000000]" />
                   <div>
-                    <div className="text-sm font-medium text-gray-800">This month + future months</div>
+                    <div className="text-sm font-medium text-gray-100">This month + future months</div>
                     <div className="text-xs text-amber-600">Classes without bookings will be regenerated</div>
                   </div>
                 </label>
@@ -1625,14 +1625,14 @@ export default function DefaultScheduleManager() {
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => { setPendingMove(null); setMoveApplyCurrentMonth(false); }}
-                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                className="px-4 py-2 text-sm bg-[#1f1f23] text-gray-300 rounded-lg hover:bg-white/10"
               >
                 Cancel
               </button>
               <button
                 onClick={() => executeMoveSchedule(moveApplyCurrentMonth)}
                 disabled={movingSchedule}
-                className="px-4 py-2 text-sm bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] disabled:opacity-50 font-medium"
+                className="px-4 py-2 text-sm bg-white text-black rounded-lg hover:bg-gray-200 disabled:opacity-50 font-medium"
               >
                 {movingSchedule ? 'Moving...' : 'Confirm Move'}
               </button>
@@ -1644,12 +1644,12 @@ export default function DefaultScheduleManager() {
       {/* New Class Type Modal */}
       {showNewClassTypeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-xl">
-            <h2 className="text-lg font-bold text-gray-900 mb-1">New Class Type</h2>
-            <p className="text-sm text-gray-500 mb-4">This will be available in all schedule dropdowns immediately.</p>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-xl p-6 max-w-sm w-full shadow-xl">
+            <h2 className="text-lg font-bold text-white mb-1">New Class Type</h2>
+            <p className="text-sm text-gray-400 mb-4">This will be available in all schedule dropdowns immediately.</p>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Name *</label>
                 <input
                   type="text"
                   value={newClassTypeForm.name}
@@ -1660,7 +1660,7 @@ export default function DefaultScheduleManager() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Duration (minutes) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Duration (minutes) *</label>
                 <input
                   type="number"
                   value={newClassTypeForm.durationMinutes}
@@ -1670,7 +1670,7 @@ export default function DefaultScheduleManager() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description <span className="text-gray-400 font-normal">(optional)</span></label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Description <span className="text-gray-400 font-normal">(optional)</span></label>
                 <input
                   type="text"
                   value={newClassTypeForm.description}
@@ -1683,14 +1683,14 @@ export default function DefaultScheduleManager() {
             <div className="flex gap-2 mt-5 justify-end">
               <button
                 onClick={() => { setShowNewClassTypeModal(false); setNewClassTypeTarget(null); }}
-                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                className="px-4 py-2 text-sm bg-[#1f1f23] text-gray-300 rounded-lg hover:bg-white/10"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreateClassType}
                 disabled={creatingClassType || !newClassTypeForm.name.trim()}
-                className="px-4 py-2 text-sm bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] disabled:opacity-50 font-medium"
+                className="px-4 py-2 text-sm bg-white text-black rounded-lg hover:bg-gray-200 disabled:opacity-50 font-medium"
               >
                 {creatingClassType ? 'Creating...' : 'Create & Select'}
               </button>

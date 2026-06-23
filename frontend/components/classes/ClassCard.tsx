@@ -61,9 +61,9 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
+    <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
       {/* Header with class type */}
-      <div className="bg-gradient-to-r from-[#000000] to-[#1F1F1F] px-6 py-4">
+      <div className="bg-[#1f1f23] px-6 py-4">
         <h3 className="text-xl font-bold text-white">{classInstance.classType}</h3>
         <p className="text-gray-300 text-sm mt-1">{classInstance.duration} minutes</p>
       </div>
@@ -76,10 +76,10 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
           <div>
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-medium text-white">
               {format(startTime, 'EEEE, MMMM d, yyyy')}
             </p>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-400">
               {format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}
             </p>
           </div>
@@ -91,8 +91,8 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
           <div>
-            <p className="text-sm text-gray-600">Coach</p>
-            <p className="text-sm font-medium text-gray-900">{classInstance.coach.name}</p>
+            <p className="text-sm text-gray-400">Coach</p>
+            <p className="text-sm font-medium text-white">{classInstance.coach.name}</p>
           </div>
         </div>
 
@@ -103,8 +103,8 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <div>
-            <p className="text-sm font-medium text-gray-900">{classInstance.location.name}</p>
-            <p className="text-xs text-gray-500">{classInstance.location.address}</p>
+            <p className="text-sm font-medium text-white">{classInstance.location.name}</p>
+            <p className="text-xs text-gray-400">{classInstance.location.address}</p>
           </div>
         </div>
 
@@ -120,7 +120,7 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
 
         {/* Description (if available) */}
         {classInstance.description && (
-          <p className="text-sm text-gray-600 pt-2 border-t border-gray-100">
+          <p className="text-sm text-gray-400 pt-2 border-t border-gray-100">
             {classInstance.description}
           </p>
         )}
@@ -133,8 +133,8 @@ export default function ClassCard({ classInstance, onBook }: ClassCardProps) {
           disabled={classInstance.isFull}
           className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors duration-200 touch-target ${
             classInstance.isFull
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-[#000000] text-white hover:bg-[#1F1F1F] active:bg-[#E56A00]'
+              ? 'bg-[#1f1f23] text-gray-400 cursor-not-allowed'
+              : 'bg-white text-black hover:bg-gray-200 active:bg-[#E56A00]'
           }`}
         >
           {classInstance.isFull ? 'Class Full' : 'Book Class'}

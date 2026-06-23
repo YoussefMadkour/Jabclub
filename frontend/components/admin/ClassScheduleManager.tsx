@@ -652,13 +652,13 @@ export default function ClassScheduleManager() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                       <Link
                         href={`/admin/classes/${classInstance.id}/roster`}
-                        className="text-[#000000] hover:text-gray-600 font-medium"
+                        className="text-white hover:text-gray-400 font-medium"
                       >
                         View Class
                       </Link>
                       <button
                         onClick={() => openEditModal(classInstance)}
-                        className="text-[#000000] hover:text-gray-600 font-medium"
+                        className="text-white hover:text-gray-400 font-medium"
                       >
                         Edit
                       </button>
@@ -680,8 +680,8 @@ export default function ClassScheduleManager() {
       {/* Create Class Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Class</h3>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold text-white mb-4">Create New Class</h3>
             
             <div className="space-y-4">
               <div>
@@ -760,7 +760,7 @@ export default function ClassScheduleManager() {
                   setShowCreateModal(false);
                   resetForm();
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -773,7 +773,7 @@ export default function ClassScheduleManager() {
               <button
                 onClick={() => handleCreate(false)}
                 disabled={processing}
-                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create'}
               </button>
@@ -785,8 +785,8 @@ export default function ClassScheduleManager() {
       {/* Recurring Class Modal */}
       {showRecurringModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Recurring Classes</h3>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Create Recurring Classes</h3>
             
             <div className="space-y-4">
               <div>
@@ -816,7 +816,7 @@ export default function ClassScheduleManager() {
                 />
               </div>
 
-              <div className="text-center text-sm text-gray-500">OR</div>
+              <div className="text-center text-sm text-gray-400">OR</div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">End Date</label>
@@ -841,7 +841,7 @@ export default function ClassScheduleManager() {
                   setShowRecurringModal(false);
                   setShowCreateModal(true);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Back
               </button>
@@ -860,8 +860,8 @@ export default function ClassScheduleManager() {
       {/* Edit Class Modal */}
       {showEditModal && selectedClass && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Class</h3>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold text-white mb-4">Edit Class</h3>
             
             <div className="space-y-4">
               <div>
@@ -931,7 +931,7 @@ export default function ClassScheduleManager() {
                   onChange={(e) => setForm({ ...form, capacity: e.target.value })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Current bookings: {selectedClass.bookingCount}
                 </p>
               </div>
@@ -944,7 +944,7 @@ export default function ClassScheduleManager() {
                   onChange={(e) => setForm({ ...form, isCancelled: e.target.checked })}
                   className="h-4 w-4 text-[#000000] focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor="isCancelled" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="isCancelled" className="ml-2 block text-sm text-gray-300">
                   Mark as cancelled
                 </label>
               </div>
@@ -957,14 +957,14 @@ export default function ClassScheduleManager() {
                   setSelectedClass(null);
                   resetForm();
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Class'}
               </button>
@@ -976,19 +976,19 @@ export default function ClassScheduleManager() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && selectedClass && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete Class</h3>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Delete Class</h3>
+            <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to delete this class? All bookings will be cancelled and credits will be refunded to members.
             </p>
-            
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+
+            <div className="bg-[#121214] rounded-lg p-4 mb-4">
               <div className="text-sm">
-                <p className="font-medium text-gray-900">{selectedClass.classType.name}</p>
-                <p className="text-gray-600">{formatDate(selectedClass.startTime)}</p>
-                <p className="text-gray-600">Coach: {selectedClass.coach.name}</p>
-                <p className="text-gray-600">Location: {selectedClass.location.name}</p>
-                <p className="text-gray-600 font-medium mt-2">
+                <p className="font-medium text-white">{selectedClass.classType.name}</p>
+                <p className="text-gray-400">{formatDate(selectedClass.startTime)}</p>
+                <p className="text-gray-400">Coach: {selectedClass.coach.name}</p>
+                <p className="text-gray-400">Location: {selectedClass.location.name}</p>
+                <p className="text-gray-400 font-medium mt-2">
                   {selectedClass.bookingCount} booking{selectedClass.bookingCount !== 1 ? 's' : ''} will be cancelled
                 </p>
               </div>
@@ -1000,7 +1000,7 @@ export default function ClassScheduleManager() {
                   setShowDeleteModal(false);
                   setSelectedClass(null);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
