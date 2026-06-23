@@ -1055,6 +1055,19 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
+    // Cap manual credit grants to a sane maximum to prevent fat-finger errors.
+    const MAX_MANUAL_REFUND_CREDITS = 50;
+    if (creditsNum > MAX_MANUAL_REFUND_CREDITS) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'CREDITS_LIMIT_EXCEEDED',
+          message: `A single manual refund cannot exceed ${MAX_MANUAL_REFUND_CREDITS} credits.`
+        }
+      });
+      return;
+    }
+
     // Verify user exists
     const user = await prisma.user.findUnique({
       where: { id: parseInt(userId) },
@@ -1093,7 +1106,8 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
       include: {
         package: {
           select: {
-            name: true
+            name: true,
+            expiryDays: true
           }
         }
       }
@@ -1111,6 +1125,7 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
         include: {
           package: {
             select: {
+              expiryDays: true,
               name: true
             }
           }
@@ -1131,21 +1146,25 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
 
     // Use transaction to add credits and log transaction
     const result = await prisma.$transaction(async (tx) => {
+      // If the package was expired, reactivate it using the package's OWN validity
+      // period (expiryDays) rather than a hardcoded 30 days.
+      const wasExpired = targetPackage.isExpired || targetPackage.expiryDate < new Date();
+      const validityDays = targetPackage.package.expiryDays || 30;
+
       // Add credits to the package
       const updatedPackage = await tx.memberPackage.update({
         where: { id: targetPackage.id },
         data: {
           sessionsRemaining: targetPackage.sessionsRemaining + creditsNum,
-          // If package was expired, reactivate it if we're adding credits
           isExpired: false,
-          // Extend expiry if package was expired
-          expiryDate: targetPackage.isExpired || targetPackage.expiryDate < new Date()
-            ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Add 30 days from now
+          expiryDate: wasExpired
+            ? new Date(Date.now() + validityDays * 24 * 60 * 60 * 1000)
             : targetPackage.expiryDate
         }
       });
 
-      // Create credit transaction log
+      // Create credit transaction log (attributed to the acting admin)
+      const adminTag = `by admin #${req.user?.id ?? 'unknown'}`;
       await tx.creditTransaction.create({
         data: {
           userId: parseInt(userId),
@@ -1153,7 +1172,7 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
           transactionType: 'refund',
           creditsChange: creditsNum,
           balanceAfter: updatedPackage.sessionsRemaining,
-          notes: reason ? `Admin manual refund: ${reason}` : 'Admin manual refund'
+          notes: reason ? `Admin manual refund (${adminTag}): ${reason}` : `Admin manual refund (${adminTag})`
         }
       });
 
