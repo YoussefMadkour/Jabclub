@@ -16,6 +16,10 @@
     {
       "src": "api/cron/keep-warm.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/cron/process-expiry.ts",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -44,6 +48,10 @@
     {
       "path": "/api/cron/generate-classes",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/process-expiry",
+      "schedule": "0 7 * * *"
     }
   ]
 }

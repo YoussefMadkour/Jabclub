@@ -239,8 +239,13 @@ app.use(notFoundHandler);
 // Global error handler (must be last)
 app.use(errorHandler);
 
-// Initialize expiry scheduler
-initializeExpiryScheduler();
+// Initialize expiry scheduler — local/dev only. In production (Vercel serverless)
+// the in-process node-cron jobs don't run reliably, so the Vercel Cron endpoint
+// /api/cron/process-expiry handles this instead (see vercel.json). Running both
+// would risk duplicate emails.
+if (process.env.VERCEL !== '1' && process.env.VERCEL_ENV !== 'production') {
+  initializeExpiryScheduler();
+}
 
 // Initialize schedule generation - runs daily to ensure classes are always 2 months ahead
 // Only run in non-serverless environments (Vercel serverless functions have limited time)

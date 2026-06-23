@@ -1,4 +1,5 @@
 import rateLimit from 'express-rate-limit';
+import { makeRateLimitStore } from './rateLimitStore';
 
 /**
  * Rate limiter for authentication endpoints (login, signup)
@@ -7,6 +8,7 @@ import rateLimit from 'express-rate-limit';
  * Limits: 5 requests per 15 minutes per IP
  */
 export const authRateLimiter = rateLimit({
+  store: makeRateLimitStore('auth'),
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs
   message: {
@@ -31,6 +33,7 @@ export const authRateLimiter = rateLimit({
  * Limits: 100 requests per 15 minutes per IP
  */
 export const generalRateLimiter = rateLimit({
+  store: makeRateLimitStore('general'),
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
   message: {
@@ -51,6 +54,7 @@ export const generalRateLimiter = rateLimit({
  * Limits: 3 requests per hour per IP
  */
 export const passwordResetRateLimiter = rateLimit({
+  store: makeRateLimitStore('pwreset'),
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3, // Limit each IP to 3 requests per hour
   message: {
@@ -71,6 +75,7 @@ export const passwordResetRateLimiter = rateLimit({
  * Limits: 30 requests per minute per IP
  */
 export const currentUserRateLimiter = rateLimit({
+  store: makeRateLimitStore('me'),
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 30, // Limit each IP to 30 requests per minute
   message: {

@@ -9,7 +9,7 @@ import { SITE, PROGRAMS } from '@/lib/site';
 const STATS = [
   { value: 6, suffix: '', label: 'Days a week' },
   { value: 200, suffix: '+', label: 'Active members' },
-  { value: 4, suffix: '', label: 'Core disciplines' },
+  { value: 12, suffix: '', label: 'Classes a week' },
   { value: 100, suffix: '%', label: 'All ages welcome', isText: 'All ages' },
 ];
 
@@ -49,7 +49,7 @@ export default function Home() {
               a pro.
             </h1>
             <p className="mt-6 text-base sm:text-lg text-body max-w-xl leading-relaxed">
-              Boxing, kickboxing, and MMA, taught by certified coaches. Push your limits, build real
+              Kickboxing and MMA, taught by certified coaches. Push your limits, build real
               power, and master technique — for every level and every age.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row gap-3">

@@ -210,42 +210,54 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    // Store user in session
-    req.session.userId = user.id;
-    req.session.role = user.role;
-    
-    // Force session to be sent by resetting the cookie maxAge
-    // This ensures express-session ALWAYS sends the Set-Cookie header
-    req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 24 hours
-
-    // Save session explicitly (required for serverless/PostgreSQL store)
-    req.session.save((err) => {
-      if (err) {
-        console.error('Failed to save session during login:', err);
+    // Regenerate the session ID on login to prevent session fixation (a pre-login
+    // session token can't be reused after authentication).
+    req.session.regenerate((regenErr) => {
+      if (regenErr) {
+        console.error('Failed to regenerate session during login:', regenErr);
         res.status(500).json({
           success: false,
-          error: {
-            code: 'SESSION_ERROR',
-            message: 'Failed to create session'
-          }
+          error: { code: 'SESSION_ERROR', message: 'Failed to create session' }
         });
         return;
       }
 
+      // Store user in the fresh session
+      req.session.userId = user.id;
+      req.session.role = user.role;
 
-      // Return user data without password
-      res.status(200).json({
-        success: true,
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            role: user.role
-          }
+      // Force session to be sent by resetting the cookie maxAge
+      // This ensures express-session ALWAYS sends the Set-Cookie header
+      req.session.cookie.maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+      // Save session explicitly (required for serverless/PostgreSQL store)
+      req.session.save((err) => {
+        if (err) {
+          console.error('Failed to save session during login:', err);
+          res.status(500).json({
+            success: false,
+            error: {
+              code: 'SESSION_ERROR',
+              message: 'Failed to create session'
+            }
+          });
+          return;
         }
+
+        // Return user data without password
+        res.status(200).json({
+          success: true,
+          data: {
+            user: {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              phone: user.phone,
+              role: user.role
+            }
+          }
+        });
       });
     });
   } catch (error) {

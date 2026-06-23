@@ -4148,29 +4148,19 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
       }
     });
 
-    // Get total revenue (from approved payments)
-    const totalRevenue = await prisma.payment.aggregate({
-      where: {
-        status: 'approved'
-      },
-      _sum: {
-        amount: true
-      }
-    });
-
-    // Get this month's revenue
+    // Revenue is reported GROSS (VAT-inclusive). totalAmount holds the VAT-inclusive
+    // value but is null on older pre-VAT records, so we sum totalAmount where present
+    // and fall back to amount where it's null. (A single aggregate can't fall back
+    // per-row, hence the paired queries.)
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const thisMonthRevenue = await prisma.payment.aggregate({
-      where: {
-        status: 'approved',
-        reviewedAt: {
-          gte: startOfMonth
-        }
-      },
-      _sum: {
-        amount: true
-      }
-    });
+    const [totalWithVat, totalWithoutVat, monthWithVat, monthWithoutVat] = await Promise.all([
+      prisma.payment.aggregate({ where: { status: 'approved', totalAmount: { not: null } }, _sum: { totalAmount: true } }),
+      prisma.payment.aggregate({ where: { status: 'approved', totalAmount: null }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { status: 'approved', reviewedAt: { gte: startOfMonth }, totalAmount: { not: null } }, _sum: { totalAmount: true } }),
+      prisma.payment.aggregate({ where: { status: 'approved', reviewedAt: { gte: startOfMonth }, totalAmount: null }, _sum: { amount: true } }),
+    ]);
+    const totalRevenueGross = Number(totalWithVat._sum.totalAmount || 0) + Number(totalWithoutVat._sum.amount || 0);
+    const thisMonthRevenueGross = Number(monthWithVat._sum.totalAmount || 0) + Number(monthWithoutVat._sum.amount || 0);
 
     // Get recent pending payments (last 5)
     const recentPendingPayments = await prisma.payment.findMany({
@@ -4250,8 +4240,8 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
           weekBookings,
           upcomingClasses,
           todayClasses,
-          totalRevenue: totalRevenue._sum.amount ? Number(totalRevenue._sum.amount).toFixed(2) : '0.00',
-          thisMonthRevenue: thisMonthRevenue._sum.amount ? Number(thisMonthRevenue._sum.amount).toFixed(2) : '0.00'
+          totalRevenue: totalRevenueGross.toFixed(2),
+          thisMonthRevenue: thisMonthRevenueGross.toFixed(2)
         },
         recentPendingPayments: recentPendingPayments.map(payment => ({
           id: payment.id,

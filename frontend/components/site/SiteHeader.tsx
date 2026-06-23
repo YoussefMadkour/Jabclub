@@ -55,14 +55,8 @@ export default function SiteHeader() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-sm font-display uppercase tracking-wider text-foreground hover:text-headline transition-colors"
-            >
+            <Link href="/login" className="btn-primary text-xs px-5 py-2.5">
               Member Login
-            </Link>
-            <Link href="/#schedule" className="btn-primary text-xs px-5 py-2.5">
-              Start Training
             </Link>
           </div>
 
@@ -96,11 +90,8 @@ export default function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/login" className="py-3 text-base font-display uppercase tracking-wider text-foreground hover:text-headline">
+            <Link href="/login" className="btn-primary mt-4 w-full">
               Member Login
-            </Link>
-            <Link href="/#schedule" className="btn-primary mt-3 w-full">
-              Start Training
             </Link>
           </nav>
         </div>

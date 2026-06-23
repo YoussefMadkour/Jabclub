@@ -14,35 +14,23 @@ export const SITE = {
     map: 'https://maps.google.com/?q=30.045206,30.999186',
   },
   hours: [
-    { days: 'Mon – Wed', time: '9 AM – 4 PM' },
-    { days: 'Thu – Fri', time: '9 AM – 5 PM' },
-    { days: 'Weekend', time: 'Closed' },
+    { days: 'Sat – Thu', time: '9 AM – 10 PM' },
+    { days: 'Friday', time: 'Closed' },
   ],
 } as const;
 
+// Only what we actually run on the schedule: Adults Kickboxing + Kids & Juniors MMA.
 export const PROGRAMS = [
-  {
-    slug: 'boxing',
-    name: 'Boxing',
-    tagline: 'Footwork, speed, and punching accuracy.',
-    body: 'Sharpen your hands and your head. Boxing builds the footwork, timing, and conditioning every striker is measured against.',
-  },
   {
     slug: 'kickboxing',
     name: 'Kickboxing',
     tagline: 'Power, conditioning, real striking.',
-    body: 'Burn fat, build power, and learn striking that holds up under pressure — punches, kicks, knees, and the engine to throw them.',
+    body: 'Burn fat, build power, and learn striking that holds up under pressure — punches, kicks, knees, and the engine to throw them. Built for teens and adults.',
   },
   {
-    slug: 'kids-mma',
-    name: 'Kids MMA',
+    slug: 'mma',
+    name: 'MMA',
     tagline: 'Striking and grappling, safely structured.',
-    body: 'The foundations of striking and grappling for kids, taught in a safe, structured environment that builds discipline and confidence.',
-  },
-  {
-    slug: 'private',
-    name: 'Private Training',
-    tagline: 'One-on-one, faster results.',
-    body: 'Preparing to compete or just want to progress faster? Private sessions are built around you and accelerate everything.',
+    body: 'The foundations of mixed martial arts for kids and juniors — striking and grappling in a safe, structured environment that builds discipline and confidence.',
   },
 ] as const;
