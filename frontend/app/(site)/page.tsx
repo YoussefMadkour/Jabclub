@@ -49,7 +49,7 @@ export default function Home() {
               a pro.
             </h1>
             <p className="mt-6 text-base sm:text-lg text-body max-w-xl leading-relaxed">
-              Kickboxing and MMA, taught by certified coaches. Push your limits, build real
+              Kickboxing and martial arts, taught by certified coaches. Push your limits, build real
               power, and master technique — for every level and every age.
             </p>
             <div className="mt-9 flex flex-col sm:flex-row gap-3">
@@ -133,8 +133,8 @@ export default function Home() {
             <p className="eyebrow mb-3">Our programs</p>
             <h2 className="text-3xl lg:text-5xl font-bold text-headline">Programs for every fighter</h2>
             <p className="mt-4 text-body">
-              Precision, endurance, and discipline for all levels and ages — plus Brazilian Jiu-Jitsu,
-              wrestling, and our competitive <span className="text-headline">Apex Pro</span> track.
+              Precision, endurance, and discipline for kids, juniors, and adults — taught by
+              certified coaches.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-px bg-line border border-line">

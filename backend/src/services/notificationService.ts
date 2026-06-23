@@ -170,6 +170,64 @@ export const NotificationTemplates = {
   }),
 
   /**
+   * Class rescheduled (time / coach / location changed) notification
+   */
+  classRescheduled: (
+    name: string,
+    className: string,
+    date: string,
+    time: string,
+    location: string,
+    bookedFor?: string
+  ) => ({
+    emailSubject: `Class Updated: ${className} 🗓️`,
+    emailHtml: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #2563eb;">Your class has been updated</h1>
+        <p>Hi ${name},</p>
+        <p>The details of a class you're booked into have changed. Here are the new details:</p>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <p><strong>Class:</strong> ${className}</p>
+          ${bookedFor ? `<p><strong>Booked For:</strong> ${bookedFor}</p>` : ''}
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Time:</strong> ${time}</p>
+          <p><strong>Location:</strong> ${location}</p>
+        </div>
+        <p>Your booking is still confirmed — no action is needed. If the new time doesn't work, you can cancel from your dashboard.</p>
+        <p>Best regards,<br>The JabClub Team</p>
+      </div>
+    `,
+  }),
+
+  /**
+   * Class cancelled by the gym notification (credit refunded)
+   */
+  classCancelledByGym: (
+    name: string,
+    className: string,
+    date: string,
+    time: string,
+    bookedFor?: string
+  ) => ({
+    emailSubject: `Class Cancelled: ${className}`,
+    emailHtml: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #dc2626;">Class cancelled</h1>
+        <p>Hi ${name},</p>
+        <p>We're sorry — the following class has been cancelled by the gym:</p>
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <p><strong>Class:</strong> ${className}</p>
+          ${bookedFor ? `<p><strong>Booked For:</strong> ${bookedFor}</p>` : ''}
+          <p><strong>Date:</strong> ${date}</p>
+          <p><strong>Time:</strong> ${time}</p>
+        </div>
+        <p>Your session credit has been refunded to your account. We apologise for the inconvenience.</p>
+        <p>Best regards,<br>The JabClub Team</p>
+      </div>
+    `,
+  }),
+
+  /**
    * Package expiry warning notification
    */
   packageExpiryWarning: (name: string, packageName: string, sessionsRemaining: number, expiryDate: string) => ({

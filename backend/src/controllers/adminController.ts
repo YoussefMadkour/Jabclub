@@ -2165,6 +2165,12 @@ export const updateClassInstance = async (req: AuthRequest, res: Response): Prom
                 lastName: true,
                 email: true
               }
+            },
+            child: {
+              select: {
+                firstName: true,
+                lastName: true
+              }
             }
           }
         }
@@ -2318,8 +2324,69 @@ export const updateClassInstance = async (req: AuthRequest, res: Response): Prom
       }
     });
 
-    // Note: In a production system, you would send notifications to affected members here
-    const affectedMembers = existingClass.bookings.length;
+    const affectedBookings = existingClass.bookings;
+    const affectedMembers = affectedBookings.length;
+
+    // Determine what materially changed (for notifications).
+    const isBeingCancelled = updateData.isCancelled === true && !existingClass.isCancelled;
+    const timeChanged = updateData.startTime !== undefined &&
+      new Date(updateData.startTime).getTime() !== new Date(existingClass.startTime).getTime();
+    const coachChanged = updateData.coachId !== undefined && updateData.coachId !== existingClass.coachId;
+    const locationChanged = updateData.locationId !== undefined && updateData.locationId !== existingClass.locationId;
+    const wasRescheduled = !isBeingCancelled && (timeChanged || coachChanged || locationChanged);
+
+    let refundedCount = 0;
+
+    // If the class is being cancelled, cancel + refund every confirmed booking atomically.
+    if (isBeingCancelled && affectedMembers > 0) {
+      await prisma.$transaction(async (tx) => {
+        for (const booking of affectedBookings) {
+          await tx.booking.update({
+            where: { id: booking.id },
+            data: { status: 'cancelled', cancelledAt: new Date() }
+          });
+          const updatedPackage = await tx.memberPackage.update({
+            where: { id: booking.memberPackageId },
+            data: { sessionsRemaining: { increment: 1 } }
+          });
+          await tx.creditTransaction.create({
+            data: {
+              userId: booking.userId,
+              memberPackageId: booking.memberPackageId,
+              bookingId: booking.id,
+              transactionType: 'refund',
+              creditsChange: 1,
+              balanceAfter: updatedPackage.sessionsRemaining,
+              notes: `Refund — class "${updatedClass.classType.name}" cancelled by admin #${req.user?.id ?? 'unknown'}`
+            }
+          });
+          refundedCount++;
+        }
+      });
+    }
+
+    // Notify affected members (fire-and-forget; never block/break the response).
+    if ((isBeingCancelled || wasRescheduled) && affectedMembers > 0) {
+      const fmt = (d: Date) => ({
+        date: new Date(d).toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Africa/Cairo'
+        }),
+        time: new Date(d).toLocaleTimeString('en-US', {
+          hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Africa/Cairo'
+        }),
+      });
+      const { date, time } = fmt(updatedClass.startTime);
+      for (const booking of affectedBookings) {
+        const bookedFor = booking.child
+          ? `${booking.child.firstName} ${booking.child.lastName}`
+          : undefined;
+        const template = isBeingCancelled
+          ? NotificationTemplates.classCancelledByGym(booking.user.firstName, updatedClass.classType.name, date, time, bookedFor)
+          : NotificationTemplates.classRescheduled(booking.user.firstName, updatedClass.classType.name, date, time, updatedClass.location.name, bookedFor);
+        sendEmail(booking.user.email, template.emailSubject, template.emailHtml)
+          .catch((err) => console.error(`Failed to notify ${booking.user.email} of class change:`, err));
+      }
+    }
 
     res.json({
       success: true,
@@ -2335,7 +2402,13 @@ export const updateClassInstance = async (req: AuthRequest, res: Response): Prom
           isCancelled: updatedClass.isCancelled
         },
         affectedMembers,
-        message: `Class instance updated successfully${affectedMembers > 0 ? `. ${affectedMembers} member(s) have bookings for this class.` : ''}`
+        refundedCount,
+        notified: (isBeingCancelled || wasRescheduled) ? affectedMembers : 0,
+        message: isBeingCancelled
+          ? `Class cancelled. ${refundedCount} booking(s) refunded and notified.`
+          : wasRescheduled
+          ? `Class updated successfully. ${affectedMembers} member(s) notified of the change.`
+          : `Class instance updated successfully${affectedMembers > 0 ? `. ${affectedMembers} member(s) have bookings for this class.` : ''}`
       }
     });
   } catch (error) {

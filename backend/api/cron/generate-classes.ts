@@ -6,15 +6,18 @@ import { generateClassesFromSchedules } from '../../src/services/scheduleService
  * Runs daily at 2 AM (configured in vercel.json)
  */
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Verify this is a cron job request (Vercel adds a special header)
-  const authHeader = req.headers.authorization;
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    // In production, Vercel automatically adds the authorization header
-    // For local testing, you can set CRON_SECRET in your .env
-    if (process.env.VERCEL_ENV === 'production' && !authHeader) {
+  // Verify this is a cron job request (Vercel injects this header in prod).
+  // Fail CLOSED: when a CRON_SECRET is configured, the header must match exactly.
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) {
+    if (req.headers.authorization !== `Bearer ${cronSecret}`) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+  } else if (process.env.VERCEL_ENV === 'production') {
+    console.error('generate-classes cron called but CRON_SECRET is not set in production');
+    return res.status(401).json({ error: 'Unauthorized' });
   }
+  // Local/dev with no CRON_SECRET: allow for manual testing.
 
   try {
     console.log('🔄 Vercel Cron: Generating classes from schedules...');
