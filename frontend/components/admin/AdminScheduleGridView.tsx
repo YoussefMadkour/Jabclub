@@ -144,10 +144,31 @@ export default function AdminScheduleGridView() {
   };
 
   const handleSyncClasses = useCallback(async () => {
-    if (!confirm('This will delete ALL unbooked future classes and regenerate them from the current default schedule.\n\nClasses with existing bookings will NOT be deleted.\n\nContinue?')) return;
+    if (!selectedLocationId) {
+      setSyncMessage('✗ Please select a location before syncing.');
+      return;
+    }
     setSyncing(true);
     setSyncMessage(null);
     try {
+      // 1. Dry run first so the admin confirms against the real number affected.
+      const preview = await apiClient.post('/admin/schedules/force-resync', {
+        locationId: selectedLocationId,
+        dryRun: true
+      });
+      const wouldDelete = preview.data?.data?.wouldDelete ?? 0;
+
+      const ok = confirm(
+        `This will delete ${wouldDelete} unbooked class${wouldDelete !== 1 ? 'es' : ''} for this location ` +
+        `(from the start of this week) and regenerate them from the current default schedule.\n\n` +
+        `Classes with existing bookings will NOT be deleted.\n\nContinue?`
+      );
+      if (!ok) {
+        setSyncing(false);
+        return;
+      }
+
+      // 2. Real resync.
       const res = await apiClient.post('/admin/schedules/force-resync', {
         locationId: selectedLocationId
       });
