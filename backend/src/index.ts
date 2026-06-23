@@ -90,8 +90,10 @@ app.set('trust proxy', 1);
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:3000',
   'http://localhost:3001', // Allow the frontend running on port 3001
-  'https://app.jabclubegy.com', // Production frontend
-  'https://www.app.jabclubegy.com' // With www prefix
+  'https://app.jabclubegy.com', // Legacy production frontend
+  'https://www.app.jabclubegy.com', // With www prefix
+  'https://theapexmartialarts.com', // New Apex Martial Arts frontend
+  'https://www.theapexmartialarts.com' // With www prefix
 ].filter(Boolean); // Remove any undefined values
 
 app.use(cors({
