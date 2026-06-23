@@ -3905,14 +3905,19 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
       }
     });
 
+    // Revenue is reported GROSS (VAT-inclusive): use totalAmount when present,
+    // falling back to amount for older pre-VAT records.
+    const gross = (p: { amount: any; totalAmount: any }) =>
+      p.totalAmount != null ? Number(p.totalAmount) : Number(p.amount);
+
     // Calculate total revenue from approved payments
-    const totalRevenue = approvedPayments.reduce((sum, payment) => 
-      sum + Number(payment.amount), 0
+    const totalRevenue = approvedPayments.reduce((sum, payment) =>
+      sum + gross(payment), 0
     );
 
     // Calculate pending payment value
-    const pendingValue = pendingPayments.reduce((sum, payment) => 
-      sum + Number(payment.amount), 0
+    const pendingValue = pendingPayments.reduce((sum, payment) =>
+      sum + gross(payment), 0
     );
 
     // Break down by package type
@@ -3928,7 +3933,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
         };
       }
       acc[packageName].count++;
-      acc[packageName].revenue += Number(payment.amount);
+      acc[packageName].revenue += gross(payment);
       acc[packageName].totalSales = acc[packageName].count;
       return acc;
     }, {});
@@ -3956,7 +3961,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
         email: payment.user.email,
         package: payment.package.name,
         location: payment.location?.name || 'N/A',
-        amount: Number(payment.amount).toFixed(2),
+        amount: gross(payment).toFixed(2),
         approvedAt: payment.reviewedAt,
         submittedAt: payment.createdAt
       })),
@@ -3969,7 +3974,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
             acc[packageName] = { count: 0, value: 0 };
           }
           acc[packageName].count++;
-          acc[packageName].value += Number(payment.amount);
+          acc[packageName].value += gross(payment);
           return acc;
         }, {})
       }
@@ -3986,7 +3991,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
         };
       }
       acc[locationName].count++;
-      acc[locationName].revenue += Number(payment.amount);
+      acc[locationName].revenue += gross(payment);
       return acc;
     }, {});
 
@@ -4003,12 +4008,12 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
     // Handle CSV export
     if (format === 'csv') {
       const csvRows = [
-        ['Package', 'Session Count', 'Sales Count', 'Total Revenue'].join(','),
+        ['Package', 'Session Count', 'Sales Count', 'Total Revenue (EGP)'].join(','),
         ...packageSummary.map((pkg: any) => [
           pkg.packageName,
           pkg.sessionCount,
           pkg.count,
-          `$${pkg.revenue.toFixed(2)}`
+          `EGP ${pkg.revenue.toFixed(2)}`
         ].join(','))
       ];
 

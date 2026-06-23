@@ -28,7 +28,7 @@ export const createOrUpdateNote = async (req: AuthRequest, res: Response): Promi
       where: { id: userId }
     });
 
-    if (!coach || coach.role !== 'coach' && coach.role !== 'admin') {
+    if (!coach || (coach.role !== 'coach' && coach.role !== 'admin')) {
       res.status(403).json({
         success: false,
         error: {
@@ -432,8 +432,8 @@ export const markAttendance = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Verify coach is assigned to this class
-    if (booking.classInstance.coachId !== userId) {
+    // Verify coach is assigned to this class (admins have full access)
+    if (booking.classInstance.coachId !== userId && req.user?.role !== 'admin') {
       res.status(403).json({
         success: false,
         error: {
@@ -566,8 +566,8 @@ export const getClassRoster = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Verify coach is assigned to this class
-    if (classInstance.coachId !== userId) {
+    // Verify coach is assigned to this class (admins have full access)
+    if (classInstance.coachId !== userId && req.user?.role !== 'admin') {
       res.status(403).json({
         success: false,
         error: {

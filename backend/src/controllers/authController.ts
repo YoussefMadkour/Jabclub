@@ -89,20 +89,6 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      // Log session info for debugging
-      console.log('Session saved:', {
-        sessionId: req.sessionID,
-        userId: req.session.userId,
-        cookieName: 'jabclub.sid',
-        cookieConfig: {
-          domain: req.session.cookie.domain,
-          secure: req.session.cookie.secure,
-          sameSite: req.session.cookie.sameSite,
-          httpOnly: req.session.cookie.httpOnly,
-          path: req.session.cookie.path,
-          maxAge: req.session.cookie.maxAge,
-        },
-      });
 
       // Send signup success notification (non-blocking)
       const template = NotificationTemplates.signupSuccess(user.firstName);
@@ -246,20 +232,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      // Log session info for debugging
-      console.log('Session saved:', {
-        sessionId: req.sessionID,
-        userId: req.session.userId,
-        cookieName: 'jabclub.sid',
-        cookieConfig: {
-          domain: req.session.cookie.domain,
-          secure: req.session.cookie.secure,
-          sameSite: req.session.cookie.sameSite,
-          httpOnly: req.session.cookie.httpOnly,
-          path: req.session.cookie.path,
-          maxAge: req.session.cookie.maxAge,
-        },
-      });
 
       // Return user data without password
       res.status(200).json({
@@ -327,21 +299,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
 
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Debug logging
-    console.log('👤 getCurrentUser - Session check:', {
-      sessionID: req.sessionID,
-      hasSession: !!req.session,
-      userId: req.session?.userId,
-      role: req.session?.role,
-      cookie: req.headers.cookie,
-      sessionCookie: req.cookies?.['jabclub.sid'],
-    });
-
     if (!req.session.userId) {
-      console.warn('⚠️ getCurrentUser - No userId in session:', {
-        sessionID: req.sessionID,
-        sessionKeys: Object.keys(req.session || {}),
-      });
       res.status(401).json({
         success: false,
         error: {

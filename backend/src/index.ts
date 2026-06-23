@@ -104,14 +104,18 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // Allow Vercel preview URLs (e.g., https://jabclub-xxx.vercel.app)
-    if (origin.includes('.vercel.app')) {
-      console.log('✅ Allowing Vercel preview URL:', origin);
-      return callback(null, true);
+    // Allow Vercel preview URLs (strict suffix match, e.g. https://jabclub-xxx.vercel.app)
+    try {
+      const host = new URL(origin).hostname;
+      if (host === 'vercel.app' || host.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch {
+      // malformed origin — fall through to reject
     }
-    
+
     console.warn(`CORS blocked origin: ${origin}`);
-    callback(null, true); // Allow all origins in production for now (can be restricted later)
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
