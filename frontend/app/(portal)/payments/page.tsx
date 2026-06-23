@@ -73,7 +73,7 @@ export default function PaymentsPage() {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
           <p className="mt-4 text-gray-400">Loading payment history...</p>
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function PaymentsPage() {
                         console.log('Opening image URL:', imageUrl);
                         window.open(imageUrl, '_blank');
                       }}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
+                      className="text-white hover:text-gray-400 mr-3"
                     >
                       View Receipt
                     </button>

@@ -70,7 +70,7 @@ export default function ProfilePage() {
   };
 
   const inputClass =
-    'w-full px-3 py-2 bg-input border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-gray-800 form-input-mobile';
+    'w-full px-3 py-2 bg-input border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-gray-100 form-input-mobile';
   const labelClass = 'block text-sm font-medium text-headline mb-1';
 
   return (

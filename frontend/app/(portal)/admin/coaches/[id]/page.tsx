@@ -72,7 +72,7 @@ export default function AdminCoachDetailsPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
           <p className="mt-4 text-gray-400">Loading...</p>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default function AdminCoachDetailsPage() {
                       : coach.isFrozen
                       ? 'bg-red-100 text-red-800'
                       : coach.deletedAt
-                      ? 'bg-gray-100 text-gray-800'
+                      ? 'bg-[#1f1f23] text-gray-300'
                       : 'bg-green-100 text-green-800'
                   }`}
                 >
@@ -176,7 +176,7 @@ export default function AdminCoachDetailsPage() {
             </div>
             <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
               <p className="text-sm text-gray-400">Upcoming</p>
-              <p className="text-2xl font-bold text-blue-600">{coach.stats.upcomingClasses}</p>
+              <p className="text-2xl font-bold text-white">{coach.stats.upcomingClasses}</p>
             </div>
             <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
               <p className="text-sm text-gray-400">Past</p>
@@ -262,7 +262,7 @@ export default function AdminCoachDetailsPage() {
                                 ? 'bg-red-100 text-red-800'
                                 : new Date(cls.startTime) >= new Date()
                                 ? 'bg-blue-100 text-blue-800'
-                                : 'bg-gray-100 text-gray-800'
+                                : 'bg-[#1f1f23] text-gray-300'
                             }`}
                           >
                             {cls.isCancelled ? 'Cancelled' : new Date(cls.startTime) >= new Date() ? 'Upcoming' : 'Past'}

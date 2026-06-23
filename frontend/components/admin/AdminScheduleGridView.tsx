@@ -204,7 +204,7 @@ export default function AdminScheduleGridView() {
   }
 
   return (
-    <div className="bg-gray-900 min-h-screen p-3 sm:p-6">
+    <div className="bg-[#0c0c0e] min-h-screen p-3 sm:p-6">
       {/* Header */}
       <div className="mb-4 sm:mb-6">
         <div className="text-gray-400 text-xs sm:text-sm font-medium mb-1 sm:mb-2 tracking-[0.3em] uppercase">ADMIN CLASS SCHEDULE</div>
@@ -215,7 +215,7 @@ export default function AdminScheduleGridView() {
           <select
             value={selectedLocationId || ''}
             onChange={(e) => setSelectedLocationId(Number(e.target.value))}
-            className="bg-gray-800 text-white border border-gray-700 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base flex-1 sm:flex-none"
+            className="bg-[#16161a] text-white border border-[#26262B] rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base flex-1 sm:flex-none"
           >
             {locations.map((loc) => (
               <option key={loc.id} value={loc.id}>
@@ -228,7 +228,7 @@ export default function AdminScheduleGridView() {
           <button
             onClick={handleSyncClasses}
             disabled={syncing}
-            className="flex items-center gap-1.5 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white px-3 py-2 rounded text-xs sm:text-sm transition-colors"
+            className="flex items-center gap-1.5 bg-[#26262B] hover:bg-[#33333a] disabled:opacity-50 text-white px-3 py-2 rounded text-xs sm:text-sm transition-colors"
             title="Remove outdated classes and regenerate from current schedule"
           >
             <svg className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,7 +250,7 @@ export default function AdminScheduleGridView() {
             </button>
             <button
               onClick={handleToday}
-              className="bg-gray-700 hover:bg-gray-600 text-white px-3 sm:px-4 py-2 rounded text-xs sm:text-sm touch-target"
+              className="bg-[#26262B] hover:bg-[#33333a] text-white px-3 sm:px-4 py-2 rounded text-xs sm:text-sm touch-target"
             >
               Today
             </button>
@@ -301,7 +301,7 @@ export default function AdminScheduleGridView() {
         </div>
       )}
 
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
+      <div className="bg-[#16161a] rounded-lg overflow-hidden">
         {timeSlots.length === 0 && !isLoading && (
           <div className="py-16 text-center text-gray-500 text-sm">
             No classes scheduled for this week at this location.
@@ -312,13 +312,13 @@ export default function AdminScheduleGridView() {
             {/* Header Row */}
             <thead>
               <tr>
-                <th className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs font-medium py-2 sm:py-3 px-3 sm:px-4 text-left border-r border-gray-700 sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
+                <th className="bg-[#16161a] text-gray-400 text-[10px] sm:text-xs font-medium py-2 sm:py-3 px-3 sm:px-4 text-left border-r border-[#26262B] sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
                   TIME
                 </th>
                 {daysOfWeek.map((day) => (
                   <th
                     key={day.toISOString()}
-                    className="bg-gray-800 text-white text-[10px] sm:text-xs font-medium py-2 sm:py-3 px-1 sm:px-4 text-center border-r border-gray-700 last:border-r-0 min-w-[80px] sm:min-w-[100px]"
+                    className="bg-[#16161a] text-white text-[10px] sm:text-xs font-medium py-2 sm:py-3 px-1 sm:px-4 text-center border-r border-[#26262B] last:border-r-0 min-w-[80px] sm:min-w-[100px]"
                   >
                     <div className="hidden sm:block">{format(day, 'EEEE').toUpperCase()}</div>
                     <div className="sm:hidden">{format(day, 'EEE').toUpperCase()}</div>
@@ -330,9 +330,9 @@ export default function AdminScheduleGridView() {
             {/* Time Slot Rows */}
             <tbody>
               {timeSlots.map((timeSlot, slotIndex) => (
-                <tr key={`${timeSlot.start}-${timeSlot.end}`} className="border-b border-gray-700">
+                <tr key={`${timeSlot.start}-${timeSlot.end}`} className="border-b border-[#26262B]">
                   {/* Time Column */}
-                  <td className="bg-gray-800 text-gray-400 text-[10px] sm:text-xs py-2 sm:py-4 px-3 sm:px-4 border-r border-gray-700 whitespace-nowrap sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
+                  <td className="bg-[#16161a] text-gray-400 text-[10px] sm:text-xs py-2 sm:py-4 px-3 sm:px-4 border-r border-[#26262B] whitespace-nowrap sticky left-0 z-10 min-w-[70px] sm:min-w-auto">
                     <div className="hidden sm:block">{formatTime12Hour(timeSlot.start)} - {formatTime12Hour(timeSlot.end)}</div>
                     <div className="sm:hidden font-medium">{formatTime12Hour(timeSlot.start)}</div>
                   </td>
@@ -346,14 +346,14 @@ export default function AdminScheduleGridView() {
                     return (
                       <td
                         key={`${day.toISOString()}-${timeSlot.start}`}
-                        className={`py-2 px-1 sm:py-4 sm:px-4 border-r border-gray-700 last:border-r-0 text-center transition-all ${
+                        className={`py-2 px-1 sm:py-4 sm:px-4 border-r border-[#26262B] last:border-r-0 text-center transition-all ${
                           classInstance
                             ? classInstance.isCancelled
                               ? 'bg-red-600 text-white'
                               : 'bg-white text-black'
                             : isToday
-                            ? 'bg-gray-700 text-gray-500'
-                            : 'bg-gray-800 text-gray-500'
+                            ? 'bg-[#26262B] text-gray-500'
+                            : 'bg-[#16161a] text-gray-500'
                         }`}
                       >
                         {classInstance ? (
@@ -405,7 +405,7 @@ export default function AdminScheduleGridView() {
           <span className="text-gray-400">Cancelled</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-700 rounded"></div>
+          <div className="w-4 h-4 bg-[#26262B] rounded"></div>
           <span className="text-gray-400">Today</span>
         </div>
       </div>
