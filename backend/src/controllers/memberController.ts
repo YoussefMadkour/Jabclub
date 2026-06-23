@@ -8,6 +8,9 @@ import { sendNotification, NotificationTemplates } from '../services/notificatio
 import { uploadToBlob } from '../services/blobService';
 import { generateFileName } from '../middleware/upload';
 import { AppError, BookingError } from '../utils/errors';
+import bcrypt from 'bcrypt';
+import { validationResult } from 'express-validator';
+import { invalidateUserCache } from '../middleware/auth';
 
 /**
  * GET /api/members/credits
@@ -302,6 +305,22 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
         error: {
           code: 'VALIDATION_ERROR',
           message: 'Payment screenshot is required'
+        }
+      });
+      return;
+    }
+
+    // Prevent duplicate submissions: block if a pending payment for this same
+    // package is already awaiting admin review.
+    const pendingForPackage = await prisma.payment.findFirst({
+      where: { userId, packageId: parseInt(packageId), status: 'pending' }
+    });
+    if (pendingForPackage) {
+      res.status(409).json({
+        success: false,
+        error: {
+          code: 'PAYMENT_PENDING',
+          message: 'You already have a pending payment for this package awaiting approval. Please wait for it to be reviewed.'
         }
       });
       return;
@@ -1368,16 +1387,19 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
     });
 
     if (user) {
+      // Format in Egypt local time so the email matches what members see in the UI
       const classDate = new Date(result.classInstance.startTime).toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
+        timeZone: 'Africa/Cairo'
       });
       const classTime = new Date(result.classInstance.startTime).toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: 'Africa/Cairo'
       });
       const bookedFor = result.child 
         ? `${result.child.firstName} ${result.child.lastName}`
@@ -1854,3 +1876,96 @@ export const deleteChild = async (req: AuthRequest, res: Response): Promise<void
     });
   }
 }
+
+/**
+ * PUT /api/members/profile
+ * Update the authenticated member's own name / phone.
+ */
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'User not authenticated' } });
+      return;
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input data', details: errors.array() }
+      });
+      return;
+    }
+
+    const { firstName, lastName, phone } = req.body;
+    const data: { firstName?: string; lastName?: string; phone?: string | null } = {};
+    if (firstName !== undefined) data.firstName = firstName.trim();
+    if (lastName !== undefined) data.lastName = lastName.trim();
+    if (phone !== undefined) data.phone = phone ? phone.trim() : null;
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data,
+      select: { id: true, email: true, firstName: true, lastName: true, phone: true, role: true }
+    });
+    await invalidateUserCache(userId);
+
+    res.json({ success: true, data: { user: updated, message: 'Profile updated successfully' } });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'An error occurred while updating your profile' } });
+  }
+};
+
+/**
+ * PUT /api/members/password
+ * Change the authenticated member's password (requires the current password).
+ */
+export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'User not authenticated' } });
+      return;
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input data', details: errors.array() }
+      });
+      return;
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user || !user.passwordHash) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'OAUTH_ONLY', message: 'This account uses Google sign-in and has no password to change.' }
+      });
+      return;
+    }
+
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_PASSWORD', message: 'Your current password is incorrect.' }
+      });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    await invalidateUserCache(userId);
+
+    res.json({ success: true, data: { message: 'Password changed successfully' } });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'An error occurred while changing your password' } });
+  }
+};

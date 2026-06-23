@@ -98,6 +98,27 @@ export const NotificationTemplates = {
   }),
 
   /**
+   * Password reset request
+   */
+  passwordReset: (name: string, resetUrl: string) => ({
+    emailSubject: 'Reset your JabClub password',
+    emailHtml: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #2563eb;">Password reset requested</h1>
+        <p>Hi ${name},</p>
+        <p>We received a request to reset your JabClub password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
+        <p style="margin: 24px 0;">
+          <a href="${resetUrl}" style="background:#2563eb;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block;">Reset password</a>
+        </p>
+        <p>If the button doesn't work, copy this link into your browser:</p>
+        <p style="word-break:break-all;color:#555;">${resetUrl}</p>
+        <p>If you didn't request this, you can safely ignore this email — your password won't change.</p>
+        <p>Best regards,<br>The JabClub Team</p>
+      </div>
+    `,
+  }),
+
+  /**
    * Package purchase approval notification
    */
   packagePurchaseApproved: (name: string, packageName: string, sessions: number, expiryDate: string) => ({

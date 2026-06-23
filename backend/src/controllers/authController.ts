@@ -1,9 +1,14 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import prisma from '../config/database';
+import { config } from '../config/env';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
 import { invalidateUserCache } from '../middleware/auth';
+
+const hashToken = (token: string): string =>
+  crypto.createHash('sha256').update(token).digest('hex');
 
 // Extend session type
 declare module 'express-session' {
@@ -426,5 +431,113 @@ export const googleAuthCallback = async (req: Request, res: Response): Promise<v
   } catch (error) {
     console.error('Google OAuth callback error:', error);
     res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=google_auth_failed`);
+  }
+};
+
+/**
+ * POST /api/auth/forgot-password
+ * Always responds generically (no account enumeration). If the email maps to a
+ * password account, stores a hashed, time-limited token and emails a reset link.
+ */
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  // Generic response regardless of whether the account exists
+  const generic = () =>
+    res.status(200).json({
+      success: true,
+      data: { message: 'If an account exists for that email, a reset link has been sent.' }
+    });
+
+  try {
+    const { email } = req.body;
+    if (!email || typeof email !== 'string') {
+      generic();
+      return;
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+
+    // Only issue a reset for active, password-based accounts. OAuth-only users
+    // (no passwordHash) and suspended/deleted accounts get the same generic reply.
+    if (user && user.passwordHash && !user.deletedAt && !user.isFrozen && !user.isPaused) {
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      const resetTokenHash = hashToken(rawToken);
+      const resetTokenExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { resetTokenHash, resetTokenExpiry }
+      });
+
+      const resetUrl = `${config.frontendUrl}/reset-password?token=${rawToken}`;
+      const template = NotificationTemplates.passwordReset(user.firstName, resetUrl);
+      sendNotification(
+        { email: user.email, name: `${user.firstName} ${user.lastName}` },
+        template.emailSubject,
+        template.emailHtml
+      ).catch((err) => console.error('Failed to send reset email:', err));
+    }
+
+    generic();
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    // Still respond generically to avoid leaking anything
+    generic();
+  }
+};
+
+/**
+ * POST /api/auth/reset-password
+ * Consumes a valid, unexpired token and sets a new password.
+ */
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input data', details: errors.array() }
+      });
+      return;
+    }
+
+    const { token, password } = req.body;
+    if (!token || typeof token !== 'string') {
+      res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_TOKEN', message: 'This reset link is invalid or has expired.' }
+      });
+      return;
+    }
+
+    const resetTokenHash = hashToken(token);
+    const user = await prisma.user.findFirst({
+      where: { resetTokenHash, resetTokenExpiry: { gt: new Date() } }
+    });
+
+    if (!user) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_TOKEN', message: 'This reset link is invalid or has expired.' }
+      });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash, resetTokenHash: null, resetTokenExpiry: null }
+    });
+    await invalidateUserCache(user.id);
+
+    res.status(200).json({
+      success: true,
+      data: { message: 'Your password has been reset. You can now log in.' }
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      error: { code: 'SERVER_ERROR', message: 'An error occurred while resetting your password' }
+    });
   }
 };

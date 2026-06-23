@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import passport from 'passport';
-import { signup, login, logout, getCurrentUser, googleAuthCallback } from '../controllers/authController';
-import { signupValidation, loginValidation } from '../middleware/validators';
-import { authRateLimiter, currentUserRateLimiter } from '../middleware/rateLimiter';
+import { signup, login, logout, getCurrentUser, googleAuthCallback, forgotPassword, resetPassword } from '../controllers/authController';
+import { signupValidation, loginValidation, forgotPasswordValidation, resetPasswordValidation } from '../middleware/validators';
+import { authRateLimiter, currentUserRateLimiter, passwordResetRateLimiter } from '../middleware/rateLimiter';
 
 const router = Router();
 
@@ -16,6 +16,12 @@ router.post('/login', authRateLimiter, loginValidation, login);
 
 // POST /api/auth/logout - Logout user
 router.post('/logout', logout);
+
+// POST /api/auth/forgot-password - Request a password reset link
+router.post('/forgot-password', passwordResetRateLimiter, forgotPasswordValidation, forgotPassword);
+
+// POST /api/auth/reset-password - Set a new password using a reset token
+router.post('/reset-password', passwordResetRateLimiter, resetPasswordValidation, resetPassword);
 
 // GET /api/auth/me - Get current user
 // Rate limited but more lenient as it's called frequently

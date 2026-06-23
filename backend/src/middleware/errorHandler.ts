@@ -276,9 +276,9 @@ function handleMulterError(err: multer.MulterError): {
         statusCode: 400,
         error: {
           code: 'FILE_TOO_LARGE',
-          message: 'The uploaded file is too large',
+          message: 'The uploaded file is too large. Maximum size is 10MB.',
           details: {
-            maxSize: '5MB',
+            maxSize: '10MB',
             field: err.field
           }
         }
