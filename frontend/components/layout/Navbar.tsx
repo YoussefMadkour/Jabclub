@@ -125,6 +125,15 @@ const Navbar = () => {
                     <div className="text-xs text-muted">{user.email}</div>
                     <div className="text-xs text-muted capitalize mt-1">Role: {user.role}</div>
                   </div>
+                  {user.role === 'member' && (
+                    <Link
+                      href="/profile"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="block w-full text-left px-4 py-2 text-sm text-body hover:bg-input transition-colors"
+                    >
+                      My Profile
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-body hover:bg-input transition-colors"
