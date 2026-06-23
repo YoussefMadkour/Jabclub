@@ -186,7 +186,7 @@ export default function PaymentUpload({
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             isDragging
-              ? 'border-[#FF7A00] bg-orange-50'
+              ? 'border-[#000000] bg-orange-50'
               : 'border-gray-300 hover:border-gray-400'
           }`}
         >
@@ -218,7 +218,7 @@ export default function PaymentUpload({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-[#FF7A00] hover:text-[#F57A00] font-semibold"
+            className="text-[#000000] hover:text-[#1F1F1F] font-semibold"
           >
             browse files
           </button>
@@ -262,7 +262,7 @@ export default function PaymentUpload({
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
-                  className="bg-[#FF7A00] h-2 rounded-full transition-all duration-300"
+                  className="bg-[#000000] h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -296,7 +296,7 @@ export default function PaymentUpload({
         <button
           onClick={handleUpload}
           disabled={!selectedFile || uploading}
-          className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+          className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
         >
           {uploading ? 'Uploading...' : 'Submit Payment'}
         </button>

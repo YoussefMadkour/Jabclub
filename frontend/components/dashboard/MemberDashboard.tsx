@@ -59,7 +59,7 @@ export default function MemberDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading dashboard...</p>
           </div>
       </div>
@@ -97,7 +97,7 @@ export default function MemberDashboard() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <p className="text-sm text-gray-600 mb-1">Available Credits</p>
-            <p className="text-4xl font-bold text-[#FF7A00]">{credits.total}</p>
+            <p className="text-4xl font-bold text-[#000000]">{credits.total}</p>
           </div>
           
           {/* Visual indicator */}
@@ -138,7 +138,7 @@ export default function MemberDashboard() {
               </div>
               <div className="text-right">
                 <p className={`text-lg font-bold ${
-                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-600' : 'text-[#FF7A00]'
+                  nextExpiringPackage.daysUntilExpiry <= 7 ? 'text-red-600' : 'text-[#000000]'
                 }`}>
                   {nextExpiringPackage.daysUntilExpiry} days
                 </p>
@@ -156,7 +156,7 @@ export default function MemberDashboard() {
             <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Active Packages</h3>
             {credits.packages.map((pkg: any) => {
               const isExpiringSoon = pkg.daysUntilExpiry <= 7;
-              const progressColor = isExpiringSoon ? 'bg-red-600' : 'bg-[#FF7A00]';
+              const progressColor = isExpiringSoon ? 'bg-red-600' : 'bg-[#000000]';
               
               return (
                 <div 
@@ -267,7 +267,7 @@ export default function MemberDashboard() {
             <p className="text-gray-600 mb-2">No active packages</p>
             <button 
               onClick={() => router.push('/purchase')}
-              className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors touch-target"
+              className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors touch-target"
             >
               Purchase Package
             </button>
@@ -288,7 +288,7 @@ export default function MemberDashboard() {
               const canCancel = hoursUntilClass >= 1;
 
               return (
-                <div key={booking.id} className="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors">
+                <div key={booking.id} className="border border-gray-200 rounded-lg p-4 hover:border-gray-400 transition-colors">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
@@ -382,7 +382,7 @@ export default function MemberDashboard() {
             <p className="text-gray-600 mb-2">No upcoming bookings</p>
             <button 
               onClick={() => router.push('/classes')}
-              className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors touch-target"
+              className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors touch-target"
             >
               Browse Classes
             </button>

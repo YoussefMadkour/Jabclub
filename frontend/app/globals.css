@@ -1,11 +1,30 @@
 @import "tailwindcss";
 
+/*
+  APEX MARTIAL ARTS — design system
+  Inverted monochrome. Black is the field (the logo's native ground),
+  white is the brand. No chromatic accent: the only "color" is light.
+*/
+
 :root {
-  --background: #0D0D0D;
-  --foreground: #CFCFCF;
-  --primary: #FF7A00;
-  --accent: #7A1E1E;
-  --headline: #FFFFFF;
+  --background: #000000;   /* the logo's field */
+  --surface: #0E0E10;      /* cards */
+  --surface-2: #161619;    /* elevated / inputs / hover */
+  --line: #26262B;         /* hairline borders */
+  --foreground: #9A9CA3;   /* body text */
+  --muted: #5E6066;        /* captions, meta */
+  --headline: #FFFFFF;     /* headings */
+
+  --primary: #FFFFFF;      /* brand action — white fill */
+  --primary-ink: #000000;  /* text on primary */
+  --accent: #2A2A30;       /* graphite, for subtle gradients/fills */
+
+  /* functional status only — kept muted to sit inside the monochrome */
+  --success: #57C98A;
+  --warning: #D9A441;
+  --danger: #E15B54;
+
+  --radius: 2px;
 }
 
 @theme inline {
@@ -14,16 +33,19 @@
   --color-primary: var(--primary);
   --color-accent: var(--accent);
   --color-headline: var(--headline);
-  --font-sans: var(--font-geist-sans);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0D0D0D;
-    --foreground: #CFCFCF;
-    --primary: #FF7A00;
-    --accent: #7A1E1E;
+    --background: #000000;
+    --foreground: #9A9CA3;
+    --primary: #FFFFFF;
+    --accent: #2A2A30;
     --headline: #FFFFFF;
   }
 }
@@ -31,18 +53,48 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Display face carries the brand personality on every heading */
+h1, h2, h3, h4, h5, h6, .font-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Eyebrow / label — echoes the logo's wide tracked "MARTIAL ARTS" line */
+.eyebrow {
+  font-family: var(--font-display), system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Signature: the triple-bar "E" mark from the wordmark, as a structural device */
+.bar-mark {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 22px;
+}
+.bar-mark span {
+  display: block;
+  height: 3px;
+  background: var(--headline);
+}
+.bar-mark span:nth-child(2) { width: 70%; }
+.bar-mark span:nth-child(3) { width: 85%; }
 
 /* Responsive utilities */
 @layer utilities {
-  /* Minimum touch target size for mobile (44x44px) */
   .touch-target {
     min-width: 44px;
     min-height: 44px;
   }
 
-  /* Responsive grid layouts */
   .grid-responsive {
     display: grid;
     gap: 1rem;
@@ -67,13 +119,11 @@ body {
     }
   }
 
-  /* Form input optimization for mobile */
   .form-input-mobile {
     font-size: 16px; /* Prevents zoom on iOS */
     padding: 0.75rem;
   }
 
-  /* Responsive container with proper padding */
   .container-responsive {
     width: 100%;
     margin-left: auto;
@@ -96,18 +146,16 @@ body {
     }
   }
 
-  /* Scrollable container for mobile tables */
   .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Card layout responsive */
   .card-responsive {
     padding: 1rem;
-    border-radius: 0.5rem;
-    background: white;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line);
   }
 
   @media (min-width: 768px) {
@@ -122,131 +170,116 @@ button, a, input[type="button"], input[type="submit"] {
   min-height: 44px;
 }
 
-/* Button styles with Punch Orange */
+/* Primary action — white fill, black ink: the logo inverted */
 .btn-primary {
   background-color: var(--primary);
-  color: white;
-  border: none;
+  color: var(--primary-ink);
+  border: 1px solid var(--primary);
   padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
+  font-family: var(--font-display), system-ui, sans-serif;
   font-weight: 600;
-  transition: background-color 0.2s;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.18s ease;
 }
 
 .btn-primary:hover {
-  background-color: #F57A00;
+  background-color: transparent;
+  color: var(--headline);
 }
 
+/* Secondary — hairline outline that fills on hover */
 .btn-secondary {
   background-color: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
+  color: var(--headline);
+  border: 1px solid var(--line);
   padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
+  font-family: var(--font-display), system-ui, sans-serif;
   font-weight: 600;
-  transition: all 0.2s;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.18s ease;
 }
 
 .btn-secondary:hover {
   background-color: var(--primary);
-  color: white;
+  color: var(--primary-ink);
+  border-color: var(--primary);
 }
 
 /* Text color styles */
-.text-headline {
-  color: var(--headline);
-}
-
-.text-body {
-  color: var(--foreground);
-}
-
-.text-muted {
-  color: #999999;
-}
+.text-headline { color: var(--headline); }
+.text-body { color: var(--foreground); }
+.text-muted { color: var(--muted); }
 
 /* Background color styles */
-.bg-main {
-  background-color: var(--background);
-}
+.bg-main { background-color: var(--background); }
+.bg-card { background-color: var(--surface); }
+.bg-input { background-color: var(--surface-2); }
 
-.bg-card {
-  background-color: #1A1A1A;
-}
-
-.bg-input {
-  background-color: #f5f5f5;
-}
-
-/* Input placeholder styling */
+/* Inputs — dark fields, white text, hairline borders (tactical, on-brand) */
 input::placeholder, textarea::placeholder {
-  color: #666666;
+  color: var(--muted);
 }
 
-/* Darken border color for inputs */
-.border-input {
-  border-color: #555555;
-}
+.border-input { border-color: var(--line); }
 
-/* Global input styling - make text darker for better readability */
-input:not([type="checkbox"]):not([type="radio"]), 
-select, 
+input:not([type="checkbox"]):not([type="radio"]),
+select,
 textarea {
-  color: #333333 !important;
+  color: #FFFFFF !important;
+  background-color: var(--surface-2);
 }
 
-input:not([type="checkbox"]):not([type="radio"])::placeholder, 
+input:not([type="checkbox"]):not([type="radio"])::placeholder,
 textarea::placeholder {
-  color: #666666 !important;
+  color: var(--muted) !important;
 }
 
-/* Style select elements - ensure background and text are visible */
 select {
-  background-color: white !important;
-  color: #333333 !important;
+  background-color: var(--surface-2) !important;
+  color: #FFFFFF !important;
   -webkit-appearance: menulist;
   -moz-appearance: menulist;
   appearance: menulist;
+  border: 1px solid var(--line);
 }
 
-/* Style select option elements for visibility */
 select option {
-  background-color: white;
-  color: #333333;
+  background-color: #161619;
+  color: #FFFFFF;
   padding: 8px 12px;
   display: block;
 }
 
 select option:checked {
-  background-color: #e5e7eb;
-  color: #333333;
+  background-color: #26262B;
+  color: #FFFFFF;
 }
 
 select option:hover,
 select option:focus {
-  background-color: #f3f4f6;
-  color: #333333;
+  background-color: #26262B;
+  color: #FFFFFF;
 }
 
-/* Ensure select dropdown menu is visible when focused */
 select:focus {
-  outline: 2px solid #FF7A00;
-  outline-offset: 2px;
-  border-color: #FF7A00;
+  outline: 1px solid var(--primary);
+  outline-offset: 1px;
+  border-color: var(--primary);
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
 /* Accent color styles */
-.accent {
-  color: var(--accent);
-}
-
-.bg-accent {
-  background-color: var(--accent);
-}
-
-.border-accent {
-  border-color: var(--accent);
-}
+.accent { color: var(--accent); }
+.bg-accent { background-color: var(--accent); }
+.border-accent { border-color: var(--accent); }
 
 /* Responsive text sizing */
 @layer base {
@@ -258,5 +291,13 @@ select:focus {
     html {
       font-size: 14px;
     }
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
   }
 }

@@ -49,7 +49,7 @@ export default function QRCodeModal({
         <div className="p-3 sm:p-6 overflow-y-auto flex-1">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-8 sm:py-12">
-              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[#FF7A00]"></div>
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-[#000000]"></div>
               <p className="mt-4 text-sm sm:text-base text-gray-600">Generating QR code...</p>
             </div>
           ) : error ? (
@@ -122,7 +122,7 @@ export default function QRCodeModal({
         <div className="p-3 sm:p-4 border-t bg-gray-50 rounded-b-lg flex-shrink-0">
           <button
             onClick={onClose}
-            className="w-full px-4 py-2.5 sm:py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium touch-target text-sm sm:text-base"
+            className="w-full px-4 py-2.5 sm:py-2 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors font-medium touch-target text-sm sm:text-base"
           >
             Close
           </button>

@@ -38,7 +38,7 @@ export default function ChildrenPage() {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center gap-8">
               <div>
-                <h1 className="text-xl font-bold text-gray-900">JabClub</h1>
+                <h1 className="text-xl font-bold text-gray-900">Apex Martial Arts</h1>
                 <p className="text-sm text-gray-600">Welcome, {user?.firstName}!</p>
               </div>
               <div className="hidden md:flex gap-4">

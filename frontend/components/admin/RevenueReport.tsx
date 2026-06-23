@@ -118,7 +118,7 @@ export default function RevenueReport() {
             <button
               onClick={fetchReport}
               disabled={loading}
-              className="flex-1 bg-[#FF7A00] text-white px-4 py-2 rounded-md hover:bg-[#F57A00] disabled:bg-gray-400"
+              className="flex-1 bg-[#000000] text-white px-4 py-2 rounded-md hover:bg-[#1F1F1F] disabled:bg-gray-400"
             >
               {loading ? 'Loading...' : 'Generate Report'}
             </button>
@@ -157,7 +157,7 @@ export default function RevenueReport() {
               </div>
               <div className="bg-orange-50 p-4 rounded-lg">
                 <div className="text-sm text-gray-600">Approved Payments</div>
-                <div className="text-2xl font-bold text-[#FF7A00]">
+                <div className="text-2xl font-bold text-[#000000]">
                   {reportData.summary.approvedPayments}
                 </div>
               </div>
@@ -232,7 +232,7 @@ export default function RevenueReport() {
                     </div>
                     <div className="border-t pt-3 flex justify-between items-center">
                       <span className="text-sm font-medium text-gray-700">Total Potential</span>
-                      <span className="text-xl font-bold text-[#FF7A00]">
+                      <span className="text-xl font-bold text-[#000000]">
                         EGP {(
                           parseFloat(reportData.summary.totalRevenue) +
                           parseFloat(reportData.summary.pendingRevenue)

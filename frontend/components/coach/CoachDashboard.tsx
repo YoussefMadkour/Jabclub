@@ -43,7 +43,7 @@ export default function CoachDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading classes...</p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export default function CoachDashboard() {
               onClick={() => setFilter('today')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'today'
-                  ? 'bg-[#FF7A00] text-white'
+                  ? 'bg-[#000000] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -86,7 +86,7 @@ export default function CoachDashboard() {
               onClick={() => setFilter('week')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'week'
-                  ? 'bg-[#FF7A00] text-white'
+                  ? 'bg-[#000000] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -96,7 +96,7 @@ export default function CoachDashboard() {
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-md transition-colors ${
                 filter === 'all'
-                  ? 'bg-[#FF7A00] text-white'
+                  ? 'bg-[#000000] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -126,7 +126,7 @@ export default function CoachDashboard() {
               return (
                 <div 
                   key={classInstance.id} 
-                  className={`border rounded-lg p-4 hover:border-orange-300 transition-colors ${
+                  className={`border rounded-lg p-4 hover:border-gray-400 transition-colors ${
                     isToday ? 'border-orange-300 bg-orange-50' : 'border-gray-200'
                   }`}
                 >
@@ -135,7 +135,7 @@ export default function CoachDashboard() {
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">{classInstance.classType}</h3>
                         {isToday && (
-                          <span className="px-2 py-1 bg-[#FF7A00] text-white text-xs rounded-full font-medium">
+                          <span className="px-2 py-1 bg-[#000000] text-white text-xs rounded-full font-medium">
                             Today
                           </span>
                         )}
@@ -173,7 +173,7 @@ export default function CoachDashboard() {
                       </div>
                       <Link
                         href={`/coach/roster/${classInstance.id}`}
-                        className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors text-center"
+                        className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors text-center"
                       >
                         View Class
                       </Link>

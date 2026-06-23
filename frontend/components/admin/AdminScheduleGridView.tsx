@@ -177,7 +177,7 @@ export default function AdminScheduleGridView() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -186,7 +186,7 @@ export default function AdminScheduleGridView() {
     <div className="bg-gray-900 min-h-screen p-3 sm:p-6">
       {/* Header */}
       <div className="mb-4 sm:mb-6">
-        <div className="text-orange-500 text-xs sm:text-sm font-medium mb-1 sm:mb-2">ADMIN CLASS SCHEDULE</div>
+        <div className="text-gray-400 text-xs sm:text-sm font-medium mb-1 sm:mb-2 tracking-[0.3em] uppercase">ADMIN CLASS SCHEDULE</div>
         <div className="text-white text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">CLASS MANAGEMENT</div>
         
         {/* Location Selector */}
@@ -220,7 +220,7 @@ export default function AdminScheduleGridView() {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePreviousWeek}
-              className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded transition-colors touch-target"
+              className="bg-white hover:bg-gray-200 text-black p-2 rounded transition-colors touch-target"
               aria-label="Previous week"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,7 +235,7 @@ export default function AdminScheduleGridView() {
             </button>
             <button
               onClick={handleNextWeek}
-              className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded transition-colors touch-target"
+              className="bg-white hover:bg-gray-200 text-black p-2 rounded transition-colors touch-target"
               aria-label="Next week"
             >
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,7 +250,7 @@ export default function AdminScheduleGridView() {
           <div className="flex items-center justify-center gap-2 sm:gap-4">
             <button
               onClick={handlePreviousWeek}
-              className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded transition-colors touch-target sm:hidden"
+              className="bg-white hover:bg-gray-200 text-black p-2 rounded transition-colors touch-target sm:hidden"
               aria-label="Previous week"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +262,7 @@ export default function AdminScheduleGridView() {
             </div>
             <button
               onClick={handleNextWeek}
-              className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded transition-colors touch-target sm:hidden"
+              className="bg-white hover:bg-gray-200 text-black p-2 rounded transition-colors touch-target sm:hidden"
               aria-label="Next week"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -329,7 +329,7 @@ export default function AdminScheduleGridView() {
                           classInstance
                             ? classInstance.isCancelled
                               ? 'bg-red-600 text-white'
-                              : 'bg-orange-500 text-white'
+                              : 'bg-white text-black'
                             : isToday
                             ? 'bg-gray-700 text-gray-500'
                             : 'bg-gray-800 text-gray-500'
@@ -376,7 +376,7 @@ export default function AdminScheduleGridView() {
       {/* Legend */}
       <div className="mt-4 flex flex-wrap justify-center gap-4 text-xs sm:text-sm">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-orange-500 rounded"></div>
+          <div className="w-4 h-4 bg-white rounded"></div>
           <span className="text-gray-400">Scheduled Class</span>
         </div>
         <div className="flex items-center gap-2">

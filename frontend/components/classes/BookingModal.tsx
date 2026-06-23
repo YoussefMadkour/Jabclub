@@ -181,7 +181,7 @@ export default function BookingModal({
       <div className="flex min-h-full items-center justify-center p-4">
         <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#FF7A00] to-[#F57A00] px-6 py-4 rounded-t-lg">
+          <div className="bg-gradient-to-r from-[#000000] to-[#1F1F1F] px-6 py-4 rounded-t-lg">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Book Class</h2>
               <button
@@ -200,7 +200,7 @@ export default function BookingModal({
           <div className="p-6">
             {loadingData ? (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7A00]"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#000000]"></div>
               </div>
             ) : success ? (
               <div className="text-center py-8">
@@ -215,7 +215,7 @@ export default function BookingModal({
                 {/* QR Code Display */}
                 {qrLoading ? (
                   <div className="flex flex-col items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7A00] mb-2"></div>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#000000] mb-2"></div>
                     <p className="text-sm text-gray-600">Generating QR code...</p>
                   </div>
                 ) : qrCode ? (
@@ -232,7 +232,7 @@ export default function BookingModal({
                 
                 <button
                   onClick={handleClose}
-                  className="mt-6 px-6 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium"
+                  className="mt-6 px-6 py-2 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors font-medium"
                 >
                   Close
                 </button>
@@ -281,7 +281,7 @@ export default function BookingModal({
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Available Credits</p>
-                      <p className="text-2xl font-bold text-[#FF7A00]">{credits ?? '...'}</p>
+                      <p className="text-2xl font-bold text-[#000000]">{credits ?? '...'}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">Cost</p>
@@ -301,7 +301,7 @@ export default function BookingModal({
                   <select
                     value={selectedBookingFor}
                     onChange={(e) => setSelectedBookingFor(e.target.value === 'self' ? 'self' : parseInt(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7A00] focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#000000] focus:border-transparent"
                     disabled={isLoading}
                   >
                     <option value="self">Yourself</option>
@@ -339,7 +339,7 @@ export default function BookingModal({
                   <button
                     onClick={handleBooking}
                     disabled={isLoading || credits === null || credits < 1}
-                    className="flex-1 px-4 py-3 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold touch-target"
+                    className="flex-1 px-4 py-3 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold touch-target"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center">

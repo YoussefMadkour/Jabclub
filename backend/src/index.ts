@@ -197,11 +197,15 @@ import adminRoutes from './routes/adminRoutes';
 import classRoutes from './routes/classRoutes';
 import coachRoutes from './routes/coachRoutes';
 import qrRoutes from './routes/qrRoutes';
+import publicRoutes from './routes/publicRoutes';
 
 // API routes
 app.get('/api', (req, res) => {
-  res.json({ message: 'JabClub API v1.0' });
+  res.json({ message: 'Apex Martial Arts API v1.0' });
 });
+
+// Public routes (no auth) — marketing website
+app.use('/api/public', publicRoutes);
 
 // Auth routes (have their own stricter rate limiting)
 app.use('/api/auth', authRoutes);

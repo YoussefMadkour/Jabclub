@@ -154,7 +154,7 @@ export default function CoachesList() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading coaches...</p>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function CoachesList() {
           </div>
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors"
+            className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors"
           >
             + Add Coach
           </button>
@@ -346,14 +346,14 @@ export default function CoachesList() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditModal(coach)}
-                          className="text-[#FF7A00] hover:text-orange-900"
+                          className="text-[#000000] hover:text-gray-600"
                         >
                           Edit
                         </button>
                         <span className="text-gray-300">|</span>
                         <Link
                           href={`/admin/coaches/${coach.id}`}
-                          className="text-[#FF7A00] hover:text-orange-900"
+                          className="text-[#000000] hover:text-gray-600"
                         >
                           View Details →
                         </Link>
@@ -436,7 +436,7 @@ export default function CoachesList() {
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
+                className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] disabled:opacity-50"
               >
                 {processing ? 'Creating...' : 'Create'}
               </button>
@@ -514,7 +514,7 @@ export default function CoachesList() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
+                className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update'}
               </button>

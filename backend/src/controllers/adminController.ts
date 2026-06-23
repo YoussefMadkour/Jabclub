@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth';
+import { AuthRequest, invalidateUserCache } from '../middleware/auth';
 import prisma from '../config/database';
 import bcrypt from 'bcrypt';
 import { getRelativeUploadPath } from '../utils/filePath';
@@ -4454,6 +4454,7 @@ export const pauseMember = async (req: AuthRequest, res: Response): Promise<void
         message: 'Member account has been paused'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Pause member error:', error);
     res.status(500).json({
@@ -4520,6 +4521,7 @@ export const unpauseMember = async (req: AuthRequest, res: Response): Promise<vo
         message: 'Member account has been unpaused'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Unpause member error:', error);
     res.status(500).json({
@@ -4586,6 +4588,7 @@ export const freezeMember = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Member account has been frozen'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Freeze member error:', error);
     res.status(500).json({
@@ -4652,6 +4655,7 @@ export const unfreezeMember = async (req: AuthRequest, res: Response): Promise<v
         message: 'Member account has been unfrozen'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Unfreeze member error:', error);
     res.status(500).json({
@@ -4773,6 +4777,7 @@ export const updateMember = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Member updated successfully'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Update member error:', error);
     res.status(500).json({
@@ -4839,6 +4844,7 @@ export const deleteMember = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Member account has been deleted'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Delete member error:', error);
     res.status(500).json({
@@ -5685,6 +5691,7 @@ export const updateCoach = async (req: AuthRequest, res: Response): Promise<void
         message: 'Coach updated successfully'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Update coach error:', error);
     res.status(500).json({
@@ -5751,6 +5758,7 @@ export const pauseCoach = async (req: AuthRequest, res: Response): Promise<void>
         message: 'Coach account has been paused'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Pause coach error:', error);
     res.status(500).json({
@@ -5817,6 +5825,7 @@ export const unpauseCoach = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Coach account has been unpaused'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Unpause coach error:', error);
     res.status(500).json({
@@ -5883,6 +5892,7 @@ export const freezeCoach = async (req: AuthRequest, res: Response): Promise<void
         message: 'Coach account has been frozen'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Freeze coach error:', error);
     res.status(500).json({
@@ -5949,6 +5959,7 @@ export const unfreezeCoach = async (req: AuthRequest, res: Response): Promise<vo
         message: 'Coach account has been unfrozen'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Unfreeze coach error:', error);
     res.status(500).json({
@@ -6015,6 +6026,7 @@ export const deleteCoach = async (req: AuthRequest, res: Response): Promise<void
         message: 'Coach account has been deleted'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Delete coach error:', error);
     res.status(500).json({

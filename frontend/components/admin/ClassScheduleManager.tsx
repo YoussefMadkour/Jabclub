@@ -411,7 +411,7 @@ export default function ClassScheduleManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
       </div>
     );
   }
@@ -441,7 +441,7 @@ export default function ClassScheduleManager() {
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-[#000000] hover:bg-[#1F1F1F] text-white rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -652,13 +652,13 @@ export default function ClassScheduleManager() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                       <Link
                         href={`/admin/classes/${classInstance.id}/roster`}
-                        className="text-[#FF7A00] hover:text-orange-900 font-medium"
+                        className="text-[#000000] hover:text-gray-600 font-medium"
                       >
                         View Class
                       </Link>
                       <button
                         onClick={() => openEditModal(classInstance)}
-                        className="text-[#FF7A00] hover:text-orange-900 font-medium"
+                        className="text-[#000000] hover:text-gray-600 font-medium"
                       >
                         Edit
                       </button>
@@ -773,7 +773,7 @@ export default function ClassScheduleManager() {
               <button
                 onClick={() => handleCreate(false)}
                 disabled={processing}
-                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create'}
               </button>
@@ -942,7 +942,7 @@ export default function ClassScheduleManager() {
                   id="isCancelled"
                   checked={form.isCancelled}
                   onChange={(e) => setForm({ ...form, isCancelled: e.target.checked })}
-                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#000000] focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="isCancelled" className="ml-2 block text-sm text-gray-700">
                   Mark as cancelled
@@ -964,7 +964,7 @@ export default function ClassScheduleManager() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Class'}
               </button>

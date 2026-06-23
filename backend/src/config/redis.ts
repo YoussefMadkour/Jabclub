@@ -16,7 +16,7 @@ export default redis;
 
 // TTLs (seconds)
 export const TTL = {
-  USER_PROFILE: 5 * 60,       // 5 min — auth user data (id, email, role)
+  USER_PROFILE: 60,           // 60s — auth user data; short so freeze/pause/role changes take effect fast
   CLASS_LIST: 2 * 60,          // 2 min — class instances for a week
   SCHEDULES: 5 * 60,           // 5 min — default schedules
   LOCATIONS: 10 * 60,          // 10 min — locations list

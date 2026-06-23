@@ -160,7 +160,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading roster...</p>
         </div>
       </div>
@@ -194,7 +194,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
             <div className="flex items-center gap-2 mb-2">
               <h1 className="text-3xl font-bold text-gray-900">{classInfo.classType}</h1>
               {isToday && (
-                <span className="px-3 py-1 bg-[#FF7A00] text-white text-sm rounded-full font-medium">
+                <span className="px-3 py-1 bg-[#000000] text-white text-sm rounded-full font-medium">
                   Today
                 </span>
               )}
@@ -304,7 +304,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
         
         <div className="bg-orange-50 border border-orange-200 rounded-lg shadow-md p-4">
           <div className="text-center">
-            <p className="text-3xl font-bold text-[#FF7A00]">{summary.confirmed}</p>
+            <p className="text-3xl font-bold text-[#000000]">{summary.confirmed}</p>
             <p className="text-sm text-orange-800 mt-1">Confirmed</p>
           </div>
         </div>
@@ -368,7 +368,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                       )}
                       <Link
                         href={`/coach/members/${booking.memberId}`}
-                        className="inline-block mt-2 text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
+                        className="inline-block mt-2 text-sm text-[#000000] hover:text-gray-600 font-medium"
                       >
                         View Member Details →
                       </Link>
@@ -546,7 +546,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                       value={noteText}
                       onChange={(e) => setNoteText(e.target.value)}
                       rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#FF7A00] focus:border-transparent resize-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#000000] focus:border-transparent resize-none"
                       placeholder="Add your notes about this member's performance..."
                     />
                   </div>
@@ -568,7 +568,7 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
                     <button
                       onClick={handleSaveNote}
                       disabled={savingNote}
-                      className="flex-1 px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {savingNote ? 'Saving...' : 'Save Note'}
                     </button>

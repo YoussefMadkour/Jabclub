@@ -278,7 +278,7 @@ export default function BookingManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000]"></div>
       </div>
     );
   }
@@ -311,7 +311,7 @@ export default function BookingManager() {
               setShowCreateModal(true);
               fetchClasses();
             }}
-            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-[#000000] hover:bg-[#1F1F1F] text-white rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -399,7 +399,7 @@ export default function BookingManager() {
                         <div className="text-sm text-gray-500">{booking.member.email}</div>
                         <Link
                           href={`/admin/members/${booking.member.id}`}
-                          className="text-xs text-[#FF7A00] hover:text-orange-700 font-medium mt-1 inline-block"
+                          className="text-xs text-[#000000] hover:text-gray-600 font-medium mt-1 inline-block"
                         >
                           View Details →
                         </Link>
@@ -505,7 +505,7 @@ export default function BookingManager() {
               <button
                 onClick={handleCreateBooking}
                 disabled={processing}
-                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#000000] hover:bg-[#1F1F1F] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Booking'}
               </button>

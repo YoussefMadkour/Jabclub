@@ -210,7 +210,7 @@ const Sidebar = () => {
                     onClick={() => setClassesMenuOpen(!classesMenuOpen)}
                     className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${
                       isClassesMenuActive()
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-black'
                         : 'text-body hover:bg-input hover:text-headline'
                     }`}
                   >
@@ -259,7 +259,7 @@ const Sidebar = () => {
                 href={item.href}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.href)
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-black'
                     : 'text-body hover:bg-input hover:text-headline'
                 }`}
               >
@@ -273,7 +273,7 @@ const Sidebar = () => {
         {/* User Info at Bottom */}
         <div className="p-4 border-t border-input">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold text-white">
+            <div className="w-10 h-10 rounded-none bg-primary flex items-center justify-center font-display font-semibold text-black">
               {user.firstName.charAt(0)}{user.lastName.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">

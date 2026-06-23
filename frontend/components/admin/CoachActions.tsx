@@ -134,7 +134,7 @@ export default function CoachActions({ coachId, coachData }: CoachActionsProps) 
           <button
             onClick={handleFreeze}
             disabled={processing}
-            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
             Freeze
           </button>

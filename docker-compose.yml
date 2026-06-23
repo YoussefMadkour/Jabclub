@@ -1,0 +1,23 @@
+name: apex
+
+services:
+  db:
+    image: postgres:14
+    container_name: apex-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: jabclub
+    ports:
+      - "5432:5432"
+    volumes:
+      - apex-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U username -d jabclub"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  apex-db-data:

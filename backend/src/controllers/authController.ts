@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import prisma from '../config/database';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
+import { invalidateUserCache } from '../middleware/auth';
 
 // Extend session type
 declare module 'express-session' {
@@ -199,6 +200,25 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Block suspended / soft-deleted accounts from authenticating
+    if (user.deletedAt) {
+      res.status(401).json({
+        success: false,
+        error: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' }
+      });
+      return;
+    }
+    if (user.isFrozen || user.isPaused) {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'ACCOUNT_SUSPENDED',
+          message: 'Your account is currently suspended. Please contact the gym for assistance.'
+        }
+      });
+      return;
+    }
+
     // Store user in session
     req.session.userId = user.id;
     req.session.role = user.role;
@@ -265,6 +285,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
+    const userId = req.session.userId;
+    if (userId) await invalidateUserCache(userId);
     req.session.destroy((err) => {
       if (err) {
         console.error('Logout error:', err);

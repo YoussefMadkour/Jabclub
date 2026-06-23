@@ -7,7 +7,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">1. Introduction</h2>
           <p>
-            JabClub ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our membership platform and services.
+            Apex Martial Arts ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our membership platform and services.
           </p>
         </section>
 
@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc pl-6 space-y-2">
             <li>Service providers who assist us in operating our platform</li>
-            <li>Coaches and staff at JabClub Gym locations for class management</li>
+            <li>Coaches and staff at Apex Martial Arts locations for class management</li>
             <li>When required by law or to protect our rights</li>
           </ul>
         </section>
@@ -82,7 +82,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">9. Contact Us</h2>
           <p>
-            If you have questions about this Privacy Policy, please contact us through your JabClub Gym location or via the contact information provided in your membership materials.
+            If you have questions about this Privacy Policy, please contact us through your Apex Martial Arts location or via the contact information provided in your membership materials.
           </p>
         </section>
 

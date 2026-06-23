@@ -7,17 +7,17 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">1. Acceptance of Terms</h2>
           <p>
-            By accessing and using the JabClub membership platform, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.
+            By accessing and using the Apex Martial Arts membership platform, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.
           </p>
         </section>
 
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">2. Membership Eligibility</h2>
           <p>
-            This platform is exclusively for active JabClub Gym members. By creating an account, you represent and warrant that:
+            This platform is exclusively for active Apex Martial Arts members. By creating an account, you represent and warrant that:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>You are an active member of JabClub Gym</li>
+            <li>You are an active member of Apex Martial Arts</li>
             <li>All information you provide is accurate and current</li>
             <li>You are at least 18 years old (or have parental consent for members under 18)</li>
             <li>You will maintain the security of your account credentials</li>
@@ -31,7 +31,7 @@ export default function TermsOfServicePage() {
             <li>Classes must be booked using valid session credits</li>
             <li>Bookings are subject to class capacity limits</li>
             <li>Cancellations must be made at least 1 hour before class start time</li>
-            <li>No-show policies apply as per JabClub Gym rules</li>
+            <li>No-show policies apply as per Apex Martial Arts rules</li>
           </ul>
           
           <h3 className="text-xl font-semibold text-headline mb-2 mt-4">Cancellation Policy</h3>
@@ -56,7 +56,7 @@ export default function TermsOfServicePage() {
             <li>All payments must be made through approved payment methods</li>
             <li>Payment proof must be submitted for manual review</li>
             <li>Packages are activated upon payment approval</li>
-            <li>Refunds are subject to JabClub Gym's refund policy</li>
+            <li>Refunds are subject to Apex Martial Arts's refund policy</li>
           </ul>
         </section>
 
@@ -82,14 +82,14 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">8. Limitation of Liability</h2>
           <p>
-            JabClub Gym and its platform providers are not liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability is limited to the amount you paid for services in the 12 months preceding the claim.
+            Apex Martial Arts and its platform providers are not liable for any indirect, incidental, or consequential damages arising from your use of the platform. Our total liability is limited to the amount you paid for services in the 12 months preceding the claim.
           </p>
         </section>
 
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">9. Account Termination</h2>
           <p>
-            We reserve the right to suspend or terminate your account if you violate these terms, engage in fraudulent activity, or if your JabClub Gym membership is terminated.
+            We reserve the right to suspend or terminate your account if you violate these terms, engage in fraudulent activity, or if your Apex Martial Arts membership is terminated.
           </p>
         </section>
 
@@ -103,7 +103,7 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-2xl font-semibold text-headline mb-4">11. Contact Information</h2>
           <p>
-            For questions about these Terms of Service, please contact your JabClub Gym location or refer to your membership agreement.
+            For questions about these Terms of Service, please contact your Apex Martial Arts location or refer to your membership agreement.
           </p>
         </section>
 

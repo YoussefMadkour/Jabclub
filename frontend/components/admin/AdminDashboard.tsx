@@ -96,7 +96,7 @@ export default function AdminDashboard() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading dashboard...</p>
         </div>
       </div>
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
               <Link
                 href="/admin/schedules/default"
                 onClick={handleDismissMonthlyReview}
-                className="flex-1 px-4 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors text-center"
+                className="flex-1 px-4 py-2 bg-[#000000] text-white rounded-lg hover:bg-[#1F1F1F] transition-colors text-center"
               >
                 Review Schedules
               </Link>
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
           {overview.pendingPaymentsCount > 0 && (
             <Link
               href="/admin/payments"
-              className="mt-3 block text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
+              className="mt-3 block text-sm text-[#000000] hover:text-gray-600 font-medium"
             >
               Review payments →
             </Link>
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600 mb-1">Upcoming Classes</p>
-              <p className="text-3xl font-bold text-[#FF7A00]">{overview.upcomingClasses}</p>
+              <p className="text-3xl font-bold text-[#000000]">{overview.upcomingClasses}</p>
               <p className="text-xs text-gray-500 mt-1">Today: {overview.todayClasses}</p>
             </div>
             <div className="text-4xl">📚</div>
@@ -310,7 +310,7 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold text-gray-900">Recent Pending Payments</h2>
           <Link
             href="/admin/payments"
-            className="text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
+            className="text-sm text-[#000000] hover:text-gray-600 font-medium"
           >
             View All →
           </Link>
@@ -321,7 +321,7 @@ export default function AdminDashboard() {
             {recentPendingPayments.map((payment) => (
               <div
                 key={payment.id}
-                className="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors"
+                className="border border-gray-200 rounded-lg p-4 hover:border-gray-400 transition-colors"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex-1">
@@ -341,7 +341,7 @@ export default function AdminDashboard() {
                   </div>
                   <Link
                     href="/admin/payments"
-                    className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors text-center text-sm"
+                    className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors text-center text-sm"
                   >
                     Review
                   </Link>
@@ -362,7 +362,7 @@ export default function AdminDashboard() {
           <h2 className="text-2xl font-bold text-gray-900">Upcoming Classes</h2>
           <Link
             href="/admin/classes"
-            className="text-sm text-[#FF7A00] hover:text-orange-700 font-medium"
+            className="text-sm text-[#000000] hover:text-gray-600 font-medium"
           >
             View All →
           </Link>
@@ -378,7 +378,7 @@ export default function AdminDashboard() {
               return (
                 <div
                   key={classInstance.id}
-                  className={`border rounded-lg p-4 hover:border-orange-300 transition-colors ${
+                  className={`border rounded-lg p-4 hover:border-gray-400 transition-colors ${
                     isToday ? 'border-orange-300 bg-orange-50' : 'border-gray-200'
                   }`}
                 >
@@ -387,7 +387,7 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">{classInstance.classType}</h3>
                         {isToday && (
-                          <span className="px-2 py-1 bg-[#FF7A00] text-white text-xs rounded-full font-medium">
+                          <span className="px-2 py-1 bg-[#000000] text-white text-xs rounded-full font-medium">
                             Today
                           </span>
                         )}
@@ -425,7 +425,7 @@ export default function AdminDashboard() {
                       </div>
                       <Link
                         href={`/admin/classes/${classInstance.id}/roster`}
-                        className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors text-center text-sm"
+                        className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors text-center text-sm"
                       >
                         View Details
                       </Link>
@@ -440,7 +440,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600 mb-2">No upcoming classes</p>
             <Link
               href="/admin/classes"
-              className="inline-block px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors"
+              className="inline-block px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors"
             >
               Create Class
             </Link>
@@ -454,7 +454,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/admin/payments"
-            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
           >
             <div className="text-2xl mb-2">💰</div>
             <h3 className="font-semibold text-gray-900 mb-1">Review Payments</h3>
@@ -463,7 +463,7 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/classes"
-            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
           >
             <div className="text-2xl mb-2">📚</div>
             <h3 className="font-semibold text-gray-900 mb-1">Manage Classes</h3>
@@ -472,7 +472,7 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/bookings"
-            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
           >
             <div className="text-2xl mb-2">📅</div>
             <h3 className="font-semibold text-gray-900 mb-1">View Bookings</h3>
@@ -481,7 +481,7 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/reports/revenue"
-            className="p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+            className="p-4 border border-gray-200 rounded-lg hover:border-gray-400 hover:bg-gray-50 transition-colors"
           >
             <div className="text-2xl mb-2">📊</div>
             <h3 className="font-semibold text-gray-900 mb-1">View Reports</h3>

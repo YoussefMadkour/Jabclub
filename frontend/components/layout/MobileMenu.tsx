@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import ApexLogo from './ApexLogo';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -212,7 +213,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-input">
-            <h2 className="text-xl font-bold text-primary">JabClub</h2>
+            <ApexLogo className="h-5" />
             <button
               onClick={onClose}
               className="p-2 rounded-md hover:bg-input transition-colors"
@@ -244,7 +245,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                       }}
                       className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${
                         isActive(item.href || '')
-                          ? 'bg-primary text-white'
+                          ? 'bg-primary text-black'
                           : 'text-body hover:bg-input hover:text-headline'
                       }`}
                     >
@@ -293,7 +294,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                   href={item.href}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                     isActive(item.href)
-                      ? 'bg-primary text-white'
+                      ? 'bg-primary text-black'
                       : 'text-body hover:bg-input hover:text-headline'
                   }`}
                 >
@@ -307,7 +308,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose }) => {
           {/* User Info */}
           <div className="p-4 border-t border-input">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-semibold text-white">
+              <div className="w-10 h-10 rounded-none bg-primary flex items-center justify-center font-display font-semibold text-black">
                 {user.firstName.charAt(0)}{user.lastName.charAt(0)}
               </div>
               <div className="flex-1 min-w-0">

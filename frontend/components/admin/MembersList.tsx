@@ -125,7 +125,7 @@ export default function MembersList() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading members...</p>
         </div>
       </div>
@@ -311,14 +311,14 @@ export default function MembersList() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditModal(member)}
-                          className="text-[#FF7A00] hover:text-orange-900"
+                          className="text-[#000000] hover:text-gray-600"
                         >
                           Edit
                         </button>
                         <span className="text-gray-300">|</span>
                         <Link
                           href={`/admin/members/${member.id}`}
-                          className="text-[#FF7A00] hover:text-orange-900"
+                          className="text-[#000000] hover:text-gray-600"
                         >
                           View Details →
                         </Link>
@@ -401,7 +401,7 @@ export default function MembersList() {
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] disabled:opacity-50"
+                className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] disabled:opacity-50"
               >
                 {processing ? 'Updating...' : 'Update'}
               </button>

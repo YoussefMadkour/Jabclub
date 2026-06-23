@@ -137,7 +137,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#000000] mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading member details...</p>
         </div>
       </div>
@@ -230,7 +230,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
         </div>
         <div className="bg-white rounded-lg shadow-md p-4">
           <p className="text-sm text-gray-600">Confirmed</p>
-          <p className="text-2xl font-bold text-[#FF7A00]">{data.statistics.confirmedBookings}</p>
+          <p className="text-2xl font-bold text-[#000000]">{data.statistics.confirmedBookings}</p>
         </div>
         {isAdmin && data.statistics.totalCredits !== undefined && (
           <>
@@ -304,7 +304,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
                     </div>
                     <div className="bg-white rounded-lg p-3">
                       <p className="text-xs text-gray-600">Confirmed</p>
-                      <p className="text-xl font-bold text-[#FF7A00]">
+                      <p className="text-xl font-bold text-[#000000]">
                         {child.statistics.confirmedBookings || 0}
                       </p>
                     </div>
@@ -623,7 +623,7 @@ function MemberActions({ memberId, memberData }: { memberId: number; memberData:
           <button
             onClick={handleUnfreeze}
             disabled={processing}
-            className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-[#000000] text-white rounded-md hover:bg-[#1F1F1F] transition-colors disabled:opacity-50"
           >
             Unfreeze
           </button>
@@ -631,7 +631,7 @@ function MemberActions({ memberId, memberData }: { memberId: number; memberData:
           <button
             onClick={handleFreeze}
             disabled={processing}
-            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
             Freeze
           </button>
@@ -871,7 +871,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openPriceModal(pkg)}
-                          className="text-[#FF7A00] hover:text-orange-800 text-xs font-medium"
+                          className="text-[#000000] hover:text-gray-600 text-xs font-medium"
                         >
                           {pkg.hasCustomPrice ? 'Edit' : 'Set'}
                         </button>
