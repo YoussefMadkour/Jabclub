@@ -189,6 +189,9 @@ export default function ScheduleGridView() {
         {/* Location Selector */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 mb-3 sm:mb-4">
           <select
+            id="schedule-location"
+            name="location"
+            aria-label="Select location"
             value={selectedLocationId || ''}
             onChange={(e) => handleSelectLocation(Number(e.target.value))}
             className="bg-gray-800 text-white border border-gray-700 rounded-lg px-3 sm:px-4 py-2 text-sm sm:text-base flex-1 sm:flex-none"
@@ -258,6 +261,18 @@ export default function ScheduleGridView() {
       </div>
 
       {/* Schedule Grid */}
+      {timeSlots.length === 0 ? (
+        <div className="bg-gray-800 rounded-lg p-10 sm:p-16 text-center">
+          <p className="text-white text-base sm:text-lg font-semibold">No classes scheduled this week</p>
+          <p className="text-gray-400 text-sm mt-1">Try a different week or location.</p>
+          <button
+            onClick={handleToday}
+            className="mt-4 px-4 py-2 bg-white text-black rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors touch-target"
+          >
+            Back to this week
+          </button>
+        </div>
+      ) : (
       <div className="bg-gray-800 rounded-lg overflow-hidden">
         <div className="overflow-x-auto -mx-3 sm:mx-0">
           <table className="w-full border-collapse min-w-[600px]">
@@ -364,6 +379,7 @@ export default function ScheduleGridView() {
           </table>
         </div>
       </div>
+      )}
 
       {/* Week Range Display */}
       <div className="mt-3 sm:mt-4 text-center text-gray-400 text-xs sm:text-sm">

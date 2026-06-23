@@ -3,6 +3,7 @@ import { AuthRequest, invalidateUserCache } from '../middleware/auth';
 import prisma from '../config/database';
 import { Prisma } from '@prisma/client';
 import { AppError, BookingError } from '../utils/errors';
+import { utcWeekdayForEgyptSchedule, utcHHMMForEgyptTime, egyptWeekBoundsUTC } from '../utils/timezone';
 import bcrypt from 'bcrypt';
 import { getRelativeUploadPath } from '../utils/filePath';
 import { sendEmail, NotificationTemplates } from '../services/notificationService';
@@ -7192,15 +7193,16 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
       select: { locationId: true, dayOfWeek: true, startTime: true }
     });
 
-    // Build valid keys: schedule times are Egypt local (UTC+2), convert to UTC for comparison.
-    // e.g. "20:00" Egypt = "18:00" UTC stored in DB
-    const EGYPT_OFFSET_HOURS = 2;
+    // Build valid keys in the SAME coordinate system the candidates are matched in:
+    // UTC weekday + UTC HH:MM. Schedule times are Egypt local; converting to UTC can
+    // shift the weekday for late-night/early-morning classes (e.g. Egypt 01:00 →
+    // 23:00 the previous UTC day). Using the schedule's *local* dayOfWeek here while
+    // matching candidates by *UTC* weekday was deleting valid classes (data loss).
     const validKeys = new Set(
       activeSchedules.map(s => {
-        const [h, m] = s.startTime.split(':').map(Number);
-        const utcH = (h - EGYPT_OFFSET_HOURS + 24) % 24;
-        const utcHHMM = `${String(utcH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-        return `${s.locationId}|${s.dayOfWeek}|${utcHHMM}`;
+        const utcDow = utcWeekdayForEgyptSchedule(s.dayOfWeek, s.startTime);
+        const utcHHMM = utcHHMMForEgyptTime(s.startTime);
+        return `${s.locationId}|${utcDow}|${utcHHMM}`;
       })
     );
 
@@ -7256,22 +7258,40 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
  */
 export const forceResyncClasses = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { locationId } = req.body;
-    const now = new Date();
+    const { locationId, dryRun } = req.body;
 
-    // Delete from start of current week (Saturday) so old wrong-time instances
-    // from earlier in this week are also removed, not just future ones
-    const dayOfWeek = now.getDay(); // 0=Sun … 6=Sat
-    const daysFromSaturday = dayOfWeek === 6 ? 0 : (dayOfWeek + 1);
-    const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - daysFromSaturday);
-    weekStart.setHours(0, 0, 0, 0);
+    // Safety: require a location so a stray call can't wipe EVERY location at once.
+    if (!locationId) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'LOCATION_REQUIRED',
+          message: 'A locationId is required for force resync to avoid affecting all locations.'
+        }
+      });
+      return;
+    }
 
-    const whereClause: any = {
+    // Delete from the start of the current Egypt week (Saturday) so old wrong-time
+    // instances from earlier this week are also removed, not just future ones.
+    const { start: weekStart } = egyptWeekBoundsUTC();
+
+    const whereClause: Prisma.ClassInstanceWhereInput = {
       startTime: { gte: weekStart },
-      bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } }
+      bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } },
+      locationId: parseInt(locationId)
     };
-    if (locationId) whereClause.locationId = parseInt(locationId);
+
+    // Dry run: report what WOULD be deleted, without deleting, so the UI can confirm.
+    if (dryRun) {
+      const wouldDelete = await prisma.classInstance.count({ where: whereClause });
+      res.json({
+        success: true,
+        message: `${wouldDelete} unbooked class instance(s) would be deleted and regenerated.`,
+        data: { dryRun: true, wouldDelete }
+      });
+      return;
+    }
 
     const { count: deleted } = await prisma.classInstance.deleteMany({ where: whereClause });
 
@@ -7279,9 +7299,11 @@ export const forceResyncClasses = async (req: AuthRequest, res: Response): Promi
     const { generateClassesFromSchedules } = require('../services/scheduleService');
     await generateClassesFromSchedules(3, weekStart);
 
+    console.log(`Force resync: location ${locationId} by admin ${req.user?.id} — deleted ${deleted} unbooked instances`);
+
     res.json({
       success: true,
-      message: `Force resynced: deleted ${deleted} unbooked future instances and regenerated from current schedules.`,
+      message: `Force resynced: deleted ${deleted} unbooked instance(s) and regenerated from current schedules.`,
       data: { deleted }
     });
   } catch (error) {
