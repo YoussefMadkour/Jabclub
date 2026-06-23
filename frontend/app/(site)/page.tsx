@@ -170,7 +170,7 @@ export default function Home() {
             </p>
           </Reveal>
           <Reveal delay={120} className="lg:col-span-6 space-y-8">
-            <SkillBar label="MMA coaching" value={95} />
+            <SkillBar label="Martial arts coaching" value={95} />
             <SkillBar label="Functional training" value={90} />
             <SkillBar label="Strength training" value={88} />
           </Reveal>

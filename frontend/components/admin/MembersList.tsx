@@ -44,21 +44,32 @@ export default function MembersList() {
   });
   const [processing, setProcessing] = useState(false);
 
-  const { data, isLoading, error, refetch } = useQuery<{ members: Member[]; total: number }>({
-    queryKey: ['admin-members', searchTerm, statusFilter, sortBy, sortOrder],
+  const [page, setPage] = useState(1);
+  const pageSize = 25;
+
+  // Reset to the first page whenever a filter/sort changes.
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter, sortBy, sortOrder]);
+
+  const { data, isLoading, error, refetch } = useQuery<{ members: Member[]; total: number; totalPages: number }>({
+    queryKey: ['admin-members', searchTerm, statusFilter, sortBy, sortOrder, page],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchTerm) params.append('search', searchTerm);
       if (statusFilter !== 'all') params.append('status', statusFilter);
       if (sortBy) params.append('sortBy', sortBy);
       if (sortOrder) params.append('sortOrder', sortOrder);
+      params.append('page', String(page));
+      params.append('pageSize', String(pageSize));
 
-      const queryString = params.toString();
-      const url = queryString ? `/admin/members?${queryString}` : '/admin/members';
+      const url = `/admin/members?${params.toString()}`;
       const response = await apiClient.get(url);
       return response.data.data;
     }
   });
+
+  const totalPages = data?.totalPages || 1;
 
   const handleSort = (field: string) => {
     if (sortBy === field) {
@@ -328,6 +339,29 @@ export default function MembersList() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Pagination controls */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between mt-4 px-2">
+            <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -23,11 +23,11 @@ const STEPS = [
 const TRACKS = [
   {
     name: 'Foundations',
-    body: 'For beginners. Build fundamentals across boxing and kickboxing at a steady, supported pace.',
+    body: 'For beginners. Build your fundamentals in kickboxing and martial arts at a steady, supported pace.',
   },
   {
     name: 'All-Access',
-    body: 'Every class, every discipline. Boxing, kickboxing, BJJ, wrestling, and MMA — train as much as you want.',
+    body: 'Every class on the schedule — kickboxing and martial arts, all ages — train as much as you want.',
   },
   {
     name: 'Apex Pro',
@@ -107,7 +107,7 @@ export default function Membership() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 max-w-2xl">
             <p className="eyebrow mb-3">Included</p>
-            <h2 className="text-3xl lg:text-5xl font-bold text-headline">Every discipline, one community.</h2>
+            <h2 className="text-3xl lg:text-5xl font-bold text-headline">Kickboxing &amp; martial arts, one community.</h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-px bg-line border border-line">
             {PROGRAMS.map((p, i) => (

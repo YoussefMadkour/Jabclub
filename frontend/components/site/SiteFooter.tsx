@@ -16,10 +16,9 @@ const COLUMNS = [
   {
     title: 'Programs',
     links: [
-      { label: 'Boxing', href: '/#programs' },
       { label: 'Kickboxing', href: '/#programs' },
-      { label: 'Kids MMA', href: '/#programs' },
-      { label: 'Private Sessions', href: '/#programs' },
+      { label: 'Martial Arts', href: '/#programs' },
+      { label: 'Schedule', href: '/#schedule' },
     ],
   },
   {
@@ -90,7 +89,7 @@ export default function SiteFooter() {
           <div className="col-span-2 lg:col-span-1">
             <ApexLogo className="h-6 text-headline" />
             <p className="mt-4 text-sm text-muted max-w-xs">
-              Train at your apex. Boxing, kickboxing, and MMA for every level and every age.
+              Train at your apex. Kickboxing and martial arts for every level and every age.
             </p>
             <div className="mt-6 flex items-center gap-3">
               <a

@@ -9,6 +9,17 @@ import { getRelativeUploadPath } from '../utils/filePath';
 import { sendEmail, NotificationTemplates } from '../services/notificationService';
 
 /**
+ * Parse pagination params from the query string. Backward-compatible: when no
+ * `page` is supplied, callers can still paginate with a default page size.
+ * pageSize is clamped to [1, 100]; defaults to 25.
+ */
+function getPagination(query: any): { page: number; pageSize: number; skip: number; take: number } {
+  const page = Math.max(1, parseInt(query.page) || 1);
+  const pageSize = Math.min(100, Math.max(1, parseInt(query.pageSize) || 25));
+  return { page, pageSize, skip: (page - 1) * pageSize, take: pageSize };
+}
+
+/**
  * GET /api/admin/payments/pending
  * List all pending payments with member details, package info, and screenshot URL
  */
@@ -416,7 +427,7 @@ export const rejectPayment = async (req: AuthRequest, res: Response): Promise<vo
  */
 export const getAllBookings = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { classInstanceId, userId, date, status } = req.query;
+    const { classInstanceId, userId, date, status, search } = req.query;
 
     // Build filter object
     const where: any = {};
@@ -433,6 +444,19 @@ export const getAllBookings = async (req: AuthRequest, res: Response): Promise<v
       where.status = status as string;
     }
 
+    // Server-side search across member name/email, class type, and child name
+    if (search && typeof search === 'string' && search.trim()) {
+      const term = search.trim();
+      where.OR = [
+        { user: { firstName: { contains: term, mode: 'insensitive' } } },
+        { user: { lastName: { contains: term, mode: 'insensitive' } } },
+        { user: { email: { contains: term, mode: 'insensitive' } } },
+        { child: { firstName: { contains: term, mode: 'insensitive' } } },
+        { child: { lastName: { contains: term, mode: 'insensitive' } } },
+        { classInstance: { classType: { name: { contains: term, mode: 'insensitive' } } } }
+      ];
+    }
+
     if (date) {
       // Filter by date (start of day to end of day)
       const filterDate = new Date(date as string);
@@ -447,9 +471,14 @@ export const getAllBookings = async (req: AuthRequest, res: Response): Promise<v
       };
     }
 
+    const { page, pageSize, skip, take } = getPagination(req.query);
+    const totalCount = await prisma.booking.count({ where });
+
     // Fetch bookings with all related data
     const bookings = await prisma.booking.findMany({
       where,
+      skip,
+      take,
       include: {
         user: {
           select: {
@@ -545,7 +574,10 @@ export const getAllBookings = async (req: AuthRequest, res: Response): Promise<v
       success: true,
       data: {
         bookings: formattedBookings,
-        total: formattedBookings.length
+        total: totalCount,
+        page,
+        pageSize,
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
       }
     });
   } catch (error) {
@@ -4442,9 +4474,16 @@ export const getAllMembers = async (req: AuthRequest, res: Response): Promise<vo
       orderBy = { createdAt: 'desc' };
     }
 
+    const { page, pageSize, skip, take } = getPagination(req.query);
+
+    // Total count for pagination (same filters)
+    const totalCount = await prisma.user.count({ where });
+
     // Fetch members with basic info
     const members = await prisma.user.findMany({
       where,
+      skip,
+      take,
       select: {
         id: true,
         firstName: true,
@@ -4522,7 +4561,10 @@ export const getAllMembers = async (req: AuthRequest, res: Response): Promise<vo
       success: true,
       data: {
         members: formattedMembers,
-        total: formattedMembers.length
+        total: totalCount,
+        page,
+        pageSize,
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
       }
     });
   } catch (error) {

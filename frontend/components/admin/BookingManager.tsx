@@ -67,10 +67,16 @@ export default function BookingManager() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Filters
+
+  // Filters (applied server-side)
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const pageSize = 25;
   
   // Modals
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -97,16 +103,34 @@ export default function BookingManager() {
   
   const [processing, setProcessing] = useState(false);
 
+  // Reset to page 1 whenever a filter changes.
   useEffect(() => {
-    fetchBookings();
-  }, []);
+    setPage(1);
+  }, [statusFilter, searchTerm]);
+
+  // Refetch when filters or page change (debounced for search).
+  useEffect(() => {
+    const t = setTimeout(() => {
+      fetchBookings();
+    }, 300);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusFilter, searchTerm, page]);
 
   const fetchBookings = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiClient.get('/admin/bookings');
-      setBookings(response.data.data.bookings);
+      const params = new URLSearchParams();
+      if (statusFilter !== 'all') params.append('status', statusFilter);
+      if (searchTerm.trim()) params.append('search', searchTerm.trim());
+      params.append('page', String(page));
+      params.append('pageSize', String(pageSize));
+      const response = await apiClient.get(`/admin/bookings?${params.toString()}`);
+      const data = response.data.data;
+      setBookings(data.bookings);
+      setTotal(data.total ?? data.bookings.length);
+      setTotalPages(data.totalPages ?? 1);
     } catch (err: any) {
       setError(err.response?.data?.error?.message || 'Failed to load bookings');
       console.error('Error fetching bookings:', err);
@@ -261,25 +285,8 @@ export default function BookingManager() {
     }
   };
 
-  const filteredBookings = bookings.filter(booking => {
-    // Status filter
-    if (statusFilter !== 'all' && booking.status !== statusFilter) {
-      return false;
-    }
-    
-    // Search filter
-    if (searchTerm) {
-      const search = searchTerm.toLowerCase();
-      return (
-        booking.member.name.toLowerCase().includes(search) ||
-        booking.member.email.toLowerCase().includes(search) ||
-        booking.class.type.toLowerCase().includes(search) ||
-        booking.bookedFor.name.toLowerCase().includes(search)
-      );
-    }
-    
-    return true;
-  });
+  // Filtering + search now happen server-side; render the fetched page directly.
+  const filteredBookings = bookings;
 
   if (loading) {
     return (
@@ -309,7 +316,7 @@ export default function BookingManager() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Booking Management</h2>
-          <p className="text-gray-600 mt-1">{filteredBookings.length} booking{filteredBookings.length !== 1 ? 's' : ''}</p>
+          <p className="text-gray-600 mt-1">{total} booking{total !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -445,6 +452,29 @@ export default function BookingManager() {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between px-2">
+          <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1}
+              className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="px-3 py-1.5 text-sm rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+            >
+              Next
+            </button>
           </div>
         </div>
       )}

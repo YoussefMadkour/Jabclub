@@ -19,7 +19,7 @@ export const SITE = {
   ],
 } as const;
 
-// Only what we actually run on the schedule: Adults Kickboxing + Kids & Juniors MMA.
+// Only what we actually run on the schedule: Adults Kickboxing + Kids & Juniors Martial Arts.
 export const PROGRAMS = [
   {
     slug: 'kickboxing',
@@ -28,9 +28,9 @@ export const PROGRAMS = [
     body: 'Burn fat, build power, and learn striking that holds up under pressure — punches, kicks, knees, and the engine to throw them. Built for teens and adults.',
   },
   {
-    slug: 'mma',
-    name: 'MMA',
-    tagline: 'Striking and grappling, safely structured.',
-    body: 'The foundations of mixed martial arts for kids and juniors — striking and grappling in a safe, structured environment that builds discipline and confidence.',
+    slug: 'martial-arts',
+    name: 'Martial Arts',
+    tagline: 'Discipline, technique, real skill.',
+    body: 'The foundations of martial arts for kids and juniors — striking and grappling in a safe, structured environment that builds discipline and confidence.',
   },
 ] as const;

@@ -14,7 +14,7 @@ const REASONS = [
   },
   {
     t: 'Supportive community',
-    b: 'From first-timers to future champions, we offer tailored programs in Boxing, Kickboxing, Brazilian Jiu-Jitsu, Wrestling, and our elite Apex Pro competitive track.',
+    b: 'From first-timers to future champions, we offer tailored kickboxing and martial arts programs for kids, juniors, and adults — plus a competitive track for those who want to compete.',
   },
   {
     t: 'All ages welcome',

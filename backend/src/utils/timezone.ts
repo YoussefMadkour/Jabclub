@@ -1,15 +1,39 @@
-// Egypt is treated as a fixed UTC+2 offset across the app (matches scheduleService).
-// Centralising the conversion here so cleanup, generation, reports and notifications
-// all agree on how a local Egypt time maps to the UTC values stored in the DB.
+// Egypt observes DST again (since 2023): UTC+2 in winter, UTC+3 in summer.
+// Day/week window helpers below use this as a coarse default; egyptTimeToUTC()
+// resolves the exact offset per-date so generated class times are always correct.
 export const EGYPT_UTC_OFFSET_HOURS = 2;
 
 /**
- * Build a UTC Date for a given calendar date + HH:MM entered in Egypt local time.
- * e.g. date=2026-03-01, hours=20, minutes=0 → 2026-03-01T18:00:00.000Z
+ * Actual Africa/Cairo UTC offset (in hours) for a given instant — 2 in winter,
+ * 3 during summer DST. Uses the IANA tz database via Intl so it stays correct
+ * across DST rule changes.
+ */
+export function egyptOffsetHours(at: Date): number {
+  try {
+    const name = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Africa/Cairo',
+      timeZoneName: 'shortOffset',
+    })
+      .formatToParts(at)
+      .find((p) => p.type === 'timeZoneName')?.value ?? 'GMT+2';
+    const m = name.match(/([+-]\d{1,2})/);
+    return m ? parseInt(m[1], 10) : EGYPT_UTC_OFFSET_HOURS;
+  } catch {
+    return EGYPT_UTC_OFFSET_HOURS;
+  }
+}
+
+/**
+ * Build a UTC Date for a given calendar date + HH:MM entered in Egypt local time,
+ * accounting for DST. e.g. 18:00 local → 16:00Z in winter, 15:00Z in summer.
  */
 export function egyptTimeToUTC(date: Date, hours: number, minutes: number): Date {
+  // Probe with a naive UTC time to determine the correct DST offset, then apply it.
+  const probe = new Date(date);
+  probe.setUTCHours(hours, minutes, 0, 0);
+  const offset = egyptOffsetHours(probe);
   const utc = new Date(date);
-  utc.setUTCHours(hours - EGYPT_UTC_OFFSET_HOURS, minutes, 0, 0);
+  utc.setUTCHours(hours - offset, minutes, 0, 0);
   return utc;
 }
 

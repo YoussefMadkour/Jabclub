@@ -1,18 +1,6 @@
 import prisma from '../config/database';
-
-// Egypt is always UTC+2 (no DST). Schedule times are entered in Egypt local time,
-// so we subtract 2 hours when building UTC Date objects for storage.
-const EGYPT_UTC_OFFSET_HOURS = 2;
-
-/**
- * Build a UTC Date for a given local date + HH:MM time entered in Egypt time.
- * e.g. date=2026-03-01, hours=20, minutes=0 → 2026-03-01T18:00:00.000Z
- */
-function egyptTimeToUTC(date: Date, hours: number, minutes: number): Date {
-  const utc = new Date(date);
-  utc.setUTCHours(hours - EGYPT_UTC_OFFSET_HOURS, minutes, 0, 0);
-  return utc;
-}
+// Schedule times are entered in Egypt local time; this conversion is DST-aware.
+import { egyptTimeToUTC } from '../utils/timezone';
 
 /**
  * Generate class instances from active recurring schedules.
