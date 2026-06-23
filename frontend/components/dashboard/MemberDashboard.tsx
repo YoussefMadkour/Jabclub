@@ -7,10 +7,12 @@ import { useRouter } from 'next/navigation';
 import CancellationModal from '@/components/classes/CancellationModal';
 import QRCodeModal from '@/components/dashboard/QRCodeModal';
 import apiClient from '@/lib/axios';
+import { useToast } from '@/components/shared/Toast';
 
 export default function MemberDashboard() {
   const { data, isLoading, error, refetch } = useDashboard();
   const router = useRouter();
+  const toast = useToast();
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
@@ -28,11 +30,13 @@ export default function MemberDashboard() {
     if (!selectedBooking) return;
 
     try {
-      await apiClient.delete(`/members/bookings/${selectedBooking.id}`);
+      const res = await apiClient.delete(`/members/bookings/${selectedBooking.id}`);
       // Refetch dashboard data to update the UI
       await refetch();
       setIsCancelModalOpen(false);
       setSelectedBooking(null);
+      const msg = res.data?.data?.message || 'Booking cancelled and your credit has been refunded.';
+      toast.success(msg);
     } catch (error) {
       throw error; // Let the modal handle the error display
     }

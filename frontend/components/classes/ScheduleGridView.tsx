@@ -163,8 +163,10 @@ export default function ScheduleGridView() {
   };
 
   const handleBookingSuccess = () => {
-    // Refetch classes to update availability
+    // Refetch classes to update availability + dashboard so credits/upcoming are fresh
     queryClient.invalidateQueries({ queryKey: ['schedule-grid'] });
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    queryClient.invalidateQueries({ queryKey: ['credits'] });
     setIsBookingModalOpen(false);
     setSelectedClass(null);
   };

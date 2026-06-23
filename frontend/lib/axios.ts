@@ -83,7 +83,7 @@ apiClient.interceptors.response.use(
       if (typeof window !== 'undefined') {
         const currentPath = window.location.pathname;
         // Only redirect if not on public pages (homepage, login, signup, privacy policy, terms)
-        const publicPaths = ['/', '/login', '/signup', '/privacy-policy', '/terms-of-service'];
+        const publicPaths = ['/', '/login', '/signup', '/privacy-policy', '/terms-of-service', '/forgot-password', '/reset-password'];
         const isPublicPath = publicPaths.includes(currentPath);
         
         if (!isPublicPath) {
