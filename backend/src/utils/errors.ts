@@ -91,6 +91,14 @@ export class CancellationWindowError extends AppError {
   }
 }
 
+// Thrown inside a booking transaction to surface a specific 400 code
+// (CLASS_FULL / ALREADY_BOOKED) instead of being swallowed as a generic 500.
+export class BookingError extends AppError {
+  constructor(code: string, message: string, details?: any) {
+    super(message, 400, code, details);
+  }
+}
+
 export class FileUploadError extends AppError {
   constructor(message: string, details?: any) {
     super(message, 400, 'FILE_UPLOAD_ERROR', details);

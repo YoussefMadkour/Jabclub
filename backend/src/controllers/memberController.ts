@@ -7,6 +7,7 @@ import { getRelativeUploadPath } from '../utils/filePath';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
 import { uploadToBlob } from '../services/blobService';
 import { generateFileName } from '../middleware/upload';
+import { AppError, BookingError } from '../utils/errors';
 
 /**
  * GET /api/members/credits
@@ -1254,7 +1255,35 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
     }
 
     // Use database transaction to ensure atomicity
+    const classInstanceIdNum = parseInt(classInstanceId);
+    const childIdNum = childId ? parseInt(childId) : null;
     const result = await prisma.$transaction(async (tx) => {
+      // Lock the class instance row so concurrent bookings for the same class
+      // serialize here — prevents the capacity check/insert race (overbooking).
+      await tx.$queryRaw`SELECT id FROM class_instances WHERE id = ${classInstanceIdNum} FOR UPDATE`;
+
+      // Re-check capacity inside the lock (authoritative count)
+      const confirmedCount = await tx.booking.count({
+        where: { classInstanceId: classInstanceIdNum, status: 'confirmed' }
+      });
+      if (confirmedCount >= classInstance.capacity) {
+        throw new BookingError('CLASS_FULL', 'This class is fully booked');
+      }
+
+      // Find any existing booking row for this (class, user, child) — the unique
+      // constraint @@unique([classInstanceId, userId, childId]) ignores status, so a
+      // previously cancelled booking must be REACTIVATED rather than re-created
+      // (a plain create would hit a P2002 unique violation → confusing 500).
+      const existing = await tx.booking.findFirst({
+        where: { classInstanceId: classInstanceIdNum, userId, childId: childIdNum }
+      });
+      if (existing && existing.status === 'confirmed') {
+        throw new BookingError(
+          'ALREADY_BOOKED',
+          childIdNum ? 'This child is already booked for this class' : 'You are already booked for this class'
+        );
+      }
+
       // Select the package to deduct credit from (first one with available credits)
       const packageToUse = activePackages[0];
 
@@ -1266,36 +1295,50 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
         }
       });
 
-      // Create the booking
-      const booking = await tx.booking.create({
-        data: {
-          classInstanceId: parseInt(classInstanceId),
-          userId,
-          childId: childId ? parseInt(childId) : null,
-          memberPackageId: packageToUse.id,
-          status: 'confirmed'
-        },
-        include: {
-          classInstance: {
-            include: {
-              classType: true,
-              location: true,
-              coach: {
-                select: {
-                  firstName: true,
-                  lastName: true
-                }
+      const bookingInclude = {
+        classInstance: {
+          include: {
+            classType: true,
+            location: true,
+            coach: {
+              select: {
+                firstName: true,
+                lastName: true
               }
             }
-          },
-          child: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
+          }
+        },
+        child: {
+          select: {
+            firstName: true,
+            lastName: true
           }
         }
-      });
+      } satisfies Prisma.BookingInclude;
+
+      // Reactivate the previously-cancelled booking, or create a fresh one
+      const booking = existing
+        ? await tx.booking.update({
+            where: { id: existing.id },
+            data: {
+              status: 'confirmed',
+              memberPackageId: packageToUse.id,
+              cancelledAt: null,
+              attendanceMarkedAt: null,
+              bookedAt: new Date()
+            },
+            include: bookingInclude
+          })
+        : await tx.booking.create({
+            data: {
+              classInstanceId: classInstanceIdNum,
+              userId,
+              childId: childIdNum,
+              memberPackageId: packageToUse.id,
+              status: 'confirmed'
+            },
+            include: bookingInclude
+          });
 
       // Create credit transaction log
       await tx.creditTransaction.create({
@@ -1380,6 +1423,13 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
       }
     });
   } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        error: { code: error.code, message: error.message }
+      });
+      return;
+    }
     console.error('Booking creation error:', error);
     res.status(500).json({
       success: false,
