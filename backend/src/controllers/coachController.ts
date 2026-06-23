@@ -167,6 +167,9 @@ export const getNote = async (req: AuthRequest, res: Response): Promise<void> =>
             firstName: true,
             lastName: true
           }
+        },
+        booking: {
+          select: { classInstance: { select: { coachId: true } } }
         }
       }
     });
@@ -178,6 +181,15 @@ export const getNote = async (req: AuthRequest, res: Response): Promise<void> =>
           code: 'NOT_FOUND',
           message: 'Note not found'
         }
+      });
+      return;
+    }
+
+    // Only the coach assigned to the class (or an admin) may read the note
+    if (classNote.booking.classInstance.coachId !== userId && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'You are not assigned to this class' }
       });
       return;
     }
@@ -905,6 +917,24 @@ export const getMemberDetails = async (req: AuthRequest, res: Response): Promise
         error: {
           code: 'INVALID_USER_TYPE',
           message: 'User is not a member'
+        }
+      });
+      return;
+    }
+
+    // IDOR guard: a coach may only view a member who has at least one (non-cancelled)
+    // booking — for themselves or a child — in a class this coach teaches. The booking
+    // includes above are already scoped to coachId, so empty means "no relationship".
+    // Admins (full access) bypass this check.
+    const hasRelationship =
+      member.bookings.length > 0 ||
+      member.children.some(child => child.bookings.length > 0);
+    if (!hasRelationship && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'You can only view members enrolled in your classes'
         }
       });
       return;

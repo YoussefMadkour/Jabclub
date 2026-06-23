@@ -6,6 +6,7 @@ import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import passport from './config/passport';
 import prisma from './config/database';
+import { config } from './config/env';
 import { initializeExpiryScheduler } from './services/expiryService';
 
 // Load environment variables
@@ -57,7 +58,7 @@ if (isVercelServerless) {
 
 // Session configuration
 const sessionConfig: session.SessionOptions = {
-  secret: process.env.SESSION_SECRET || 'your-secret-key-change-this-in-production',
+  secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,
   name: 'jabclub.sid', // Custom session cookie name (default is 'connect.sid')

@@ -101,7 +101,8 @@ export default function ClassRoster({ classInstanceId }: ClassRosterProps) {
   };
 
   const handleQRScanSuccess = (bookingData: any) => {
-    setScanResult(bookingData);
+    // Backend returns { success, message, booking: { member, isChild, class, checkedInAt } }
+    setScanResult(bookingData?.booking ?? bookingData);
     setScanError(null);
     // Show success message and auto-refresh after 3 seconds
     setTimeout(() => {

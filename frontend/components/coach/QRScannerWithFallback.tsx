@@ -48,7 +48,7 @@ export default function QRScannerWithFallback({ onScanSuccess, onError, disabled
         const code = jsQR(imageData.data, imageData.width, imageData.height);
 
         if (code) {
-          handleQRCodeScanned(JSON.stringify(code.data));
+          handleQRCodeScanned(code.data);
         } else {
           setProcessing(false);
           setScanning(true);
