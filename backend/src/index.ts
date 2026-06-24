@@ -23,14 +23,22 @@ const isVercelServerless = !!process.env.VERCEL || !!process.env.VERCEL_ENV;
 // For production: use .jabclubegy.com to allow cookies across app.jabclubegy.com and api.jabclubegy.com
 // For local dev: undefined (browser will set it automatically)
 const getCookieDomain = (): string | undefined => {
-  if (isVercelServerless) {
-    // Extract domain from FRONTEND_URL or use default
-    const frontendUrl = process.env.FRONTEND_URL || '';
-    if (frontendUrl.includes('jabclubegy.com')) {
-      return '.jabclubegy.com'; // Leading dot allows subdomain sharing
+  if (!isVercelServerless) return undefined; // Local dev - let the browser handle it
+
+  // Derive the registrable domain from FRONTEND_URL so the session cookie is shared
+  // across that domain's subdomains (e.g. app.* and api.*). Works for any domain
+  // (theapexmartialarts.com, jabclubegy.com, …) instead of a hardcoded value.
+  const frontendUrl = process.env.FRONTEND_URL || '';
+  try {
+    const host = new URL(frontendUrl).hostname; // e.g. theapexmartialarts.com or app.jabclubegy.com
+    const parts = host.split('.').filter(Boolean);
+    if (parts.length >= 2) {
+      return '.' + parts.slice(-2).join('.'); // ".theapexmartialarts.com" / ".jabclubegy.com"
     }
+  } catch {
+    // malformed/empty FRONTEND_URL — fall through
   }
-  return undefined; // Local development - let browser handle it
+  return undefined;
 };
 
 // Create session store with error handling
