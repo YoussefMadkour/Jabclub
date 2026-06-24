@@ -61,7 +61,7 @@ export default function ContactForm() {
           rows={5}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Tell us what you're looking for — a program, a trial class, a question."
+          placeholder="Tell us what you're looking for — a program, a package, a question."
           className="w-full px-3 py-2 bg-input border border-input rounded-[2px] focus:outline-none focus:border-white form-input-mobile resize-none"
         />
       </div>

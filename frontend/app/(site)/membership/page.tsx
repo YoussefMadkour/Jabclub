@@ -5,18 +5,18 @@ import { SITE, PROGRAMS } from '@/lib/site';
 const STEPS = [
   {
     num: '01',
-    title: 'Reach out',
-    body: 'Message us on WhatsApp or call. Tell us your goals and any experience.',
+    title: 'Create your account',
+    body: 'Sign up in the member portal — it only takes a minute.',
   },
   {
     num: '02',
-    title: 'Book a trial',
-    body: 'Come in for a trial class. Meet the coaches and feel the room.',
+    title: 'Buy a package',
+    body: 'Choose the session package that fits your goals and pay right in the portal.',
   },
   {
     num: '03',
-    title: 'Join Apex',
-    body: 'Pick the track that fits, and start training. Manage everything in the member portal.',
+    title: 'Book your classes',
+    body: 'Reserve your spot on the schedule and train. Questions? Message us on WhatsApp anytime.',
   },
 ];
 
@@ -137,24 +137,24 @@ export default function Membership() {
       {/* ───────── CTA (white inversion) ───────── */}
       <section className="bg-primary text-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 text-center">
-          <h2 className="font-display text-3xl lg:text-5xl font-extrabold tracking-tight">Start your first class.</h2>
+          <h2 className="font-display text-3xl lg:text-5xl font-extrabold tracking-tight">Start training.</h2>
           <p className="mt-4 text-base lg:text-lg text-black/70 max-w-xl mx-auto">
-            Show up, put in the work, become your strongest self. Message us and we’ll get you started.
+            Sign up, grab a package, and book your spot on the schedule. Questions? Message us on WhatsApp.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-display font-semibold uppercase tracking-wider bg-black text-white border border-black transition-all hover:bg-transparent hover:text-black"
+            >
+              Sign up
+            </Link>
             <a
               href={SITE.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-display font-semibold uppercase tracking-wider bg-black text-white border border-black transition-all hover:bg-transparent hover:text-black"
-            >
-              Message on WhatsApp
-            </a>
-            <a
-              href={`tel:+${SITE.phoneIntl}`}
               className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-display font-semibold uppercase tracking-wider border border-black text-black transition-all hover:bg-black hover:text-white"
             >
-              Call us
+              Message on WhatsApp
             </a>
           </div>
         </div>

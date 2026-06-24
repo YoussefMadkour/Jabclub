@@ -39,7 +39,7 @@ export default function ContactPage() {
               <p className="eyebrow mb-4">Reach us</p>
               <h2 className="text-3xl lg:text-5xl font-bold text-headline">Talk to a coach.</h2>
               <p className="mt-4 text-body leading-relaxed max-w-md">
-                Questions about programs, a trial class, or membership? Reach out any way you like — we
+                Questions about programs, packages, or membership? Reach out any way you like — we
                 usually reply fastest on WhatsApp.
               </p>
 

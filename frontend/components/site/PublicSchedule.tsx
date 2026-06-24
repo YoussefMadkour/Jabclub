@@ -189,11 +189,11 @@ export default function PublicSchedule() {
       <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-line bg-surface p-5">
         <p className="text-sm text-foreground">
           <span className="text-headline font-display uppercase tracking-wide">Members book in the portal.</span>{' '}
-          New here? Reserve your first class and we’ll set you up.
+          New here? Sign up, grab a package, and reserve your spot.
         </p>
         <div className="flex gap-3 shrink-0">
           <Link href="/login" className="btn-secondary text-xs px-5 py-2.5">Log in to book</Link>
-          <Link href="/membership" className="btn-primary text-xs px-5 py-2.5">Become a member</Link>
+          <Link href="/signup" className="btn-primary text-xs px-5 py-2.5">Sign up</Link>
         </div>
       </div>
     </div>
