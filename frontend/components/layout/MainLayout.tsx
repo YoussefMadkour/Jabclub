@@ -34,8 +34,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           {children}
         </div>
       </main>
-      
-      <Footer />
+
+      {/* Footer must clear the fixed sidebar when authenticated, otherwise the
+          sidebar overlaps its left content (logo/text get cut off). */}
+      <div className={isAuthenticated ? 'lg:pl-64' : ''}>
+        <Footer />
+      </div>
     </div>
   );
 };

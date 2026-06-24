@@ -137,8 +137,8 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading member details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="mt-4 text-gray-400">Loading member details...</p>
         </div>
       </div>
     );
@@ -174,19 +174,19 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-white">
               {data.firstName} {data.lastName}
             </h1>
-            <p className="text-gray-600 mt-1">Member Details</p>
+            <p className="text-gray-400 mt-1">Member Details</p>
           </div>
           <div className="flex gap-2 items-center">
             {isAdmin && <MemberActions memberId={memberId} memberData={data} />}
             <button
               onClick={() => router.back()}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+              className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-white/10 transition-colors"
             >
               ← Back
             </button>
@@ -196,17 +196,17 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
         {/* Contact Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600">Email</p>
+            <p className="text-sm text-gray-400">Email</p>
             <p className="text-lg font-medium">{data.email}</p>
           </div>
           {data.phone && (
             <div>
-              <p className="text-sm text-gray-600">Phone</p>
+              <p className="text-sm text-gray-400">Phone</p>
               <p className="text-lg font-medium">{data.phone}</p>
             </div>
           )}
           <div>
-            <p className="text-sm text-gray-600">Member Since</p>
+            <p className="text-sm text-gray-400">Member Since</p>
             <p className="text-lg font-medium">
               {safeFormatDate(data.createdAt, 'MMM dd, yyyy')}
             </p>
@@ -216,30 +216,30 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
 
       {/* Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <p className="text-sm text-gray-600">Total Bookings</p>
-          <p className="text-2xl font-bold text-gray-900">{data.statistics.totalBookings}</p>
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+          <p className="text-sm text-gray-400">Total Bookings</p>
+          <p className="text-2xl font-bold text-white">{data.statistics.totalBookings}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <p className="text-sm text-gray-600">Attended</p>
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+          <p className="text-sm text-gray-400">Attended</p>
           <p className="text-2xl font-bold text-green-600">{data.statistics.attendedBookings}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <p className="text-sm text-gray-600">No-Show</p>
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+          <p className="text-sm text-gray-400">No-Show</p>
           <p className="text-2xl font-bold text-red-600">{data.statistics.noShowBookings}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <p className="text-sm text-gray-600">Confirmed</p>
-          <p className="text-2xl font-bold text-[#FF7A00]">{data.statistics.confirmedBookings}</p>
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+          <p className="text-sm text-gray-400">Confirmed</p>
+          <p className="text-2xl font-bold text-white">{data.statistics.confirmedBookings}</p>
         </div>
         {isAdmin && data.statistics.totalCredits !== undefined && (
           <>
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <p className="text-sm text-gray-600">Total Credits</p>
+            <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+              <p className="text-sm text-gray-400">Total Credits</p>
               <p className="text-2xl font-bold text-purple-600">{data.statistics.totalCredits}</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-4">
-              <p className="text-sm text-gray-600">Active Packages</p>
+            <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+              <p className="text-sm text-gray-400">Active Packages</p>
               <p className="text-2xl font-bold text-indigo-600">
                 {data.statistics.activePackagesCount}
               </p>
@@ -247,8 +247,8 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
           </>
         )}
         {!isAdmin && data.statistics.attendanceRate && (
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <p className="text-sm text-gray-600">Attendance Rate</p>
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-4">
+            <p className="text-sm text-gray-400">Attendance Rate</p>
             <p className="text-2xl font-bold text-indigo-600">
               {data.statistics.attendanceRate}%
             </p>
@@ -258,8 +258,8 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
 
       {/* Children as Sub-Members */}
       {data.children.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Children (Sub-Members)</h2>
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Children (Sub-Members)</h2>
           <div className="space-y-6">
             {data.children.map((child) => (
               <div key={child.id} className="border border-purple-200 rounded-lg p-6 bg-purple-50">
@@ -304,7 +304,7 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
                     </div>
                     <div className="bg-white rounded-lg p-3">
                       <p className="text-xs text-gray-600">Confirmed</p>
-                      <p className="text-xl font-bold text-[#FF7A00]">
+                      <p className="text-xl font-bold text-[#000000]">
                         {child.statistics.confirmedBookings || 0}
                       </p>
                     </div>
@@ -386,33 +386,33 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
 
       {/* Packages (Admin only) */}
       {isAdmin && data.packages && data.packages.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Packages</h2>
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold text-white mb-4">Packages</h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-100">
+            <table className="min-w-full divide-y divide-[#26262B]">
+              <thead className="bg-[#1f1f23]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Package
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Sessions
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Remaining
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Purchase Date
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Expiry Date
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {data.packages.map((pkg) => (
                   <tr key={pkg.id}>
                     <td className="px-4 py-3 text-sm font-medium">{pkg.packageName}</td>
@@ -448,37 +448,37 @@ export default function MemberDetails({ memberId, isAdmin = false }: MemberDetai
 
       {/* Recent Bookings (Parent Only) */}
       {data.recentBookings.length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold text-white mb-4">
             {isAdmin ? 'Recent Bookings (Parent)' : 'Recent Bookings with You (Parent)'}
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-100">
+            <table className="min-w-full divide-y divide-[#26262B]">
+              <thead className="bg-[#1f1f23]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Class
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Location
                   </th>
                   {isAdmin && (
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                       Coach
                     </th>
                   )}
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Date & Time
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Booked For
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {data.recentBookings.map((booking) => (
                   <tr key={booking.id}>
                     <td className="px-4 py-3 text-sm font-medium">{booking.classType}</td>
@@ -623,7 +623,7 @@ function MemberActions({ memberId, memberData }: { memberId: number; memberData:
           <button
             onClick={handleUnfreeze}
             disabled={processing}
-            className="px-4 py-2 bg-[#FF7A00] text-white rounded-md hover:bg-[#F57A00] transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
           >
             Unfreeze
           </button>
@@ -631,7 +631,7 @@ function MemberActions({ memberId, memberData }: { memberId: number; memberData:
           <button
             onClick={handleFreeze}
             disabled={processing}
-            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
           >
             Freeze
           </button>
@@ -664,16 +664,16 @@ function MemberActions({ memberId, memberData }: { memberId: number; memberData:
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Delete Member Account</h3>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">Delete Member Account</h3>
+            <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to delete <strong>{memberData.firstName} {memberData.lastName}</strong>?
               This will soft-delete the account. The member will not be able to log in, but their data will be preserved.
             </p>
             <div className="flex space-x-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -790,10 +790,10 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-6 bg-[#26262B] rounded w-1/4 mb-4"></div>
+          <div className="h-4 bg-[#26262B] rounded w-1/2"></div>
         </div>
       </div>
     );
@@ -803,46 +803,46 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Renewal Package Prices</h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <h2 className="text-xl font-bold text-white">Renewal Package Prices</h2>
+            <p className="text-sm text-gray-400 mt-1">
               Set custom prices for this member when they renew packages. If not set, member will pay normal location-based prices.
             </p>
           </div>
         </div>
 
         {data.packages.length === 0 ? (
-          <p className="text-gray-600 text-center py-4">No packages available</p>
+          <p className="text-gray-400 text-center py-4">No packages available</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-100">
+            <table className="min-w-full divide-y divide-[#26262B]">
+              <thead className="bg-[#1f1f23]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Package
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Default Price
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Member Price
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Status
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#16161a] divide-y divide-[#26262B]">
                 {data.packages.map((pkg) => (
                   <tr key={pkg.packageId}>
                     <td className="px-4 py-3 text-sm">
                       <div className="font-medium">{pkg.packageName}</div>
-                      <div className="text-xs text-gray-500">{pkg.sessionCount} sessions</div>
+                      <div className="text-xs text-gray-400">{pkg.sessionCount} sessions</div>
                     </td>
                     <td className="px-4 py-3 text-sm">
                       EGP {typeof pkg.defaultPrice === 'string' ? parseFloat(pkg.defaultPrice).toFixed(2) : pkg.defaultPrice.toFixed(2)}
@@ -871,7 +871,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openPriceModal(pkg)}
-                          className="text-[#FF7A00] hover:text-orange-800 text-xs font-medium"
+                          className="text-white hover:text-gray-400 text-xs font-medium"
                         >
                           {pkg.hasCustomPrice ? 'Edit' : 'Set'}
                         </button>
@@ -897,17 +897,17 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
       {/* Price Modal */}
       {showPriceModal && selectedPackage && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-[#16161a] border border-[#26262B] rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">
               Set Member-Specific Price for {selectedPackage.packageName}
             </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-400 mb-4">
               This price will apply to <strong>all purchases</strong> (both first-time and renewals) for this member, regardless of location or other pricing rules. This takes priority over location-specific and default prices.
             </p>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Member-Specific Price (EGP) *
                 </label>
                 <input
@@ -919,7 +919,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
                   placeholder={selectedPackage.defaultPrice.toString()}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Default price: EGP {typeof selectedPackage.defaultPrice === 'string' ? parseFloat(selectedPackage.defaultPrice).toFixed(2) : selectedPackage.defaultPrice.toFixed(2)}
                 </p>
               </div>
@@ -932,7 +932,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
                   onChange={(e) => setPriceForm({ ...priceForm, isActive: e.target.checked })}
                   className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                 />
-                <label htmlFor="priceActive" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="priceActive" className="ml-2 block text-sm text-gray-300">
                   Active (apply this price for renewals)
                 </label>
               </div>
@@ -944,7 +944,7 @@ function MemberPackagePricesSection({ memberId }: { memberId: number }) {
                   setShowPriceModal(false);
                   setSelectedPackage(null);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>

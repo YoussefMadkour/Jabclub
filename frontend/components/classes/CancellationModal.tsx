@@ -66,11 +66,11 @@ export default function CancellationModal({
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="relative bg-[#16161a] border border-[#26262B] rounded-lg shadow-xl max-w-md w-full p-6">
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-400"
             disabled={isLoading}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,15 +80,15 @@ export default function CancellationModal({
 
           {/* Header */}
           <div className="mb-4">
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="text-xl font-bold text-white">
               {withinCancellationWindow ? 'Cannot Cancel Booking' : 'Cancel Booking'}
             </h3>
           </div>
 
           {/* Class Details */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-2">{booking.classType}</h4>
-            <div className="space-y-1 text-sm text-gray-600">
+          <div className="mb-6 p-4 bg-[#121214] rounded-lg">
+            <h4 className="font-semibold text-white mb-2">{booking.classType}</h4>
+            <div className="space-y-1 text-sm text-gray-400">
               <p className="flex items-center gap-2">
                 <span>📅</span>
                 {format(classStartTime, 'EEEE, MMMM dd, yyyy')}
@@ -182,7 +182,7 @@ export default function CancellationModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 border border-[#26262B] text-gray-300 rounded-md hover:bg-white/5 transition-colors"
               disabled={isLoading}
             >
               {withinCancellationWindow ? 'Close' : 'Keep Booking'}

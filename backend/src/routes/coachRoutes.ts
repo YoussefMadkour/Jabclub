@@ -12,9 +12,10 @@ import { authenticate, authorize } from '../middleware/auth';
 
 const router = Router();
 
-// All coach routes require authentication and coach role
+// All coach routes require authentication. Admins have full access alongside coaches;
+// per-class ownership is still enforced in the controllers (admins bypass that check).
 router.use(authenticate);
-router.use(authorize('coach'));
+router.use(authorize('coach', 'admin'));
 
 // GET /api/coach/classes - Get coach's assigned classes
 router.get('/classes', getCoachClasses);

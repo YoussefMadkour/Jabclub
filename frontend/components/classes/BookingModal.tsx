@@ -179,9 +179,9 @@ export default function BookingModal({
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full">
+        <div className="relative bg-[#16161a] border border-[#26262B] rounded-lg shadow-xl max-w-lg w-full">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[#FF7A00] to-[#F57A00] px-6 py-4 rounded-t-lg">
+          <div className="bg-[#1f1f23] px-6 py-4 rounded-t-lg">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">Book Class</h2>
               <button
@@ -200,7 +200,7 @@ export default function BookingModal({
           <div className="p-6">
             {loadingData ? (
               <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7A00]"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
               </div>
             ) : success ? (
               <div className="text-center py-8">
@@ -209,30 +209,30 @@ export default function BookingModal({
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Booking Confirmed!</h3>
-                <p className="text-gray-600 mb-4">Your class has been booked successfully.</p>
-                
+                <h3 className="text-lg font-semibold text-white mb-2">Booking Confirmed!</h3>
+                <p className="text-gray-400 mb-4">Your class has been booked successfully.</p>
+
                 {/* QR Code Display */}
                 {qrLoading ? (
                   <div className="flex flex-col items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF7A00] mb-2"></div>
-                    <p className="text-sm text-gray-600">Generating QR code...</p>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mb-2"></div>
+                    <p className="text-sm text-gray-400">Generating QR code...</p>
                   </div>
                 ) : qrCode ? (
                   <div className="flex flex-col items-center justify-center py-4">
-                    <p className="text-sm font-medium text-gray-700 mb-3">Your Check-in QR Code:</p>
-                    <img 
-                      src={qrCode} 
-                      alt="QR Code" 
-                      className="w-48 h-48 border-2 border-gray-300 rounded-lg p-2 bg-white"
+                    <p className="text-sm font-medium text-gray-300 mb-3">Your Check-in QR Code:</p>
+                    <img
+                      src={qrCode}
+                      alt="QR Code"
+                      className="w-48 h-48 border-2 border-[#26262B] rounded-lg p-2 bg-[#16161a]"
                     />
-                    <p className="text-xs text-gray-500 mt-2">Show this QR code at check-in</p>
+                    <p className="text-xs text-gray-400 mt-2">Show this QR code at check-in</p>
                   </div>
                 ) : null}
-                
+
                 <button
                   onClick={handleClose}
-                  className="mt-6 px-6 py-2 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors font-medium"
+                  className="mt-6 px-6 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-medium"
                 >
                   Close
                 </button>
@@ -241,7 +241,7 @@ export default function BookingModal({
               <>
                 {/* Class Details */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">{classInstance.classType}</h3>
+                  <h3 className="text-lg font-semibold text-white mb-3">{classInstance.classType}</h3>
                   
                   <div className="space-y-2 text-sm">
                     <div className="flex items-start">
@@ -249,8 +249,8 @@ export default function BookingModal({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
                       <div>
-                        <p className="font-medium text-gray-900">{format(startTime, 'EEEE, MMMM d, yyyy')}</p>
-                        <p className="text-gray-600">{format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}</p>
+                        <p className="font-medium text-white">{format(startTime, 'EEEE, MMMM d, yyyy')}</p>
+                        <p className="text-gray-400">{format(startTime, 'h:mm a')} - {format(endTime, 'h:mm a')}</p>
                       </div>
                     </div>
 
@@ -260,9 +260,9 @@ export default function BookingModal({
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       <div>
-                        <p className="font-medium text-gray-900">{classInstance.location.name}</p>
+                        <p className="font-medium text-white">{classInstance.location.name}</p>
                         {classInstance.location.address && (
-                          <p className="text-gray-600 text-xs">{classInstance.location.address}</p>
+                          <p className="text-gray-400 text-xs">{classInstance.location.address}</p>
                         )}
                       </div>
                     </div>
@@ -271,7 +271,7 @@ export default function BookingModal({
                       <svg className="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
-                      <p className="text-gray-900">Coach: {classInstance.coach.name}</p>
+                      <p className="text-white">Coach: {classInstance.coach.name}</p>
                     </div>
                   </div>
                 </div>
@@ -280,12 +280,12 @@ export default function BookingModal({
                 <div className="mb-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600">Available Credits</p>
-                      <p className="text-2xl font-bold text-[#FF7A00]">{credits ?? '...'}</p>
+                      <p className="text-sm text-gray-400">Available Credits</p>
+                      <p className="text-2xl font-bold text-white">{credits ?? '...'}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Cost</p>
-                      <p className="text-2xl font-bold text-gray-900">1</p>
+                      <p className="text-sm text-gray-400">Cost</p>
+                      <p className="text-2xl font-bold text-white">1</p>
                     </div>
                   </div>
                   {credits !== null && credits < 1 && (
@@ -295,13 +295,13 @@ export default function BookingModal({
 
                 {/* Booking For Selection */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Book this class for:
                   </label>
                   <select
                     value={selectedBookingFor}
                     onChange={(e) => setSelectedBookingFor(e.target.value === 'self' ? 'self' : parseInt(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7A00] focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#000000] focus:border-transparent"
                     disabled={isLoading}
                   >
                     <option value="self">Yourself</option>
@@ -321,10 +321,10 @@ export default function BookingModal({
                 )}
 
                 {/* Confirmation Summary */}
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <p className="text-sm text-gray-600 mb-1">You are booking:</p>
-                  <p className="font-semibold text-gray-900">{classInstance.classType}</p>
-                  <p className="text-sm text-gray-600 mt-2">For: <span className="font-medium text-gray-900">{getBookingForName()}</span></p>
+                <div className="mb-6 p-4 bg-[#121214] rounded-lg border border-[#26262B]">
+                  <p className="text-sm text-gray-400 mb-1">You are booking:</p>
+                  <p className="font-semibold text-white">{classInstance.classType}</p>
+                  <p className="text-sm text-gray-400 mt-2">For: <span className="font-medium text-white">{getBookingForName()}</span></p>
                 </div>
 
                 {/* Action Buttons */}
@@ -332,18 +332,18 @@ export default function BookingModal({
                   <button
                     onClick={handleClose}
                     disabled={isLoading}
-                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    className="flex-1 px-4 py-3 border border-[#26262B] text-gray-300 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleBooking}
                     disabled={isLoading || credits === null || credits < 1}
-                    className="flex-1 px-4 py-3 bg-[#FF7A00] text-white rounded-lg hover:bg-[#F57A00] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold touch-target"
+                    className="flex-1 px-4 py-3 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold touch-target"
                   >
                     {isLoading ? (
                       <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-black" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>

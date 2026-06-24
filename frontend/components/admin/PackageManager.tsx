@@ -288,7 +288,7 @@ export default function PackageManager() {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF7A00]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
       </div>
     );
   }
@@ -312,13 +312,13 @@ export default function PackageManager() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Package Management</h2>
-          <p className="text-gray-600 mt-1">{packages.length} package{packages.length !== 1 ? 's' : ''}</p>
+          <h2 className="text-2xl font-bold text-white">Package Management</h2>
+          <p className="text-gray-400 mt-1">{packages.length} package{packages.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={openCreateModal}
-            className="px-4 py-2 bg-[#FF7A00] hover:bg-[#F57A00] text-white rounded-lg transition-colors flex items-center"
+            className="px-4 py-2 bg-white hover:bg-gray-200 text-black rounded-lg transition-colors flex items-center"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -327,7 +327,7 @@ export default function PackageManager() {
           </button>
           <button
             onClick={fetchPackages}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#1f1f23] hover:bg-[#26262B] text-gray-300 rounded-lg transition-colors"
           >
             Refresh
           </button>
@@ -336,28 +336,24 @@ export default function PackageManager() {
 
       {/* Packages Grid */}
       {packages.length === 0 ? (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+        <div className="bg-[#121214] border border-[#26262B] rounded-lg p-8 text-center">
           <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
-          <p className="text-gray-600 text-lg">No packages found</p>
-          <p className="text-gray-500 text-sm mt-2">Create your first package to get started</p>
+          <p className="text-gray-400 text-lg">No packages found</p>
+          <p className="text-gray-400 text-sm mt-2">Create your first package to get started</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {packages.map((pkg) => (
             <div
               key={pkg.id}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+              className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 hover:shadow-lg transition-shadow"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900">{pkg.name}</h3>
-                  <span className={`inline-block mt-2 px-2 py-1 text-xs font-semibold rounded-full ${
-                    pkg.isActive 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
-                  }`}>
+                  <h3 className="text-lg font-semibold text-white">{pkg.name}</h3>
+                  <span className={`inline-block mt-2 px-2 py-1 text-xs font-semibold rounded-full ${ pkg.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }`}>
                     {pkg.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>
@@ -365,35 +361,35 @@ export default function PackageManager() {
 
               <div className="space-y-3 mb-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Sessions:</span>
-                  <span className="text-sm font-semibold text-gray-900">{pkg.sessionCount}</span>
+                  <span className="text-sm text-gray-400">Sessions:</span>
+                  <span className="text-sm font-semibold text-white">{pkg.sessionCount}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Price:</span>
-                  <span className="text-sm font-semibold text-gray-900">EGP {typeof pkg.price === 'string' ? parseFloat(pkg.price).toFixed(2) : pkg.price.toFixed(2)}</span>
+                  <span className="text-sm text-gray-400">Price:</span>
+                  <span className="text-sm font-semibold text-white">EGP {typeof pkg.price === 'string' ? parseFloat(pkg.price).toFixed(2) : pkg.price.toFixed(2)}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Expiry:</span>
-                  <span className="text-sm font-semibold text-gray-900">{pkg.expiryDays} days</span>
+                  <span className="text-sm text-gray-400">Expiry:</span>
+                  <span className="text-sm font-semibold text-white">{pkg.expiryDays} days</span>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                  <span className="text-sm text-gray-600">Total Purchases:</span>
-                  <span className="text-sm font-semibold text-[#FF7A00]">{pkg.purchaseCount}</span>
+                <div className="flex items-center justify-between pt-3 border-t border-[#26262B]">
+                  <span className="text-sm text-gray-400">Total Purchases:</span>
+                  <span className="text-sm font-semibold text-white">{pkg.purchaseCount}</span>
                 </div>
 
                 {/* Location Prices */}
                 {pkg.locationPrices && pkg.locationPrices.length > 0 && (
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="text-xs font-semibold text-gray-600 mb-2">Location Prices:</div>
+                  <div className="pt-3 border-t border-[#26262B]">
+                    <div className="text-xs font-semibold text-gray-400 mb-2">Location Prices:</div>
                     <div className="space-y-1">
                       {pkg.locationPrices.map((lp) => (
                         <div key={lp.locationId} className="flex items-center justify-between text-xs">
-                          <span className="text-gray-600">{lp.locationName}:</span>
+                          <span className="text-gray-400">{lp.locationName}:</span>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-900">EGP {typeof lp.price === 'string' ? parseFloat(lp.price).toFixed(2) : lp.price.toFixed(2)}</span>
+                            <span className="font-semibold text-white">EGP {typeof lp.price === 'string' ? parseFloat(lp.price).toFixed(2) : lp.price.toFixed(2)}</span>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -402,7 +398,7 @@ export default function PackageManager() {
                                   openLocationPriceModal(pkg, location);
                                 }
                               }}
-                              className="text-[#FF7A00] hover:text-orange-800 text-xs"
+                              className="text-white hover:text-gray-400 text-xs"
                             >
                               Edit
                             </button>
@@ -423,11 +419,11 @@ export default function PackageManager() {
                 )}
               </div>
 
-              <div className="space-y-2 pt-4 border-t border-gray-200">
+              <div className="space-y-2 pt-4 border-t border-[#26262B]">
                 <div className="flex space-x-2">
                   <button
                     onClick={() => openEditModal(pkg)}
-                    className="flex-1 px-3 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-lg transition-colors text-sm font-medium"
+                    className="flex-1 px-3 py-2 bg-[#1f1f23] hover:bg-[#26262B] text-gray-100 rounded-lg transition-colors text-sm font-medium"
                   >
                     Edit
                   </button>
@@ -459,35 +455,35 @@ export default function PackageManager() {
       {/* Create Package Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Create New Package</h3>
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Create New Package</h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Package Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Package Name *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g., 10 Session Package"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Sessions *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Number of Sessions *</label>
                 <input
                   type="number"
                   min="1"
                   value={form.sessionCount}
                   onChange={(e) => setForm({ ...form, sessionCount: e.target.value })}
                   placeholder="10"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Price (EGP) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Price (EGP) *</label>
                 <input
                   type="number"
                   min="0.01"
@@ -495,21 +491,21 @@ export default function PackageManager() {
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
                   placeholder="100.00"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Expiry (days) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Expiry (days) *</label>
                 <input
                   type="number"
                   min="1"
                   value={form.expiryDays}
                   onChange={(e) => setForm({ ...form, expiryDays: e.target.value })}
                   placeholder="30"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <p className="text-xs text-gray-500 mt-1">Number of days until credits expire after purchase</p>
+                <p className="text-xs text-gray-400 mt-1">Number of days until credits expire after purchase</p>
               </div>
             </div>
 
@@ -519,14 +515,14 @@ export default function PackageManager() {
                   setShowCreateModal(false);
                   resetForm();
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleCreate}
                 disabled={processing}
-                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Creating...' : 'Create Package'}
               </button>
@@ -538,8 +534,8 @@ export default function PackageManager() {
       {/* Edit Package Modal */}
       {showEditModal && selectedPackage && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit Package</h3>
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Edit Package</h3>
             
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
               <p className="text-xs text-yellow-800">
@@ -549,30 +545,30 @@ export default function PackageManager() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Package Name *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Package Name *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g., 10 Session Package"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Sessions *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Number of Sessions *</label>
                 <input
                   type="number"
                   min="1"
                   value={form.sessionCount}
                   onChange={(e) => setForm({ ...form, sessionCount: e.target.value })}
                   placeholder="10"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Price (EGP) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Price (EGP) *</label>
                 <input
                   type="number"
                   min="0.01"
@@ -580,21 +576,21 @@ export default function PackageManager() {
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: e.target.value })}
                   placeholder="100.00"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Expiry (days) *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Expiry (days) *</label>
                 <input
                   type="number"
                   min="1"
                   value={form.expiryDays}
                   onChange={(e) => setForm({ ...form, expiryDays: e.target.value })}
                   placeholder="30"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
-                <p className="text-xs text-gray-500 mt-1">Number of days until credits expire after purchase</p>
+                <p className="text-xs text-gray-400 mt-1">Number of days until credits expire after purchase</p>
               </div>
 
               <div className="flex items-center">
@@ -603,9 +599,9 @@ export default function PackageManager() {
                   id="includeVat"
                   checked={form.includeVat}
                   onChange={(e) => setForm({ ...form, includeVat: e.target.checked })}
-                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-white focus:ring-blue-500 border-[#26262B] rounded"
                 />
-                <label htmlFor="includeVat" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="includeVat" className="ml-2 block text-sm text-gray-300">
                   Include VAT (14%) - Default for all locations
                 </label>
               </div>
@@ -616,9 +612,9 @@ export default function PackageManager() {
                   id="isActive"
                   checked={form.isActive}
                   onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                  className="h-4 w-4 text-[#FF7A00] focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-white focus:ring-blue-500 border-[#26262B] rounded"
                 />
-                <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="isActive" className="ml-2 block text-sm text-gray-300">
                   Active (visible to members)
                 </label>
               </div>
@@ -631,14 +627,14 @@ export default function PackageManager() {
                   setSelectedPackage(null);
                   resetForm();
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdate}
                 disabled={processing}
-                className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-white hover:bg-gray-200 disabled:bg-gray-400 text-black font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 {processing ? 'Updating...' : 'Update Package'}
               </button>
@@ -650,26 +646,26 @@ export default function PackageManager() {
       {/* Deactivate Confirmation Modal */}
       {showDeactivateModal && selectedPackage && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Deactivate Package</h3>
-            <p className="text-sm text-gray-600 mb-4">
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">Deactivate Package</h3>
+            <p className="text-sm text-gray-400 mb-4">
               Are you sure you want to deactivate this package? It will no longer be available for purchase by members. Existing member packages will not be affected.
             </p>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-[#121214] rounded-lg p-4 mb-4">
               <div className="text-sm space-y-2">
-                <p className="font-medium text-gray-900">{selectedPackage.name}</p>
+                <p className="font-medium text-white">{selectedPackage.name}</p>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Sessions:</span>
+                  <span className="text-gray-400">Sessions:</span>
                   <span className="font-medium">{selectedPackage.sessionCount}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Price:</span>
+                  <span className="text-gray-400">Price:</span>
                   <span className="font-medium">EGP {typeof selectedPackage.price === 'string' ? parseFloat(selectedPackage.price).toFixed(2) : selectedPackage.price.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total Purchases:</span>
-                  <span className="font-medium text-[#FF7A00]">{selectedPackage.purchaseCount}</span>
+                  <span className="text-gray-400">Total Purchases:</span>
+                  <span className="font-medium text-white">{selectedPackage.purchaseCount}</span>
                 </div>
               </div>
             </div>
@@ -680,7 +676,7 @@ export default function PackageManager() {
                   setShowDeactivateModal(false);
                   setSelectedPackage(null);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>
@@ -699,11 +695,11 @@ export default function PackageManager() {
       {/* Location Price Modal */}
       {showLocationPriceModal && selectedPackage && selectedLocation && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-[#16161a] rounded-lg max-w-md w-full p-6 border border-[#26262B]">
+            <h3 className="text-lg font-semibold text-white mb-4">
               Set Price for Location
             </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-gray-400 mb-4">
               Package: <span className="font-semibold">{selectedPackage.name}</span>
             </p>
             
@@ -711,7 +707,7 @@ export default function PackageManager() {
               {/* Location Selector */}
               {locations.length > 1 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Select Location *
                   </label>
                   <select
@@ -722,7 +718,7 @@ export default function PackageManager() {
                         openLocationPriceModal(selectedPackage, newLocation);
                       }
                     }}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full border border-[#26262B] rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   >
                     {locations.map((loc) => (
                       <option key={loc.id} value={loc.id}>
@@ -734,7 +730,7 @@ export default function PackageManager() {
               )}
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Price (EGP) *
                 </label>
                 <input
@@ -744,9 +740,9 @@ export default function PackageManager() {
                   value={locationPriceForm.price}
                   onChange={(e) => setLocationPriceForm({ ...locationPriceForm, price: e.target.value })}
                   placeholder={selectedPackage.price.toString()}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="w-full border border-[#26262B] rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-400 mt-1">
                   Default price: EGP {typeof selectedPackage.price === 'string' ? parseFloat(selectedPackage.price).toFixed(2) : selectedPackage.price.toFixed(2)}
                 </p>
               </div>
@@ -757,9 +753,9 @@ export default function PackageManager() {
                   id="locationPriceIncludeVat"
                   checked={locationPriceForm.includeVat}
                   onChange={(e) => setLocationPriceForm({ ...locationPriceForm, includeVat: e.target.checked })}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-[#26262B] rounded"
                 />
-                <label htmlFor="locationPriceIncludeVat" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="locationPriceIncludeVat" className="ml-2 block text-sm text-gray-300">
                   Include VAT (14%)
                 </label>
               </div>
@@ -770,9 +766,9 @@ export default function PackageManager() {
                   id="locationPriceActive"
                   checked={locationPriceForm.isActive}
                   onChange={(e) => setLocationPriceForm({ ...locationPriceForm, isActive: e.target.checked })}
-                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-[#26262B] rounded"
                 />
-                <label htmlFor="locationPriceActive" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="locationPriceActive" className="ml-2 block text-sm text-gray-300">
                   Active (visible to members)
                 </label>
               </div>
@@ -785,7 +781,7 @@ export default function PackageManager() {
                   setSelectedPackage(null);
                   setSelectedLocation(null);
                 }}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="flex-1 bg-[#26262B] hover:bg-gray-300 text-gray-300 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Cancel
               </button>

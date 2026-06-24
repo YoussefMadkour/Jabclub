@@ -146,15 +146,15 @@ export default function PaymentUpload({
 
   if (success) {
     return (
-      <div className="bg-white rounded-lg p-8 max-w-2xl mx-auto">
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-8 max-w-2xl mx-auto">
         <div className="text-center">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
             <svg className="h-10 w-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">Payment Submitted!</h3>
-          <p className="text-gray-600">
+          <h3 className="text-2xl font-bold text-white mb-2">Payment Submitted!</h3>
+          <p className="text-gray-400">
             Your payment has been submitted successfully. An administrator will review it shortly.
           </p>
         </div>
@@ -163,9 +163,9 @@ export default function PaymentUpload({
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 max-w-2xl mx-auto">
+    <div className="bg-[#16161a] border border-[#26262B] rounded-lg p-6 max-w-2xl mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Payment Proof</h2>
+        <h2 className="text-2xl font-bold text-white mb-2">Upload Payment Proof</h2>
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
           <p className="text-sm text-gray-700">
             <span className="font-semibold">Package:</span> {packageName}
@@ -186,8 +186,8 @@ export default function PaymentUpload({
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
             isDragging
-              ? 'border-[#FF7A00] bg-orange-50'
-              : 'border-gray-300 hover:border-gray-400'
+              ? 'border-white bg-white/5'
+              : 'border-[#26262B] hover:border-white/30 hover:bg-white/5'
           }`}
         >
           <input
@@ -212,23 +212,23 @@ export default function PaymentUpload({
             />
           </svg>
 
-          <p className="text-gray-700 mb-2">
+          <p className="text-gray-300 mb-2">
             <span className="font-semibold">Drop your payment screenshot here</span> or
           </p>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="text-[#FF7A00] hover:text-[#F57A00] font-semibold"
+            className="text-white hover:text-gray-200 font-semibold"
           >
             browse files
           </button>
-          <p className="text-sm text-gray-500 mt-2">
+          <p className="text-sm text-gray-400 mt-2">
             Supported formats: JPEG, PNG, HEIC (Max 10MB)
           </p>
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="border-2 border-gray-200 rounded-lg p-4">
+          <div className="border-2 border-[#26262B] rounded-lg p-4">
             <div className="flex items-start space-x-4">
               {previewUrl && (
                 <img
@@ -238,8 +238,8 @@ export default function PaymentUpload({
                 />
               )}
               <div className="flex-1">
-                <p className="font-semibold text-gray-900">{selectedFile.name}</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-semibold text-white">{selectedFile.name}</p>
+                <p className="text-sm text-gray-400">
                   {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
                 {!uploading && (
@@ -256,13 +256,13 @@ export default function PaymentUpload({
 
           {uploading && (
             <div className="space-y-2">
-              <div className="flex justify-between text-sm text-gray-600">
+              <div className="flex justify-between text-sm text-gray-400">
                 <span>Uploading...</span>
                 <span>{uploadProgress}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-[#26262B] rounded-full h-2">
                 <div
-                  className="bg-[#FF7A00] h-2 rounded-full transition-all duration-300"
+                  className="bg-white h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -289,14 +289,14 @@ export default function PaymentUpload({
         <button
           onClick={onCancel}
           disabled={uploading}
-          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 bg-[#26262B] hover:bg-white/10 text-gray-100 font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Cancel
         </button>
         <button
           onClick={handleUpload}
           disabled={!selectedFile || uploading}
-          className="flex-1 bg-[#FF7A00] hover:bg-[#F57A00] text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
+          className="flex-1 bg-white hover:bg-gray-200 text-black font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target"
         >
           {uploading ? 'Uploading...' : 'Submit Payment'}
         </button>

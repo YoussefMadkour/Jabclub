@@ -85,13 +85,13 @@ export default function AttendanceReport() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-700">Attendance Report</h2>
+      <div className="bg-[#16161a] border border-[#26262B] rounded-lg shadow p-6">
+        <h2 className="text-2xl font-bold mb-6 text-gray-300">Attendance Report</h2>
 
         {/* Date Range Filter */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               Start Date
             </label>
             <input
@@ -102,7 +102,7 @@ export default function AttendanceReport() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
               End Date
             </label>
             <input
@@ -116,7 +116,7 @@ export default function AttendanceReport() {
             <button
               onClick={fetchReport}
               disabled={loading}
-              className="flex-1 bg-[#FF7A00] text-white px-4 py-2 rounded-md hover:bg-[#F57A00] disabled:bg-gray-400"
+              className="flex-1 bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200 disabled:bg-gray-400"
             >
               {loading ? 'Loading...' : 'Generate Report'}
             </button>
@@ -142,25 +142,25 @@ export default function AttendanceReport() {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-orange-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600">Total Bookings</div>
-                <div className="text-2xl font-bold text-[#FF7A00]">
+                <div className="text-sm text-gray-400">Total Bookings</div>
+                <div className="text-2xl font-bold text-white">
                   {reportData.summary.totalBookings}
                 </div>
               </div>
               <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600">Attended</div>
+                <div className="text-sm text-gray-400">Attended</div>
                 <div className="text-2xl font-bold text-green-600">
                   {reportData.summary.attended}
                 </div>
               </div>
               <div className="bg-red-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600">No Shows</div>
+                <div className="text-sm text-gray-400">No Shows</div>
                 <div className="text-2xl font-bold text-red-600">
                   {reportData.summary.noShows}
                 </div>
               </div>
               <div className="bg-yellow-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600">No Show Rate</div>
+                <div className="text-sm text-gray-400">No Show Rate</div>
                 <div className="text-2xl font-bold text-yellow-600">
                   {reportData.summary.noShowRate}
                 </div>
@@ -170,28 +170,28 @@ export default function AttendanceReport() {
             {/* Most Attended Classes */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Most Attended Classes</h3>
-              <div className="bg-gray-50 rounded-lg overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-100">
+              <div className="bg-[#121214] rounded-lg overflow-hidden">
+                <table className="min-w-full divide-y divide-[#26262B]">
+                  <thead className="bg-[#1f1f23]">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                         Class
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                         Location
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                         Coach
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                         Date
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                         Attended
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-[#16161a] border border-[#26262B] divide-y divide-[#26262B]">
                     {reportData.mostAttendedClasses.map((cls) => (
                       <tr key={cls.classId}>
                         <td className="px-4 py-3 text-sm">{cls.className}</td>
@@ -213,41 +213,41 @@ export default function AttendanceReport() {
             {/* Class-by-Class Breakdown */}
             <div>
               <h3 className="text-lg font-semibold mb-4">Class-by-Class Breakdown</h3>
-              <div className="bg-gray-50 rounded-lg overflow-hidden">
+              <div className="bg-[#121214] rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-100">
+                  <table className="min-w-full divide-y divide-[#26262B]">
+                    <thead className="bg-[#1f1f23]">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Class
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Location
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Coach
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Date
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Capacity
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Total
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           Attended
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           No Shows
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                           No Show %
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-[#16161a] border border-[#26262B] divide-y divide-[#26262B]">
                       {reportData.classBreakdown.map((cls) => {
                         const noShowPercent = cls.totalAttendees > 0 
                           ? ((cls.noShows / cls.totalAttendees) * 100).toFixed(1)
@@ -266,7 +266,7 @@ export default function AttendanceReport() {
                             <td className="px-4 py-3 text-sm text-red-600">{cls.noShows}</td>
                             <td className="px-4 py-3 text-sm">
                               <span className={`${
-                                parseFloat(noShowPercent) > 20 ? 'text-red-600 font-semibold' : 'text-gray-600'
+                                parseFloat(noShowPercent) > 20 ? 'text-red-600 font-semibold' : 'text-gray-400'
                               }`}>
                                 {noShowPercent}%
                               </span>

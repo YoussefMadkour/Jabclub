@@ -1,9 +1,23 @@
 import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth';
+import { AuthRequest, invalidateUserCache } from '../middleware/auth';
 import prisma from '../config/database';
+import { Prisma } from '@prisma/client';
+import { AppError, BookingError } from '../utils/errors';
+import { utcWeekdayForEgyptSchedule, utcHHMMForEgyptTime, egyptWeekBoundsUTC } from '../utils/timezone';
 import bcrypt from 'bcrypt';
 import { getRelativeUploadPath } from '../utils/filePath';
 import { sendEmail, NotificationTemplates } from '../services/notificationService';
+
+/**
+ * Parse pagination params from the query string. Backward-compatible: when no
+ * `page` is supplied, callers can still paginate with a default page size.
+ * pageSize is clamped to [1, 100]; defaults to 25.
+ */
+function getPagination(query: any): { page: number; pageSize: number; skip: number; take: number } {
+  const page = Math.max(1, parseInt(query.page) || 1);
+  const pageSize = Math.min(100, Math.max(1, parseInt(query.pageSize) || 25));
+  return { page, pageSize, skip: (page - 1) * pageSize, take: pageSize };
+}
 
 /**
  * GET /api/admin/payments/pending
@@ -413,7 +427,7 @@ export const rejectPayment = async (req: AuthRequest, res: Response): Promise<vo
  */
 export const getAllBookings = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { classInstanceId, userId, date, status } = req.query;
+    const { classInstanceId, userId, date, status, search } = req.query;
 
     // Build filter object
     const where: any = {};
@@ -430,6 +444,19 @@ export const getAllBookings = async (req: AuthRequest, res: Response): Promise<v
       where.status = status as string;
     }
 
+    // Server-side search across member name/email, class type, and child name
+    if (search && typeof search === 'string' && search.trim()) {
+      const term = search.trim();
+      where.OR = [
+        { user: { firstName: { contains: term, mode: 'insensitive' } } },
+        { user: { lastName: { contains: term, mode: 'insensitive' } } },
+        { user: { email: { contains: term, mode: 'insensitive' } } },
+        { child: { firstName: { contains: term, mode: 'insensitive' } } },
+        { child: { lastName: { contains: term, mode: 'insensitive' } } },
+        { classInstance: { classType: { name: { contains: term, mode: 'insensitive' } } } }
+      ];
+    }
+
     if (date) {
       // Filter by date (start of day to end of day)
       const filterDate = new Date(date as string);
@@ -444,9 +471,14 @@ export const getAllBookings = async (req: AuthRequest, res: Response): Promise<v
       };
     }
 
+    const { page, pageSize, skip, take } = getPagination(req.query);
+    const totalCount = await prisma.booking.count({ where });
+
     // Fetch bookings with all related data
     const bookings = await prisma.booking.findMany({
       where,
+      skip,
+      take,
       include: {
         user: {
           select: {
@@ -542,7 +574,10 @@ export const getAllBookings = async (req: AuthRequest, res: Response): Promise<v
       success: true,
       data: {
         bookings: formattedBookings,
-        total: formattedBookings.length
+        total: totalCount,
+        page,
+        pageSize,
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
       }
     });
   } catch (error) {
@@ -734,7 +769,33 @@ export const createBookingManually = async (req: AuthRequest, res: Response): Pr
     }
 
     // Use database transaction to ensure atomicity
+    const classInstanceIdNum = parseInt(classInstanceId);
+    const userIdNum = parseInt(userId);
+    const childIdNum = childId ? parseInt(childId) : null;
     const result = await prisma.$transaction(async (tx) => {
+      // Lock the class instance row so concurrent bookings serialize (no overbooking)
+      await tx.$queryRaw`SELECT id FROM class_instances WHERE id = ${classInstanceIdNum} FOR UPDATE`;
+
+      // Re-check capacity inside the lock
+      const confirmedCount = await tx.booking.count({
+        where: { classInstanceId: classInstanceIdNum, status: 'confirmed' }
+      });
+      if (confirmedCount >= classInstance.capacity) {
+        throw new BookingError('CLASS_FULL', 'This class is fully booked');
+      }
+
+      // Reactivate a previously-cancelled booking instead of re-creating (avoids
+      // the @@unique([classInstanceId, userId, childId]) P2002 violation).
+      const existing = await tx.booking.findFirst({
+        where: { classInstanceId: classInstanceIdNum, userId: userIdNum, childId: childIdNum }
+      });
+      if (existing && existing.status === 'confirmed') {
+        throw new BookingError(
+          'ALREADY_BOOKED',
+          childIdNum ? 'This child is already booked for this class' : 'This user is already booked for this class'
+        );
+      }
+
       // Select the package to deduct credit from (first one with available credits)
       const packageToUse = activePackages[0];
 
@@ -746,42 +807,56 @@ export const createBookingManually = async (req: AuthRequest, res: Response): Pr
         }
       });
 
-      // Create the booking
-      const booking = await tx.booking.create({
-        data: {
-          classInstanceId: parseInt(classInstanceId),
-          userId: parseInt(userId),
-          childId: childId ? parseInt(childId) : null,
-          memberPackageId: packageToUse.id,
-          status: 'confirmed'
-        },
-        include: {
-          classInstance: {
-            include: {
-              classType: true,
-              location: true,
-              coach: {
-                select: {
-                  firstName: true,
-                  lastName: true
-                }
+      const bookingInclude = {
+        classInstance: {
+          include: {
+            classType: true,
+            location: true,
+            coach: {
+              select: {
+                firstName: true,
+                lastName: true
               }
             }
-          },
-          child: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
-          },
-          user: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
+          }
+        },
+        child: {
+          select: {
+            firstName: true,
+            lastName: true
+          }
+        },
+        user: {
+          select: {
+            firstName: true,
+            lastName: true
           }
         }
-      });
+      } satisfies Prisma.BookingInclude;
+
+      // Reactivate the cancelled booking, or create a fresh one
+      const booking = existing
+        ? await tx.booking.update({
+            where: { id: existing.id },
+            data: {
+              status: 'confirmed',
+              memberPackageId: packageToUse.id,
+              cancelledAt: null,
+              attendanceMarkedAt: null,
+              bookedAt: new Date()
+            },
+            include: bookingInclude
+          })
+        : await tx.booking.create({
+            data: {
+              classInstanceId: classInstanceIdNum,
+              userId: userIdNum,
+              childId: childIdNum,
+              memberPackageId: packageToUse.id,
+              status: 'confirmed'
+            },
+            include: bookingInclude
+          });
 
       // Create credit transaction log
       await tx.creditTransaction.create({
@@ -820,6 +895,13 @@ export const createBookingManually = async (req: AuthRequest, res: Response): Pr
       }
     });
   } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        error: { code: error.code, message: error.message }
+      });
+      return;
+    }
     console.error('Admin booking creation error:', error);
     res.status(500).json({
       success: false,
@@ -1005,6 +1087,19 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
+    // Cap manual credit grants to a sane maximum to prevent fat-finger errors.
+    const MAX_MANUAL_REFUND_CREDITS = 50;
+    if (creditsNum > MAX_MANUAL_REFUND_CREDITS) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'CREDITS_LIMIT_EXCEEDED',
+          message: `A single manual refund cannot exceed ${MAX_MANUAL_REFUND_CREDITS} credits.`
+        }
+      });
+      return;
+    }
+
     // Verify user exists
     const user = await prisma.user.findUnique({
       where: { id: parseInt(userId) },
@@ -1043,7 +1138,8 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
       include: {
         package: {
           select: {
-            name: true
+            name: true,
+            expiryDays: true
           }
         }
       }
@@ -1061,6 +1157,7 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
         include: {
           package: {
             select: {
+              expiryDays: true,
               name: true
             }
           }
@@ -1081,21 +1178,25 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
 
     // Use transaction to add credits and log transaction
     const result = await prisma.$transaction(async (tx) => {
+      // If the package was expired, reactivate it using the package's OWN validity
+      // period (expiryDays) rather than a hardcoded 30 days.
+      const wasExpired = targetPackage.isExpired || targetPackage.expiryDate < new Date();
+      const validityDays = targetPackage.package.expiryDays || 30;
+
       // Add credits to the package
       const updatedPackage = await tx.memberPackage.update({
         where: { id: targetPackage.id },
         data: {
           sessionsRemaining: targetPackage.sessionsRemaining + creditsNum,
-          // If package was expired, reactivate it if we're adding credits
           isExpired: false,
-          // Extend expiry if package was expired
-          expiryDate: targetPackage.isExpired || targetPackage.expiryDate < new Date()
-            ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // Add 30 days from now
+          expiryDate: wasExpired
+            ? new Date(Date.now() + validityDays * 24 * 60 * 60 * 1000)
             : targetPackage.expiryDate
         }
       });
 
-      // Create credit transaction log
+      // Create credit transaction log (attributed to the acting admin)
+      const adminTag = `by admin #${req.user?.id ?? 'unknown'}`;
       await tx.creditTransaction.create({
         data: {
           userId: parseInt(userId),
@@ -1103,7 +1204,7 @@ export const issueManualRefund = async (req: AuthRequest, res: Response): Promis
           transactionType: 'refund',
           creditsChange: creditsNum,
           balanceAfter: updatedPackage.sessionsRemaining,
-          notes: reason ? `Admin manual refund: ${reason}` : 'Admin manual refund'
+          notes: reason ? `Admin manual refund (${adminTag}): ${reason}` : `Admin manual refund (${adminTag})`
         }
       });
 
@@ -2096,6 +2197,12 @@ export const updateClassInstance = async (req: AuthRequest, res: Response): Prom
                 lastName: true,
                 email: true
               }
+            },
+            child: {
+              select: {
+                firstName: true,
+                lastName: true
+              }
             }
           }
         }
@@ -2249,8 +2356,69 @@ export const updateClassInstance = async (req: AuthRequest, res: Response): Prom
       }
     });
 
-    // Note: In a production system, you would send notifications to affected members here
-    const affectedMembers = existingClass.bookings.length;
+    const affectedBookings = existingClass.bookings;
+    const affectedMembers = affectedBookings.length;
+
+    // Determine what materially changed (for notifications).
+    const isBeingCancelled = updateData.isCancelled === true && !existingClass.isCancelled;
+    const timeChanged = updateData.startTime !== undefined &&
+      new Date(updateData.startTime).getTime() !== new Date(existingClass.startTime).getTime();
+    const coachChanged = updateData.coachId !== undefined && updateData.coachId !== existingClass.coachId;
+    const locationChanged = updateData.locationId !== undefined && updateData.locationId !== existingClass.locationId;
+    const wasRescheduled = !isBeingCancelled && (timeChanged || coachChanged || locationChanged);
+
+    let refundedCount = 0;
+
+    // If the class is being cancelled, cancel + refund every confirmed booking atomically.
+    if (isBeingCancelled && affectedMembers > 0) {
+      await prisma.$transaction(async (tx) => {
+        for (const booking of affectedBookings) {
+          await tx.booking.update({
+            where: { id: booking.id },
+            data: { status: 'cancelled', cancelledAt: new Date() }
+          });
+          const updatedPackage = await tx.memberPackage.update({
+            where: { id: booking.memberPackageId },
+            data: { sessionsRemaining: { increment: 1 } }
+          });
+          await tx.creditTransaction.create({
+            data: {
+              userId: booking.userId,
+              memberPackageId: booking.memberPackageId,
+              bookingId: booking.id,
+              transactionType: 'refund',
+              creditsChange: 1,
+              balanceAfter: updatedPackage.sessionsRemaining,
+              notes: `Refund — class "${updatedClass.classType.name}" cancelled by admin #${req.user?.id ?? 'unknown'}`
+            }
+          });
+          refundedCount++;
+        }
+      });
+    }
+
+    // Notify affected members (fire-and-forget; never block/break the response).
+    if ((isBeingCancelled || wasRescheduled) && affectedMembers > 0) {
+      const fmt = (d: Date) => ({
+        date: new Date(d).toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Africa/Cairo'
+        }),
+        time: new Date(d).toLocaleTimeString('en-US', {
+          hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'Africa/Cairo'
+        }),
+      });
+      const { date, time } = fmt(updatedClass.startTime);
+      for (const booking of affectedBookings) {
+        const bookedFor = booking.child
+          ? `${booking.child.firstName} ${booking.child.lastName}`
+          : undefined;
+        const template = isBeingCancelled
+          ? NotificationTemplates.classCancelledByGym(booking.user.firstName, updatedClass.classType.name, date, time, bookedFor)
+          : NotificationTemplates.classRescheduled(booking.user.firstName, updatedClass.classType.name, date, time, updatedClass.location.name, bookedFor);
+        sendEmail(booking.user.email, template.emailSubject, template.emailHtml)
+          .catch((err) => console.error(`Failed to notify ${booking.user.email} of class change:`, err));
+      }
+    }
 
     res.json({
       success: true,
@@ -2266,7 +2434,13 @@ export const updateClassInstance = async (req: AuthRequest, res: Response): Prom
           isCancelled: updatedClass.isCancelled
         },
         affectedMembers,
-        message: `Class instance updated successfully${affectedMembers > 0 ? `. ${affectedMembers} member(s) have bookings for this class.` : ''}`
+        refundedCount,
+        notified: (isBeingCancelled || wasRescheduled) ? affectedMembers : 0,
+        message: isBeingCancelled
+          ? `Class cancelled. ${refundedCount} booking(s) refunded and notified.`
+          : wasRescheduled
+          ? `Class updated successfully. ${affectedMembers} member(s) notified of the change.`
+          : `Class instance updated successfully${affectedMembers > 0 ? `. ${affectedMembers} member(s) have bookings for this class.` : ''}`
       }
     });
   } catch (error) {
@@ -3855,14 +4029,19 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
       }
     });
 
+    // Revenue is reported GROSS (VAT-inclusive): use totalAmount when present,
+    // falling back to amount for older pre-VAT records.
+    const gross = (p: { amount: any; totalAmount: any }) =>
+      p.totalAmount != null ? Number(p.totalAmount) : Number(p.amount);
+
     // Calculate total revenue from approved payments
-    const totalRevenue = approvedPayments.reduce((sum, payment) => 
-      sum + Number(payment.amount), 0
+    const totalRevenue = approvedPayments.reduce((sum, payment) =>
+      sum + gross(payment), 0
     );
 
     // Calculate pending payment value
-    const pendingValue = pendingPayments.reduce((sum, payment) => 
-      sum + Number(payment.amount), 0
+    const pendingValue = pendingPayments.reduce((sum, payment) =>
+      sum + gross(payment), 0
     );
 
     // Break down by package type
@@ -3878,7 +4057,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
         };
       }
       acc[packageName].count++;
-      acc[packageName].revenue += Number(payment.amount);
+      acc[packageName].revenue += gross(payment);
       acc[packageName].totalSales = acc[packageName].count;
       return acc;
     }, {});
@@ -3906,7 +4085,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
         email: payment.user.email,
         package: payment.package.name,
         location: payment.location?.name || 'N/A',
-        amount: Number(payment.amount).toFixed(2),
+        amount: gross(payment).toFixed(2),
         approvedAt: payment.reviewedAt,
         submittedAt: payment.createdAt
       })),
@@ -3919,7 +4098,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
             acc[packageName] = { count: 0, value: 0 };
           }
           acc[packageName].count++;
-          acc[packageName].value += Number(payment.amount);
+          acc[packageName].value += gross(payment);
           return acc;
         }, {})
       }
@@ -3936,7 +4115,7 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
         };
       }
       acc[locationName].count++;
-      acc[locationName].revenue += Number(payment.amount);
+      acc[locationName].revenue += gross(payment);
       return acc;
     }, {});
 
@@ -3953,12 +4132,12 @@ export const getRevenueReport = async (req: AuthRequest, res: Response): Promise
     // Handle CSV export
     if (format === 'csv') {
       const csvRows = [
-        ['Package', 'Session Count', 'Sales Count', 'Total Revenue'].join(','),
+        ['Package', 'Session Count', 'Sales Count', 'Total Revenue (EGP)'].join(','),
         ...packageSummary.map((pkg: any) => [
           pkg.packageName,
           pkg.sessionCount,
           pkg.count,
-          `$${pkg.revenue.toFixed(2)}`
+          `EGP ${pkg.revenue.toFixed(2)}`
         ].join(','))
       ];
 
@@ -4074,29 +4253,19 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
       }
     });
 
-    // Get total revenue (from approved payments)
-    const totalRevenue = await prisma.payment.aggregate({
-      where: {
-        status: 'approved'
-      },
-      _sum: {
-        amount: true
-      }
-    });
-
-    // Get this month's revenue
+    // Revenue is reported GROSS (VAT-inclusive). totalAmount holds the VAT-inclusive
+    // value but is null on older pre-VAT records, so we sum totalAmount where present
+    // and fall back to amount where it's null. (A single aggregate can't fall back
+    // per-row, hence the paired queries.)
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const thisMonthRevenue = await prisma.payment.aggregate({
-      where: {
-        status: 'approved',
-        reviewedAt: {
-          gte: startOfMonth
-        }
-      },
-      _sum: {
-        amount: true
-      }
-    });
+    const [totalWithVat, totalWithoutVat, monthWithVat, monthWithoutVat] = await Promise.all([
+      prisma.payment.aggregate({ where: { status: 'approved', totalAmount: { not: null } }, _sum: { totalAmount: true } }),
+      prisma.payment.aggregate({ where: { status: 'approved', totalAmount: null }, _sum: { amount: true } }),
+      prisma.payment.aggregate({ where: { status: 'approved', reviewedAt: { gte: startOfMonth }, totalAmount: { not: null } }, _sum: { totalAmount: true } }),
+      prisma.payment.aggregate({ where: { status: 'approved', reviewedAt: { gte: startOfMonth }, totalAmount: null }, _sum: { amount: true } }),
+    ]);
+    const totalRevenueGross = Number(totalWithVat._sum.totalAmount || 0) + Number(totalWithoutVat._sum.amount || 0);
+    const thisMonthRevenueGross = Number(monthWithVat._sum.totalAmount || 0) + Number(monthWithoutVat._sum.amount || 0);
 
     // Get recent pending payments (last 5)
     const recentPendingPayments = await prisma.payment.findMany({
@@ -4176,8 +4345,8 @@ export const getDashboardStats = async (req: AuthRequest, res: Response): Promis
           weekBookings,
           upcomingClasses,
           todayClasses,
-          totalRevenue: totalRevenue._sum.amount ? Number(totalRevenue._sum.amount).toFixed(2) : '0.00',
-          thisMonthRevenue: thisMonthRevenue._sum.amount ? Number(thisMonthRevenue._sum.amount).toFixed(2) : '0.00'
+          totalRevenue: totalRevenueGross.toFixed(2),
+          thisMonthRevenue: thisMonthRevenueGross.toFixed(2)
         },
         recentPendingPayments: recentPendingPayments.map(payment => ({
           id: payment.id,
@@ -4305,9 +4474,16 @@ export const getAllMembers = async (req: AuthRequest, res: Response): Promise<vo
       orderBy = { createdAt: 'desc' };
     }
 
+    const { page, pageSize, skip, take } = getPagination(req.query);
+
+    // Total count for pagination (same filters)
+    const totalCount = await prisma.user.count({ where });
+
     // Fetch members with basic info
     const members = await prisma.user.findMany({
       where,
+      skip,
+      take,
       select: {
         id: true,
         firstName: true,
@@ -4385,7 +4561,10 @@ export const getAllMembers = async (req: AuthRequest, res: Response): Promise<vo
       success: true,
       data: {
         members: formattedMembers,
-        total: formattedMembers.length
+        total: totalCount,
+        page,
+        pageSize,
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize))
       }
     });
   } catch (error) {
@@ -4454,6 +4633,7 @@ export const pauseMember = async (req: AuthRequest, res: Response): Promise<void
         message: 'Member account has been paused'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Pause member error:', error);
     res.status(500).json({
@@ -4520,6 +4700,7 @@ export const unpauseMember = async (req: AuthRequest, res: Response): Promise<vo
         message: 'Member account has been unpaused'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Unpause member error:', error);
     res.status(500).json({
@@ -4586,6 +4767,7 @@ export const freezeMember = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Member account has been frozen'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Freeze member error:', error);
     res.status(500).json({
@@ -4652,6 +4834,7 @@ export const unfreezeMember = async (req: AuthRequest, res: Response): Promise<v
         message: 'Member account has been unfrozen'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Unfreeze member error:', error);
     res.status(500).json({
@@ -4773,6 +4956,7 @@ export const updateMember = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Member updated successfully'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Update member error:', error);
     res.status(500).json({
@@ -4839,6 +5023,7 @@ export const deleteMember = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Member account has been deleted'
       }
     });
+    await invalidateUserCache(memberId);
   } catch (error) {
     console.error('Delete member error:', error);
     res.status(500).json({
@@ -5685,6 +5870,7 @@ export const updateCoach = async (req: AuthRequest, res: Response): Promise<void
         message: 'Coach updated successfully'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Update coach error:', error);
     res.status(500).json({
@@ -5751,6 +5937,7 @@ export const pauseCoach = async (req: AuthRequest, res: Response): Promise<void>
         message: 'Coach account has been paused'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Pause coach error:', error);
     res.status(500).json({
@@ -5817,6 +6004,7 @@ export const unpauseCoach = async (req: AuthRequest, res: Response): Promise<voi
         message: 'Coach account has been unpaused'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Unpause coach error:', error);
     res.status(500).json({
@@ -5883,6 +6071,7 @@ export const freezeCoach = async (req: AuthRequest, res: Response): Promise<void
         message: 'Coach account has been frozen'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Freeze coach error:', error);
     res.status(500).json({
@@ -5949,6 +6138,7 @@ export const unfreezeCoach = async (req: AuthRequest, res: Response): Promise<vo
         message: 'Coach account has been unfrozen'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Unfreeze coach error:', error);
     res.status(500).json({
@@ -6015,6 +6205,7 @@ export const deleteCoach = async (req: AuthRequest, res: Response): Promise<void
         message: 'Coach account has been deleted'
       }
     });
+    await invalidateUserCache(coachId);
   } catch (error) {
     console.error('Delete coach error:', error);
     res.status(500).json({
@@ -7131,15 +7322,16 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
       select: { locationId: true, dayOfWeek: true, startTime: true }
     });
 
-    // Build valid keys: schedule times are Egypt local (UTC+2), convert to UTC for comparison.
-    // e.g. "20:00" Egypt = "18:00" UTC stored in DB
-    const EGYPT_OFFSET_HOURS = 2;
+    // Build valid keys in the SAME coordinate system the candidates are matched in:
+    // UTC weekday + UTC HH:MM. Schedule times are Egypt local; converting to UTC can
+    // shift the weekday for late-night/early-morning classes (e.g. Egypt 01:00 →
+    // 23:00 the previous UTC day). Using the schedule's *local* dayOfWeek here while
+    // matching candidates by *UTC* weekday was deleting valid classes (data loss).
     const validKeys = new Set(
       activeSchedules.map(s => {
-        const [h, m] = s.startTime.split(':').map(Number);
-        const utcH = (h - EGYPT_OFFSET_HOURS + 24) % 24;
-        const utcHHMM = `${String(utcH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-        return `${s.locationId}|${s.dayOfWeek}|${utcHHMM}`;
+        const utcDow = utcWeekdayForEgyptSchedule(s.dayOfWeek, s.startTime);
+        const utcHHMM = utcHHMMForEgyptTime(s.startTime);
+        return `${s.locationId}|${utcDow}|${utcHHMM}`;
       })
     );
 
@@ -7195,22 +7387,40 @@ export const cleanupOrphanClassInstances = async (req: AuthRequest, res: Respons
  */
 export const forceResyncClasses = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { locationId } = req.body;
-    const now = new Date();
+    const { locationId, dryRun } = req.body;
 
-    // Delete from start of current week (Saturday) so old wrong-time instances
-    // from earlier in this week are also removed, not just future ones
-    const dayOfWeek = now.getDay(); // 0=Sun … 6=Sat
-    const daysFromSaturday = dayOfWeek === 6 ? 0 : (dayOfWeek + 1);
-    const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - daysFromSaturday);
-    weekStart.setHours(0, 0, 0, 0);
+    // Safety: require a location so a stray call can't wipe EVERY location at once.
+    if (!locationId) {
+      res.status(400).json({
+        success: false,
+        error: {
+          code: 'LOCATION_REQUIRED',
+          message: 'A locationId is required for force resync to avoid affecting all locations.'
+        }
+      });
+      return;
+    }
 
-    const whereClause: any = {
+    // Delete from the start of the current Egypt week (Saturday) so old wrong-time
+    // instances from earlier this week are also removed, not just future ones.
+    const { start: weekStart } = egyptWeekBoundsUTC();
+
+    const whereClause: Prisma.ClassInstanceWhereInput = {
       startTime: { gte: weekStart },
-      bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } }
+      bookings: { none: { status: { in: ['confirmed', 'attended', 'no_show'] } } },
+      locationId: parseInt(locationId)
     };
-    if (locationId) whereClause.locationId = parseInt(locationId);
+
+    // Dry run: report what WOULD be deleted, without deleting, so the UI can confirm.
+    if (dryRun) {
+      const wouldDelete = await prisma.classInstance.count({ where: whereClause });
+      res.json({
+        success: true,
+        message: `${wouldDelete} unbooked class instance(s) would be deleted and regenerated.`,
+        data: { dryRun: true, wouldDelete }
+      });
+      return;
+    }
 
     const { count: deleted } = await prisma.classInstance.deleteMany({ where: whereClause });
 
@@ -7218,9 +7428,11 @@ export const forceResyncClasses = async (req: AuthRequest, res: Response): Promi
     const { generateClassesFromSchedules } = require('../services/scheduleService');
     await generateClassesFromSchedules(3, weekStart);
 
+    console.log(`Force resync: location ${locationId} by admin ${req.user?.id} — deleted ${deleted} unbooked instances`);
+
     res.json({
       success: true,
-      message: `Force resynced: deleted ${deleted} unbooked future instances and regenerated from current schedules.`,
+      message: `Force resynced: deleted ${deleted} unbooked instance(s) and regenerated from current schedules.`,
       data: { deleted }
     });
   } catch (error) {

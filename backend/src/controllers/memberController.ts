@@ -7,6 +7,10 @@ import { getRelativeUploadPath } from '../utils/filePath';
 import { sendNotification, NotificationTemplates } from '../services/notificationService';
 import { uploadToBlob } from '../services/blobService';
 import { generateFileName } from '../middleware/upload';
+import { AppError, BookingError } from '../utils/errors';
+import bcrypt from 'bcrypt';
+import { validationResult } from 'express-validator';
+import { invalidateUserCache } from '../middleware/auth';
 
 /**
  * GET /api/members/credits
@@ -301,6 +305,22 @@ export const purchasePackage = async (req: AuthRequest, res: Response): Promise<
         error: {
           code: 'VALIDATION_ERROR',
           message: 'Payment screenshot is required'
+        }
+      });
+      return;
+    }
+
+    // Prevent duplicate submissions: block if a pending payment for this same
+    // package is already awaiting admin review.
+    const pendingForPackage = await prisma.payment.findFirst({
+      where: { userId, packageId: parseInt(packageId), status: 'pending' }
+    });
+    if (pendingForPackage) {
+      res.status(409).json({
+        success: false,
+        error: {
+          code: 'PAYMENT_PENDING',
+          message: 'You already have a pending payment for this package awaiting approval. Please wait for it to be reviewed.'
         }
       });
       return;
@@ -1254,7 +1274,35 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
     }
 
     // Use database transaction to ensure atomicity
+    const classInstanceIdNum = parseInt(classInstanceId);
+    const childIdNum = childId ? parseInt(childId) : null;
     const result = await prisma.$transaction(async (tx) => {
+      // Lock the class instance row so concurrent bookings for the same class
+      // serialize here — prevents the capacity check/insert race (overbooking).
+      await tx.$queryRaw`SELECT id FROM class_instances WHERE id = ${classInstanceIdNum} FOR UPDATE`;
+
+      // Re-check capacity inside the lock (authoritative count)
+      const confirmedCount = await tx.booking.count({
+        where: { classInstanceId: classInstanceIdNum, status: 'confirmed' }
+      });
+      if (confirmedCount >= classInstance.capacity) {
+        throw new BookingError('CLASS_FULL', 'This class is fully booked');
+      }
+
+      // Find any existing booking row for this (class, user, child) — the unique
+      // constraint @@unique([classInstanceId, userId, childId]) ignores status, so a
+      // previously cancelled booking must be REACTIVATED rather than re-created
+      // (a plain create would hit a P2002 unique violation → confusing 500).
+      const existing = await tx.booking.findFirst({
+        where: { classInstanceId: classInstanceIdNum, userId, childId: childIdNum }
+      });
+      if (existing && existing.status === 'confirmed') {
+        throw new BookingError(
+          'ALREADY_BOOKED',
+          childIdNum ? 'This child is already booked for this class' : 'You are already booked for this class'
+        );
+      }
+
       // Select the package to deduct credit from (first one with available credits)
       const packageToUse = activePackages[0];
 
@@ -1266,36 +1314,50 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
         }
       });
 
-      // Create the booking
-      const booking = await tx.booking.create({
-        data: {
-          classInstanceId: parseInt(classInstanceId),
-          userId,
-          childId: childId ? parseInt(childId) : null,
-          memberPackageId: packageToUse.id,
-          status: 'confirmed'
-        },
-        include: {
-          classInstance: {
-            include: {
-              classType: true,
-              location: true,
-              coach: {
-                select: {
-                  firstName: true,
-                  lastName: true
-                }
+      const bookingInclude = {
+        classInstance: {
+          include: {
+            classType: true,
+            location: true,
+            coach: {
+              select: {
+                firstName: true,
+                lastName: true
               }
             }
-          },
-          child: {
-            select: {
-              firstName: true,
-              lastName: true
-            }
+          }
+        },
+        child: {
+          select: {
+            firstName: true,
+            lastName: true
           }
         }
-      });
+      } satisfies Prisma.BookingInclude;
+
+      // Reactivate the previously-cancelled booking, or create a fresh one
+      const booking = existing
+        ? await tx.booking.update({
+            where: { id: existing.id },
+            data: {
+              status: 'confirmed',
+              memberPackageId: packageToUse.id,
+              cancelledAt: null,
+              attendanceMarkedAt: null,
+              bookedAt: new Date()
+            },
+            include: bookingInclude
+          })
+        : await tx.booking.create({
+            data: {
+              classInstanceId: classInstanceIdNum,
+              userId,
+              childId: childIdNum,
+              memberPackageId: packageToUse.id,
+              status: 'confirmed'
+            },
+            include: bookingInclude
+          });
 
       // Create credit transaction log
       await tx.creditTransaction.create({
@@ -1325,16 +1387,19 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
     });
 
     if (user) {
+      // Format in Egypt local time so the email matches what members see in the UI
       const classDate = new Date(result.classInstance.startTime).toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
-        day: 'numeric'
+        day: 'numeric',
+        timeZone: 'Africa/Cairo'
       });
       const classTime = new Date(result.classInstance.startTime).toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
-        hour12: true
+        hour12: true,
+        timeZone: 'Africa/Cairo'
       });
       const bookedFor = result.child 
         ? `${result.child.firstName} ${result.child.lastName}`
@@ -1380,6 +1445,13 @@ export const createBooking = async (req: AuthRequest, res: Response): Promise<vo
       }
     });
   } catch (error) {
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json({
+        success: false,
+        error: { code: error.code, message: error.message }
+      });
+      return;
+    }
     console.error('Booking creation error:', error);
     res.status(500).json({
       success: false,
@@ -1804,3 +1876,96 @@ export const deleteChild = async (req: AuthRequest, res: Response): Promise<void
     });
   }
 }
+
+/**
+ * PUT /api/members/profile
+ * Update the authenticated member's own name / phone.
+ */
+export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'User not authenticated' } });
+      return;
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input data', details: errors.array() }
+      });
+      return;
+    }
+
+    const { firstName, lastName, phone } = req.body;
+    const data: { firstName?: string; lastName?: string; phone?: string | null } = {};
+    if (firstName !== undefined) data.firstName = firstName.trim();
+    if (lastName !== undefined) data.lastName = lastName.trim();
+    if (phone !== undefined) data.phone = phone ? phone.trim() : null;
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data,
+      select: { id: true, email: true, firstName: true, lastName: true, phone: true, role: true }
+    });
+    await invalidateUserCache(userId);
+
+    res.json({ success: true, data: { user: updated, message: 'Profile updated successfully' } });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'An error occurred while updating your profile' } });
+  }
+};
+
+/**
+ * PUT /api/members/password
+ * Change the authenticated member's password (requires the current password).
+ */
+export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'User not authenticated' } });
+      return;
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'VALIDATION_ERROR', message: 'Invalid input data', details: errors.array() }
+      });
+      return;
+    }
+
+    const { currentPassword, newPassword } = req.body;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user || !user.passwordHash) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'OAUTH_ONLY', message: 'This account uses Google sign-in and has no password to change.' }
+      });
+      return;
+    }
+
+    const valid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!valid) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_PASSWORD', message: 'Your current password is incorrect.' }
+      });
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
+    await invalidateUserCache(userId);
+
+    res.json({ success: true, data: { message: 'Password changed successfully' } });
+  } catch (error) {
+    console.error('Change password error:', error);
+    res.status(500).json({ success: false, error: { code: 'SERVER_ERROR', message: 'An error occurred while changing your password' } });
+  }
+};

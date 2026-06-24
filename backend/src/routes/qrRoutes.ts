@@ -2,6 +2,7 @@ import { Router } from 'express';
 import QRCode from 'qrcode';
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
+import { config } from '../config/env';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -82,7 +83,7 @@ router.post('/generate/:bookingId', async (req: any, res) => {
       userId: booking.userId,
       childId: booking.childId || undefined,
       timestamp,
-      signature: createSignature(booking.id, booking.userId, timestamp),
+      signature: createSignature(booking.id, booking.userId, timestamp, booking.childId),
     };
 
     // Generate QR code as data URL
@@ -134,7 +135,7 @@ router.post('/validate', async (req: any, res) => {
       where: { id: coachId },
     });
 
-    if (!coach || coach.role !== 'coach' && coach.role !== 'admin') {
+    if (!coach || (coach.role !== 'coach' && coach.role !== 'admin')) {
       return res.status(403).json({ error: 'Access denied. Coach or Admin only.' });
     }
 
@@ -151,8 +152,13 @@ router.post('/validate', async (req: any, res) => {
       return res.status(400).json({ error: 'Invalid QR code data' });
     }
 
-    // Verify signature
-    const expectedSignature = createSignature(payload.bookingId, payload.userId, payload.timestamp);
+    // Verify signature (childId is part of the signed payload)
+    const expectedSignature = createSignature(
+      payload.bookingId,
+      payload.userId,
+      payload.timestamp,
+      payload.childId ?? null
+    );
     if (payload.signature !== expectedSignature) {
       return res.status(400).json({ error: 'Invalid QR code signature' });
     }
@@ -321,10 +327,15 @@ router.get('/status/:bookingId', async (req: any, res) => {
  * Create a cryptographic signature for QR codes
  * Prevents tampering and forgery
  */
-function createSignature(bookingId: number, userId: number, timestamp: string): string {
-  const secret = process.env.QR_SECRET || 'default-qr-secret-change-in-production';
-  const data = `${bookingId}:${userId}:${timestamp}`;
-  return crypto.createHmac('sha256', secret).update(data).digest('hex');
+function createSignature(
+  bookingId: number,
+  userId: number,
+  timestamp: string,
+  childId?: number | null
+): string {
+  // childId is part of the signed payload so it cannot be tampered with.
+  const data = `${bookingId}:${userId}:${childId ?? 'self'}:${timestamp}`;
+  return crypto.createHmac('sha256', config.qrSecret).update(data).digest('hex');
 }
 
 export default router;

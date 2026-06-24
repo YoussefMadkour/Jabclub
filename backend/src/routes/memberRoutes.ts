@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { getDashboard, getPackages, getActiveLocations, getCredits, purchasePackage, createBooking, cancelBooking, getChildren, createChild, updateChild, deleteChild, getPaymentHistory } from '../controllers/memberController';
+import { getDashboard, getPackages, getActiveLocations, getCredits, purchasePackage, createBooking, cancelBooking, getChildren, createChild, updateChild, deleteChild, getPaymentHistory, updateProfile, changePassword } from '../controllers/memberController';
 import { authenticate, authorize } from '../middleware/auth';
 import { uploadPaymentScreenshot } from '../middleware/upload';
+import { updateProfileValidation, changePasswordValidation } from '../middleware/validators';
 
 const router = Router();
 
@@ -11,6 +12,12 @@ router.use(authorize('member'));
 
 // GET /api/members/dashboard - Get member dashboard data
 router.get('/dashboard', getDashboard);
+
+// PUT /api/members/profile - Update own name/phone
+router.put('/profile', updateProfileValidation, updateProfile);
+
+// PUT /api/members/password - Change own password
+router.put('/password', changePasswordValidation, changePassword);
 
 // GET /api/members/credits - Get user's available credit total (lightweight)
 router.get('/credits', getCredits);

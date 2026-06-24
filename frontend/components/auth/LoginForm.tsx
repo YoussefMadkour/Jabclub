@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import GoogleAuthButton from './GoogleAuthButton';
+import ApexLogo from '@/components/layout/ApexLogo';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -48,8 +49,11 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 bg-card rounded-lg shadow-lg border border-input">
-      <h2 className="text-2xl font-bold text-center mb-6 text-headline">Login to JabClub</h2>
+    <div className="w-full max-w-md mx-auto p-8 bg-card border border-line">
+      <div className="flex flex-col items-center mb-8">
+        <ApexLogo className="h-9 text-headline" showSubtitle subtitleClassName="text-muted" />
+        <p className="eyebrow mt-6">Member Login</p>
+      </div>
       
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -103,10 +107,16 @@ export default function LoginForm() {
           />
         </div>
 
+        <div className="text-right">
+          <a href="/forgot-password" className="text-sm text-primary hover:underline">
+            Forgot password?
+          </a>
+        </div>
+
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-primary hover:bg-primary/90 text-white font-medium rounded-md transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed touch-target"
+          className="btn-primary w-full touch-target disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Logging in...' : 'Login'}
         </button>

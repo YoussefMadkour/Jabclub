@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth';
 import prisma from '../config/database';
+import { egyptDayBoundsUTC } from '../utils/timezone';
 
 /**
  * POST /api/coach/notes/:bookingId
@@ -28,7 +29,7 @@ export const createOrUpdateNote = async (req: AuthRequest, res: Response): Promi
       where: { id: userId }
     });
 
-    if (!coach || coach.role !== 'coach' && coach.role !== 'admin') {
+    if (!coach || (coach.role !== 'coach' && coach.role !== 'admin')) {
       res.status(403).json({
         success: false,
         error: {
@@ -167,6 +168,9 @@ export const getNote = async (req: AuthRequest, res: Response): Promise<void> =>
             firstName: true,
             lastName: true
           }
+        },
+        booking: {
+          select: { classInstance: { select: { coachId: true } } }
         }
       }
     });
@@ -178,6 +182,15 @@ export const getNote = async (req: AuthRequest, res: Response): Promise<void> =>
           code: 'NOT_FOUND',
           message: 'Note not found'
         }
+      });
+      return;
+    }
+
+    // Only the coach assigned to the class (or an admin) may read the note
+    if (classNote.booking.classInstance.coachId !== userId && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: { code: 'FORBIDDEN', message: 'You are not assigned to this class' }
       });
       return;
     }
@@ -369,13 +382,13 @@ export const markAttendance = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Validate status
-    if (!status || !['attended', 'no_show'].includes(status)) {
+    // Validate status. 'confirmed' is allowed so a coach can UNDO a mistaken mark.
+    if (!status || !['attended', 'no_show', 'confirmed'].includes(status)) {
       res.status(400).json({
         success: false,
         error: {
           code: 'VALIDATION_ERROR',
-          message: 'Status must be either "attended" or "no_show"'
+          message: 'Status must be "attended", "no_show", or "confirmed" (undo)'
         }
       });
       return;
@@ -420,8 +433,8 @@ export const markAttendance = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Verify coach is assigned to this class
-    if (booking.classInstance.coachId !== userId) {
+    // Verify coach is assigned to this class (admins have full access)
+    if (booking.classInstance.coachId !== userId && req.user?.role !== 'admin') {
       res.status(403).json({
         success: false,
         error: {
@@ -432,15 +445,11 @@ export const markAttendance = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Only allow marking attendance on the class day
+    // Only allow marking attendance on the class day — computed in Egypt local time
+    // so late-evening classes don't roll into the wrong UTC day.
     const classDate = new Date(booking.classInstance.startTime);
-    const today = new Date();
-    
-    // Check if class date is today (same year, month, and day)
-    const isSameDay = 
-      classDate.getFullYear() === today.getFullYear() &&
-      classDate.getMonth() === today.getMonth() &&
-      classDate.getDate() === today.getDate();
+    const { start: dayStart, end: dayEnd } = egyptDayBoundsUTC();
+    const isSameDay = classDate >= dayStart && classDate <= dayEnd;
 
     if (!isSameDay) {
       res.status(400).json({
@@ -450,25 +459,28 @@ export const markAttendance = async (req: AuthRequest, res: Response): Promise<v
           message: 'Attendance can only be marked on the day of the class',
           details: {
             classDate: classDate.toISOString(),
-            today: today.toISOString()
+            today: new Date().toISOString()
           }
         }
       });
       return;
     }
 
-    // Update booking status
+    // Update booking status. Reverting to 'confirmed' clears the mark timestamp.
     const updatedBooking = await prisma.booking.update({
       where: { id: bookingId },
       data: {
         status,
-        attendanceMarkedAt: new Date()
+        attendanceMarkedAt: status === 'confirmed' ? null : new Date()
       }
     });
 
-    const attendeeName = booking.child 
+    const attendeeName = booking.child
       ? `${booking.child.firstName} ${booking.child.lastName}`
       : `${booking.user.firstName} ${booking.user.lastName}`;
+
+    const statusLabel =
+      status === 'attended' ? 'Present' : status === 'no_show' ? 'No-Show' : 'cleared';
 
     res.json({
       success: true,
@@ -478,7 +490,7 @@ export const markAttendance = async (req: AuthRequest, res: Response): Promise<v
         attendanceMarkedAt: updatedBooking.attendanceMarkedAt,
         attendeeName,
         className: booking.classInstance.classType.name,
-        message: `Attendance marked as ${status === 'attended' ? 'Present' : 'No-Show'}`
+        message: status === 'confirmed' ? 'Attendance mark cleared' : `Attendance marked as ${statusLabel}`
       }
     });
   } catch (error) {
@@ -554,8 +566,8 @@ export const getClassRoster = async (req: AuthRequest, res: Response): Promise<v
       return;
     }
 
-    // Verify coach is assigned to this class
-    if (classInstance.coachId !== userId) {
+    // Verify coach is assigned to this class (admins have full access)
+    if (classInstance.coachId !== userId && req.user?.role !== 'admin') {
       res.status(403).json({
         success: false,
         error: {
@@ -905,6 +917,24 @@ export const getMemberDetails = async (req: AuthRequest, res: Response): Promise
         error: {
           code: 'INVALID_USER_TYPE',
           message: 'User is not a member'
+        }
+      });
+      return;
+    }
+
+    // IDOR guard: a coach may only view a member who has at least one (non-cancelled)
+    // booking — for themselves or a child — in a class this coach teaches. The booking
+    // includes above are already scoped to coachId, so empty means "no relationship".
+    // Admins (full access) bypass this check.
+    const hasRelationship =
+      member.bookings.length > 0 ||
+      member.children.some(child => child.bookings.length > 0);
+    if (!hasRelationship && req.user?.role !== 'admin') {
+      res.status(403).json({
+        success: false,
+        error: {
+          code: 'FORBIDDEN',
+          message: 'You can only view members enrolled in your classes'
         }
       });
       return;

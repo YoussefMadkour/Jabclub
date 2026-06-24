@@ -114,7 +114,7 @@ export const uploadPaymentScreenshot = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB max file size
+    fileSize: 10 * 1024 * 1024, // 10MB max — matches the frontend limit (phone photos)
     files: 1 // Only allow 1 file per request
   }
 });

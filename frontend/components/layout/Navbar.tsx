@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import ApexLogo from './ApexLogo';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -65,13 +66,13 @@ const Navbar = () => {
   const navItems = getNavItems();
 
   return (
-    <nav className="bg-card text-headline shadow-lg fixed top-0 left-0 right-0 z-50">
+    <nav className="bg-card text-headline border-b border-line fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/80 transition-colors">
-              JabClub
+            <Link href="/" className="text-headline hover:text-foreground transition-colors flex items-center" aria-label="Apex Martial Arts home">
+              <ApexLogo className="h-6" />
             </Link>
           </div>
 
@@ -102,7 +103,7 @@ const Navbar = () => {
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
                 className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-input transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                <div className="w-8 h-8 rounded-none bg-primary text-black font-display font-semibold flex items-center justify-center">
                   {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                 </div>
                 <span className="hidden lg:block">{user.firstName}</span>
@@ -124,6 +125,15 @@ const Navbar = () => {
                     <div className="text-xs text-muted">{user.email}</div>
                     <div className="text-xs text-muted capitalize mt-1">Role: {user.role}</div>
                   </div>
+                  {user.role === 'member' && (
+                    <Link
+                      href="/profile"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="block w-full text-left px-4 py-2 text-sm text-body hover:bg-input transition-colors"
+                    >
+                      My Profile
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-body hover:bg-input transition-colors"

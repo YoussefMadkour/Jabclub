@@ -6,6 +6,7 @@ import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
 import passport from './config/passport';
 import prisma from './config/database';
+import { config } from './config/env';
 import { initializeExpiryScheduler } from './services/expiryService';
 
 // Load environment variables
@@ -22,14 +23,22 @@ const isVercelServerless = !!process.env.VERCEL || !!process.env.VERCEL_ENV;
 // For production: use .jabclubegy.com to allow cookies across app.jabclubegy.com and api.jabclubegy.com
 // For local dev: undefined (browser will set it automatically)
 const getCookieDomain = (): string | undefined => {
-  if (isVercelServerless) {
-    // Extract domain from FRONTEND_URL or use default
-    const frontendUrl = process.env.FRONTEND_URL || '';
-    if (frontendUrl.includes('jabclubegy.com')) {
-      return '.jabclubegy.com'; // Leading dot allows subdomain sharing
+  if (!isVercelServerless) return undefined; // Local dev - let the browser handle it
+
+  // Derive the registrable domain from FRONTEND_URL so the session cookie is shared
+  // across that domain's subdomains (e.g. app.* and api.*). Works for any domain
+  // (theapexmartialarts.com, jabclubegy.com, …) instead of a hardcoded value.
+  const frontendUrl = process.env.FRONTEND_URL || '';
+  try {
+    const host = new URL(frontendUrl).hostname; // e.g. theapexmartialarts.com or app.jabclubegy.com
+    const parts = host.split('.').filter(Boolean);
+    if (parts.length >= 2) {
+      return '.' + parts.slice(-2).join('.'); // ".theapexmartialarts.com" / ".jabclubegy.com"
     }
+  } catch {
+    // malformed/empty FRONTEND_URL — fall through
   }
-  return undefined; // Local development - let browser handle it
+  return undefined;
 };
 
 // Create session store with error handling
@@ -57,7 +66,7 @@ if (isVercelServerless) {
 
 // Session configuration
 const sessionConfig: session.SessionOptions = {
-  secret: process.env.SESSION_SECRET || 'your-secret-key-change-this-in-production',
+  secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,
   name: 'jabclub.sid', // Custom session cookie name (default is 'connect.sid')
@@ -89,8 +98,10 @@ app.set('trust proxy', 1);
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:3000',
   'http://localhost:3001', // Allow the frontend running on port 3001
-  'https://app.jabclubegy.com', // Production frontend
-  'https://www.app.jabclubegy.com' // With www prefix
+  'https://app.jabclubegy.com', // Legacy production frontend
+  'https://www.app.jabclubegy.com', // With www prefix
+  'https://theapexmartialarts.com', // New Apex Martial Arts frontend
+  'https://www.theapexmartialarts.com' // With www prefix
 ].filter(Boolean); // Remove any undefined values
 
 app.use(cors({
@@ -103,14 +114,18 @@ app.use(cors({
       return callback(null, true);
     }
     
-    // Allow Vercel preview URLs (e.g., https://jabclub-xxx.vercel.app)
-    if (origin.includes('.vercel.app')) {
-      console.log('✅ Allowing Vercel preview URL:', origin);
-      return callback(null, true);
+    // Allow Vercel preview URLs (strict suffix match, e.g. https://jabclub-xxx.vercel.app)
+    try {
+      const host = new URL(origin).hostname;
+      if (host === 'vercel.app' || host.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch {
+      // malformed origin — fall through to reject
     }
-    
+
     console.warn(`CORS blocked origin: ${origin}`);
-    callback(null, true); // Allow all origins in production for now (can be restricted later)
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -197,11 +212,15 @@ import adminRoutes from './routes/adminRoutes';
 import classRoutes from './routes/classRoutes';
 import coachRoutes from './routes/coachRoutes';
 import qrRoutes from './routes/qrRoutes';
+import publicRoutes from './routes/publicRoutes';
 
 // API routes
 app.get('/api', (req, res) => {
-  res.json({ message: 'JabClub API v1.0' });
+  res.json({ message: 'Apex Martial Arts API v1.0' });
 });
+
+// Public routes (no auth) — marketing website
+app.use('/api/public', publicRoutes);
 
 // Auth routes (have their own stricter rate limiting)
 app.use('/api/auth', authRoutes);
@@ -230,8 +249,13 @@ app.use(notFoundHandler);
 // Global error handler (must be last)
 app.use(errorHandler);
 
-// Initialize expiry scheduler
-initializeExpiryScheduler();
+// Initialize expiry scheduler — local/dev only. In production (Vercel serverless)
+// the in-process node-cron jobs don't run reliably, so the Vercel Cron endpoint
+// /api/cron/process-expiry handles this instead (see vercel.json). Running both
+// would risk duplicate emails.
+if (process.env.VERCEL !== '1' && process.env.VERCEL_ENV !== 'production') {
+  initializeExpiryScheduler();
+}
 
 // Initialize schedule generation - runs daily to ensure classes are always 2 months ahead
 // Only run in non-serverless environments (Vercel serverless functions have limited time)

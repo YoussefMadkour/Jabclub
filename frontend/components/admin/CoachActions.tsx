@@ -134,7 +134,7 @@ export default function CoachActions({ coachId, coachData }: CoachActionsProps) 
           <button
             onClick={handleFreeze}
             disabled={processing}
-            className="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-white text-black rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
           >
             Freeze
           </button>
@@ -150,15 +150,15 @@ export default function CoachActions({ coachId, coachData }: CoachActionsProps) 
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <div className="bg-[#16161a] rounded-lg p-6 max-w-md w-full mx-4 border border-[#26262B]">
             <h3 className="text-lg font-semibold mb-4">Delete Coach Account</h3>
-            <p className="text-gray-700 mb-6">
+            <p className="text-gray-300 mb-6">
               Are you sure you want to delete this coach account? This action cannot be undone. The coach will be soft-deleted.
             </p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                className="px-4 py-2 bg-[#26262B] text-gray-300 rounded-md hover:bg-gray-300 transition-colors"
               >
                 Cancel
               </button>
